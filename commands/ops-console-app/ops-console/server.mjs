@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
-import { appPidFile, publicDir } from './lib/paths.mjs';
+import { appPidFile, appRoot, publicDir } from './lib/paths.mjs';
 import {
   getDbTableList,
   getLogContent,
@@ -86,7 +86,8 @@ const server = http.createServer(async (req, res) => {
       sendJson(res, 200, {
         ok: true,
         app: 'kpi-ops-console',
-        port
+        port,
+        appRoot
       });
       return;
     }

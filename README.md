@@ -45,6 +45,24 @@ ID: 1234
 Password: 1234
 ```
 
+## Run Optional Runtime Tools
+
+The optional runtime can use an installed PostgreSQL 15-17, `KPI_POSTGRES_BIN_DIR`, or the repository-local portable PostgreSQL tools under `kpi-runtime/internal-server/var/tools/`. The portable tools are ignored by Git and are downloaded only when needed by the Windows runtime scripts.
+
+Initialize PostgreSQL, seed the demo owner, and start the Node runtime:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\kpi-runtime\internal-server\scripts\windows\initialize-central-runtime.ps1 -StartServer -BootstrapOwner
+```
+
+Open the local command console:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\commands\ops-console-app\scripts\start-ops-console.ps1
+```
+
+The command console should report this repository under `commandsRoot`, PostgreSQL ready on port `5434`, and the sample owner account `1234 / 1234`.
+
 ## Public Portfolio Notes
 
 - Company names, private site labels, and personal names have been replaced with public-safe demo labels.

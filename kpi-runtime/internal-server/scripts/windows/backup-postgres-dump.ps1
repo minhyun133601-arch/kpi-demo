@@ -5,6 +5,7 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $serverDir = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
+. (Join-Path $PSScriptRoot 'resolve-postgres-tools.ps1')
 
 function Convert-ToAbsolutePath {
   param(
@@ -71,32 +72,8 @@ function Get-EnvFileValue {
 }
 
 function Resolve-PostgresDumpPath {
-  $pathCommand = Get-Command pg_dump -ErrorAction SilentlyContinue
-  if ($pathCommand) {
-    return $pathCommand.Source
-  }
-
-  $candidatePaths = @(
-    (Join-Path $env:ProgramFiles 'PostgreSQL\17\bin\pg_dump.exe'),
-    (Join-Path $env:ProgramFiles 'PostgreSQL\16\bin\pg_dump.exe'),
-    (Join-Path $env:ProgramFiles 'PostgreSQL\15\bin\pg_dump.exe')
-  )
-
-  foreach ($candidatePath in $candidatePaths) {
-    if (Test-Path $candidatePath) {
-      return (Resolve-Path $candidatePath).Path
-    }
-  }
-
-  $recursiveCandidate = Get-ChildItem -Path (Join-Path $env:ProgramFiles 'PostgreSQL') -Recurse -Filter pg_dump.exe -ErrorAction SilentlyContinue |
-    Where-Object { $_.FullName -like '*\bin\pg_dump.exe' } |
-    Sort-Object FullName -Descending |
-    Select-Object -First 1
-  if ($recursiveCandidate) {
-    return $recursiveCandidate.FullName
-  }
-
-  throw 'pg_dump_not_found'
+  $binDir = Resolve-KpiPostgresBinDir -ServerDir $serverDir -RequiredExecutable 'pg_dump.exe' -InstallIfMissing
+  return (Join-Path $binDir 'pg_dump.exe')
 }
 
 function Convert-DatabaseUrl {

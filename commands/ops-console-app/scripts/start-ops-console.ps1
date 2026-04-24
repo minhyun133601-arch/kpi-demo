@@ -36,7 +36,21 @@ function Test-AppHealth {
 
   try {
     $response = Invoke-RestMethod -Uri ("http://127.0.0.1:{0}/api/app/health" -f $Port) -Method Get -TimeoutSec 3
-    return ($response.ok -eq $true)
+    if ($response.ok -ne $true -or $response.app -ne 'kpi-ops-console') {
+      return $false
+    }
+
+    $responseAppRoot = ''
+    if ($response.PSObject.Properties.Name -contains 'appRoot') {
+      $responseAppRoot = [string]$response.appRoot
+    }
+    if (-not $responseAppRoot) {
+      return $false
+    }
+
+    $expectedAppRoot = (Resolve-Path $appDir).Path
+    $actualAppRoot = [System.IO.Path]::GetFullPath($responseAppRoot)
+    return $actualAppRoot.Equals($expectedAppRoot, [System.StringComparison]::OrdinalIgnoreCase)
   } catch {
     return $false
   }

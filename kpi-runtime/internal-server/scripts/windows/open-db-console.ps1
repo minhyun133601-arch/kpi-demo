@@ -7,6 +7,7 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $serverDir = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
+. (Join-Path $PSScriptRoot 'resolve-postgres-tools.ps1')
 
 function Resolve-EnvFilePath {
   param(
@@ -66,23 +67,8 @@ function Read-EnvMap {
 }
 
 function Resolve-PsqlExecutablePath {
-  $command = Get-Command psql -ErrorAction SilentlyContinue
-  if ($command -and $command.Source -and (Test-Path $command.Source)) {
-    return $command.Source
-  }
-
-  $candidatePaths = @(
-    'C:\Program Files\PostgreSQL\17\bin\psql.exe',
-    'C:\Program Files\PostgreSQL\16\bin\psql.exe'
-  )
-
-  foreach ($candidatePath in $candidatePaths) {
-    if (Test-Path $candidatePath) {
-      return $candidatePath
-    }
-  }
-
-  throw 'psql.exe was not found. Install PostgreSQL client tools first.'
+  $binDir = Resolve-KpiPostgresBinDir -ServerDir $serverDir -RequiredExecutable 'psql.exe' -InstallIfMissing
+  return (Join-Path $binDir 'psql.exe')
 }
 
 function Parse-DatabaseUrl {

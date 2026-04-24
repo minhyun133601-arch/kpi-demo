@@ -5,7 +5,9 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $serverDir = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
-$postgresBinDir = 'C:\Program Files\PostgreSQL\17\bin'
+. (Join-Path $PSScriptRoot 'resolve-postgres-tools.ps1')
+
+$postgresBinDir = Resolve-KpiPostgresBinDir -ServerDir $serverDir -RequiredExecutable 'pg_isready.exe' -InstallIfMissing
 $pgIsReadyPath = Join-Path $postgresBinDir 'pg_isready.exe'
 $postgresPort = 5434
 $envFilePath = Join-Path $serverDir '.env.production.local'

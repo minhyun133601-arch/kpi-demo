@@ -617,9 +617,29 @@ async function getPostgresReadyState() {
 }
 
 function resolvePostgresBinary(fileName) {
+  const localToolsDir = path.join(internalServerDir, 'var', 'tools');
+  const localToolCandidates = [
+    path.join(localToolsDir, 'postgresql-17.9', 'pgsql', 'bin', fileName),
+    path.join(localToolsDir, 'postgresql-17', 'pgsql', 'bin', fileName),
+    path.join(localToolsDir, 'postgresql', 'pgsql', 'bin', fileName),
+    path.join(localToolsDir, 'postgresql', 'bin', fileName)
+  ];
+  if (fs.existsSync(localToolsDir)) {
+    for (const entry of fs.readdirSync(localToolsDir, { withFileTypes: true })) {
+      if (!entry.isDirectory() || !entry.name.startsWith('postgresql-')) {
+        continue;
+      }
+      localToolCandidates.push(path.join(localToolsDir, entry.name, 'pgsql', 'bin', fileName));
+      localToolCandidates.push(path.join(localToolsDir, entry.name, 'bin', fileName));
+    }
+  }
+
   const candidates = [
+    ...(process.env.KPI_POSTGRES_BIN_DIR ? [path.join(process.env.KPI_POSTGRES_BIN_DIR, fileName)] : []),
+    ...localToolCandidates,
     path.join('C:\\Program Files\\PostgreSQL\\17\\bin', fileName),
-    path.join('C:\\Program Files\\PostgreSQL\\16\\bin', fileName)
+    path.join('C:\\Program Files\\PostgreSQL\\16\\bin', fileName),
+    path.join('C:\\Program Files\\PostgreSQL\\15\\bin', fileName)
   ];
   return candidates.find((candidate) => fs.existsSync(candidate)) || '';
 }

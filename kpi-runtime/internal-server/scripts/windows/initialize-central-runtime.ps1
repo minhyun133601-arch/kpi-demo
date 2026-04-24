@@ -18,7 +18,9 @@ $toolsDir = Join-Path $centralDir 'tools'
 $prodStorageDir = Join-Path $varDir 'prod'
 $envFilePath = Join-Path $serverDir '.env.production.local'
 
-$postgresBinDir = 'C:\Program Files\PostgreSQL\17\bin'
+. (Join-Path $PSScriptRoot 'resolve-postgres-tools.ps1')
+
+$postgresBinDir = Resolve-KpiPostgresBinDir -ServerDir $serverDir -RequiredExecutable 'initdb.exe' -InstallIfMissing
 $initdbPath = Join-Path $postgresBinDir 'initdb.exe'
 $pgCtlPath = Join-Path $postgresBinDir 'pg_ctl.exe'
 $pgIsReadyPath = Join-Path $postgresBinDir 'pg_isready.exe'
@@ -150,6 +152,16 @@ function Invoke-Psql {
   }
 }
 
+function Convert-PsqlScalar {
+  param([object]$Value)
+
+  if ($null -eq $Value) {
+    return ''
+  }
+
+  return (($Value | Out-String).Trim())
+}
+
 Assert-CommandPath -PathToCheck $initdbPath
 Assert-CommandPath -PathToCheck $pgCtlPath
 Assert-CommandPath -PathToCheck $pgIsReadyPath
@@ -183,14 +195,14 @@ Ensure-PostgresStarted
 Wait-ForPostgres
 
 $escapedAppPassword = $appPassword.Replace("'", "''")
-$roleExists = (Invoke-Psql -Database 'postgres' -Sql "select 1 from pg_roles where rolname = '$appUser';").Trim()
+$roleExists = Convert-PsqlScalar (Invoke-Psql -Database 'postgres' -Sql "select 1 from pg_roles where rolname = '$appUser';")
 if ($roleExists -ne '1') {
   Invoke-Psql -Database 'postgres' -Sql "create role $appUser login password '$escapedAppPassword';" | Out-Null
 } else {
   Invoke-Psql -Database 'postgres' -Sql "alter role $appUser with login password '$escapedAppPassword';" | Out-Null
 }
 
-$dbExists = (Invoke-Psql -Database 'postgres' -Sql "select 1 from pg_database where datname = '$appDatabase';").Trim()
+$dbExists = Convert-PsqlScalar (Invoke-Psql -Database 'postgres' -Sql "select 1 from pg_database where datname = '$appDatabase';")
 if ($dbExists -ne '1') {
   Invoke-Psql -Database 'postgres' -Sql "create database $appDatabase owner $appUser;" | Out-Null
 }

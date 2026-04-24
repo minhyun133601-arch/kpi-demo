@@ -33,6 +33,73 @@ KPI-Demo/
 `-- shared-assets/            public-safe placeholder assets
 ```
 
+## 2026-04-25 - Portable PostgreSQL And Command Console Runtime
+
+### Architecture Impact
+
+```text
+KPI-Demo/
+|-- .github/workflows/kpi-demo-runtime-ci.yml
+|-- README.md
+|-- commands/ops-console-app/
+|   |-- scripts/
+|   `-- ops-console/
+|       |-- server.mjs
+|       `-- lib/ops-service.mjs
+|-- kpi-runtime/internal-server/scripts/windows/
+|-- patch.md
+`-- plain-english-companion.md
+```
+
+### Summary
+
+- Added a Windows PostgreSQL tool resolver that checks `KPI_POSTGRES_BIN_DIR`, repository-local portable tools, installed PostgreSQL 15-17 paths, and `psql` on PATH.
+- Added a portable PostgreSQL installer for the optional runtime. It downloads the Windows x64 PostgreSQL binaries into the ignored `kpi-runtime/internal-server/var/tools/` folder when no local PostgreSQL tools are available.
+- Updated runtime scripts for initialization, start, stop, recovery, backup, and DB console access so they can use the local portable PostgreSQL toolchain.
+- Updated the command console backend so PostgreSQL readiness checks can find the local portable tools.
+- Added command-console health root verification so scripts do not confuse another cloned folder's old console process with this repository's console.
+- Renamed remaining CI temporary runtime log and PID paths from the old server-oriented label to `kpi-demo`.
+- Documented the optional runtime setup and command-console verification path in `README.md`.
+
+### Changed Files
+
+- `README.md`
+- `.github/workflows/kpi-demo-runtime-ci.yml`
+- `commands/ops-console-app/ops-console/server.mjs`
+- `commands/ops-console-app/ops-console/lib/ops-service.mjs`
+- `commands/ops-console-app/scripts/start-ops-console.ps1`
+- `commands/ops-console-app/scripts/stop-ops-console.ps1`
+- `kpi-runtime/internal-server/scripts/windows/resolve-postgres-tools.ps1`
+- `kpi-runtime/internal-server/scripts/windows/install-portable-postgres.ps1`
+- `kpi-runtime/internal-server/scripts/windows/initialize-central-runtime.ps1`
+- `kpi-runtime/internal-server/scripts/windows/start-local-postgres.ps1`
+- `kpi-runtime/internal-server/scripts/windows/stop-local-postgres.ps1`
+- `kpi-runtime/internal-server/scripts/windows/recover-central-stack.ps1`
+- `kpi-runtime/internal-server/scripts/windows/open-db-console.ps1`
+- `kpi-runtime/internal-server/scripts/windows/backup-postgres-dump.ps1`
+- `patch.md`
+- `plain-english-companion.md`
+
+### Privacy Impact
+
+- The portable PostgreSQL files, local database cluster, generated environment file, logs, and command-console state remain under ignored runtime folders.
+- The committed changes add tooling and documentation only. No private company data, screenshots, credentials, or real operational records were added.
+- The sample runtime account remains the fake public demo account `1234 / 1234`.
+
+### Verification
+
+- Portable PostgreSQL 17.9 tools verified locally: `psql`, `pg_ctl`, and `initdb`.
+- Runtime initialization with `-StartServer -BootstrapOwner` completed successfully.
+- Runtime health passed at `http://127.0.0.1:3100/api/health`.
+- Demo login passed with `1234 / 1234`.
+- Command console health passed at `http://127.0.0.1:3215/api/app/health` and reports this repository's `commands/ops-console-app` root.
+- Command console overview reports `commandsRoot` under `KPI-Demo`, PostgreSQL ready on port `5434`, no user-list error, and an existing env file.
+- Command console DB table API returned the expected application tables.
+- Static demo HTTP check returned `200` at `http://127.0.0.1:5500/KPI.html`.
+- JS syntax checks passed for changed command-console modules.
+- PowerShell parser checks passed for changed runtime and command-console scripts.
+- Sensitive-name scan passed for old company, old conduct-code, and old server/local project-name strings.
+
 ## 2026-04-25 - Public Demo Team And Process Label Sanitization
 
 ### Architecture Impact
