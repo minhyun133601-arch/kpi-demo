@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>생산량 추출 도구</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=7">
+  <script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script defer src="runtime/import-parsing.js?v=16"></script>
+  <script defer src="runtime/export-actions.js?v=16"></script>
+  <script defer src="app.js?v=16"></script>
+</head>
+<body>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-grid"></div>
+
+  <main class="container">
+    <header class="hero reveal">
+      <p class="eyebrow">Production Extractor</p>
+      <h1>생산량 추출 도구 <span>v12</span></h1>
+      <p class="hero-copy">
+        3행 헤더(A/B/C/E/F) 형식으로 엑셀 데이터를 추출합니다.
+        D열 날짜는 무시하고 생산일자(A열)를 하루 미루지 않고 그대로 사용합니다.
+        여러 파일/여러 시트를 한 번에 분석하고, 같은 데이터는 자동으로 중복 제거합니다.
+      </p>
+    </header>
+
+    <section id="extractControlsSection" class="panel reveal delay-1">
+      <div class="controls-grid">
+        <label class="field">
+          <span>엑셀 파일 첨부</span>
+          <input id="fileInput" type="file" accept=".xlsx,.xls" multiple>
+          <small>여러 파일을 한 번에 선택할 수 있습니다.</small>
+        </label>
+
+        <label class="field">
+          <span>월 선택</span>
+          <select id="periodSelect">
+            <option value="ALL">전체</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>팀 선택</span>
+          <select id="teamSelect">
+            <option value="ALL">전체 팀</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>라인 선택</span>
+          <select id="lineSelect">
+            <option value="ALL">전체 라인</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>정렬</span>
+          <select id="sortSelect">
+            <option value="date_asc">날짜 오름차순</option>
+            <option value="date_desc">날짜 내림차순</option>
+            <option value="team_asc">팀 오름차순</option>
+            <option value="line_asc">라인 오름차순</option>
+            <option value="amount_desc">생산량 내림차순</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>데이터 검색</span>
+          <input id="searchInput" type="text" placeholder="팀, 라인, 품명으로 검색">
+        </label>
+      </div>
+
+      <div class="actions">
+        <button id="extractBtn" class="btn primary" type="button">추출 실행</button>
+        <button id="applyToKpiBtn" class="btn secondary" type="button" disabled>생산량 기입</button>
+        <button id="downloadFilteredBtn" class="btn secondary" type="button" disabled>선택 결과 다운로드</button>
+        <button id="downloadAllBtn" class="btn ghost" type="button" disabled>전체 결과 다운로드</button>
+        <button id="backBtn" class="btn link" type="button">뒤로</button>
+      </div>
+
+      <p id="statusText" class="status">파일을 첨부한 뒤 추출 실행을 눌러주세요.</p>
+    </section>
+
+    <section id="storedExportSection" class="panel reveal delay-1">
+      <div class="table-head">
+        <h2>기입데이터 추출 파일</h2>
+        <p>기입된 생산량 데이터를 기간/팀 기준으로 내려받을 수 있습니다.</p>
+      </div>
+      <div class="controls-grid">
+        <label class="field">
+          <span>시작일</span>
+          <input id="storedStartDate" type="date">
+        </label>
+        <label class="field">
+          <span>종료일</span>
+          <input id="storedEndDate" type="date">
+        </label>
+        <label class="field">
+          <span>팀 필터</span>
+          <select id="storedTeamSelect">
+            <option value="ALL">전체 팀</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button id="downloadStoredBtn" class="btn primary" type="button">기입데이터 추출 파일</button>
+        <button id="refreshStoredBtn" class="btn ghost" type="button">팀 목록 새로고침</button>
+      </div>
+    </section>
+
+    <section id="metricsSection" class="metrics reveal delay-2">
+      <article class="metric-card">
+        <h2>처리 파일</h2>
+        <p id="metricFiles">0</p>
+      </article>
+      <article class="metric-card">
+        <h2>전체 데이터 수</h2>
+        <p id="metricRowsAll">0</p>
+      </article>
+      <article class="metric-card">
+        <h2>현재 보기 수</h2>
+        <p id="metricRowsFiltered">0</p>
+      </article>
+      <article class="metric-card">
+        <h2>현재 월</h2>
+        <p id="metricPeriod">전체</p>
+      </article>
+      <article class="metric-card">
+        <h2>현재 팀</h2>
+        <p id="metricTeam">전체 팀</p>
+      </article>
+      <article class="metric-card">
+        <h2>현재 라인</h2>
+        <p id="metricLine">전체 라인</p>
+      </article>
+      <article class="metric-card">
+        <h2>현재 생산량 합계</h2>
+        <p id="metricSum">0</p>
+      </article>
+      <article class="metric-card">
+        <h2>현재 생산량 평균</h2>
+        <p id="metricAvg">-</p>
+      </article>
+      <article class="metric-card">
+        <h2>중복 제거</h2>
+        <p id="metricDedup">0</p>
+      </article>
+      <article class="metric-card wide">
+        <h2>전체 생산 기간</h2>
+        <p id="metricDateRange">-</p>
+      </article>
+    </section>
+
+    <section id="periodSummarySection" class="panel reveal delay-3">
+      <div class="table-head">
+        <h2>월별 요약</h2>
+        <p>월 기준(1일~말일) 합계/평균</p>
+      </div>
+      <div class="table-wrap summary-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>월</th>
+              <th>데이터 수</th>
+              <th>생산량 합계</th>
+              <th>생산량 평균</th>
+            </tr>
+          </thead>
+          <tbody id="periodSummaryBody">
+            <tr>
+              <td class="empty" colspan="4">추출 실행 시 월별 요약이 표시됩니다.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="teamSummarySection" class="panel reveal delay-4">
+      <div class="table-head">
+        <h2>팀별 요약</h2>
+        <p>여러 파일 데이터를 팀 기준으로 자동 병합합니다.</p>
+      </div>
+      <div class="table-wrap summary-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>팀</th>
+              <th>데이터 수</th>
+              <th>생산 기간</th>
+              <th>생산량 합계</th>
+              <th>생산량 평균</th>
+            </tr>
+          </thead>
+          <tbody id="teamSummaryBody">
+            <tr>
+              <td class="empty" colspan="5">추출 실행 시 팀별 요약이 표시됩니다.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="resultTableSection" class="panel table-panel reveal delay-5">
+      <div class="table-head">
+        <h2>추출 데이터</h2>
+        <p id="currentPeriodLabel">현재 보기: 전체</p>
+      </div>
+      <div class="table-wrap">
+        <table id="resultTable">
+          <thead>
+            <tr id="tableHeader">
+              <th>데이터 없음</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr>
+              <td class="empty">추출 실행 시 데이터가 표시됩니다.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="fileSummarySection" class="panel reveal delay-6">
+      <div class="table-head">
+        <h2>파일 요약</h2>
+      </div>
+      <div id="fileSummary" class="file-summary empty">아직 처리된 파일이 없습니다.</div>
+    </section>
+  </main>
+</body>
+</html>

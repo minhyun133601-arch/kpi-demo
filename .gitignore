@@ -1,0 +1,29 @@
+# Legacy internal server runtime state
+work-log/internal-server/data/*
+!work-log/internal-server/data/.gitkeep
+work-log/internal-server/files/*
+!work-log/internal-server/files/.gitkeep
+work-log/internal-server/logs/*
+!work-log/internal-server/logs/.gitkeep
+
+# Active internal server runtime state
+kpi-runtime/internal-server/.env
+kpi-runtime/internal-server/var/*
+!kpi-runtime/internal-server/var/.gitkeep
+!kpi-runtime/internal-server/var/files/.gitkeep
+!kpi-runtime/internal-server/var/logs/.gitkeep
+!kpi-runtime/internal-server/var/migration-backups/.gitkeep
+!kpi-runtime/internal-server/var/backups/.gitkeep
+!kpi-runtime/internal-server/var/backups/file-storage/.gitkeep
+!kpi-runtime/internal-server/var/backups/runtime-snapshots/.gitkeep
+
+# Local verification/runtime scratch
+node_modules/
+**/node_modules/
+.claude/
+.codex/
+.codex-run/
+commands/var/*
+**/internal-server/.codex-run/
+.playwright-mcp/
+test-results/

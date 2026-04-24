@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="shared-assets/kpi-demo-logo.svg">
+    <title>KPI Demo Management Console</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Noto Sans KR -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="kpi-runtime/app/styles/shell/dashboard.css?v=057">
+    <link rel="stylesheet" href="kpi-runtime/app/styles/shell/shell-chrome.css?v=057">
+    <link rel="stylesheet" href="kpi-runtime/app/styles/work/work.css?v=057">
+    <link rel="stylesheet" href="kpi-runtime/app/styles/metering/metering.css?v=060">
+    <link rel="stylesheet" href="kpi-runtime/app/styles/audit/audit.css?v=057">
+</head>
+<body>
+
+    <!-- 1. 대시보드 (메인 화면) -->
+    <div id="dashboard">
+        <div class="dashboard-shell">
+            <aside class="dashboard-side">
+                <div class="dashboard-side-brand">
+                <span class="dashboard-version-badge">V454</span>
+                </div>
+                <div id="dashboard-side-nav" class="dashboard-side-nav">
+                    <!-- JS로 홈 사이드 탭 렌더 -->
+                </div>
+                <div class="dashboard-side-footer">
+                    <div id="dashboard-auth-bar" class="runtime-auth-bar" hidden>
+                        <div class="runtime-auth-segment runtime-auth-segment-main">
+                            <span class="runtime-auth-caption">현재 로그인</span>
+                            <strong id="dashboard-auth-identity" class="runtime-auth-identity">-</strong>
+                        </div>
+                        <div id="dashboard-auth-meta" class="runtime-auth-segment runtime-auth-meta" hidden>
+                            <span id="dashboard-auth-role" class="runtime-auth-chip runtime-auth-role" hidden></span>
+                            <span id="dashboard-auth-id" class="runtime-auth-chip runtime-auth-id" hidden></span>
+                        </div>
+                        <button id="dashboard-auth-logout" type="button" class="runtime-auth-logout" title="로그아웃" aria-label="로그아웃">
+                            <i class="fas fa-right-from-bracket" aria-hidden="true"></i>
+                            <span class="runtime-auth-logout-label">로그아웃</span>
+                        </button>
+                    </div>
+                    <div id="last-modified-text" class="dashboard-side-meta">최종 수정: -</div>
+                </div>
+            </aside>
+
+            <section class="dashboard-main">
+                <div class="dashboard-stage">
+                    <div class="dashboard-stage-head">
+                        <h1 id="dashboard-stage-title" class="dashboard-stage-title">유틸리티</h1>
+                        <span id="dashboard-stage-count" class="dashboard-stage-count">0개 항목</span>
+                    </div>
+                    <div id="dashboard-subtabs" class="dashboard-subtabs">
+                        <!-- JS로 선택된 모듈 하위탭 렌더 -->
+                    </div>
+
+                    <div id="dashboard-home-panels" class="dashboard-home-panels">
+                        <!-- JS로 홈 콘텐츠 렌더 -->
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- 2. 상세 뷰어 (사이드바 형태) -->
+    <div id="viewer">
+        <header class="viewer-header">
+            <div class="viewer-header-leading">
+                <span class="viewer-header-brand-badge" aria-hidden="true"><i class="fas fa-clipboard-list"></i></span>
+                <span class="viewer-header-brand-text">KPI Demo Management Console</span>
+                <span class="viewer-version-badge">V454</span>
+            </div>
+            <div class="viewer-header-actions">
+                <div id="global-save-dock" class="global-save-dock" aria-live="polite">
+                    <span id="global-save-status" class="global-save-status">현재 화면은 저장 대상이 없습니다.</span>
+                    <div id="viewer-auth-bar" class="runtime-auth-bar" hidden>
+                        <div class="runtime-auth-segment runtime-auth-segment-main">
+                            <span class="runtime-auth-caption">현재 로그인</span>
+                            <strong id="viewer-auth-identity" class="runtime-auth-identity">-</strong>
+                        </div>
+                        <div id="viewer-auth-meta" class="runtime-auth-segment runtime-auth-meta" hidden>
+                            <span id="viewer-auth-role" class="runtime-auth-chip runtime-auth-role" hidden></span>
+                            <span id="viewer-auth-id" class="runtime-auth-chip runtime-auth-id" hidden></span>
+                        </div>
+                        <button id="viewer-auth-logout" type="button" class="runtime-auth-logout" title="로그아웃" aria-label="로그아웃">
+                            <i class="fas fa-right-from-bracket" aria-hidden="true"></i>
+                            <span class="runtime-auth-logout-label">로그아웃</span>
+                        </button>
+                    </div>
+                    <span id="global-save-recent-chip" class="global-save-date-chip">
+                        <span class="label">최근 수정</span>
+                        <span id="global-save-recent-value" class="value">-</span>
+                    </span>
+                    <span id="global-save-date-chip" class="global-save-date-chip is-hidden">
+                        <span class="label">오늘 날짜</span>
+                        <span id="global-save-date-value" class="value">-</span>
+                    </span>
+                    <button id="global-save-button" type="button" class="global-save-button" disabled>
+                        <i class="fas fa-floppy-disk"></i>
+                        <span id="global-save-button-label">저장</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div id="viewer-body" class="viewer-body">
+            <!-- 좌측 사이드바 (카테고리) -->
+            <nav id="sidebar" class="sidebar custom-scroll">
+                <!-- JS로 리스트 주입 -->
+            </nav>
+
+            <!-- 우측 본문 -->
+            <main id="main-scroll" class="content-area custom-scroll">
+                <div id="content-container" class="content-card">
+                    <!-- JS로 내용 주입 -->
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Print sheet -->
+    <div id="print-sheet" class="print-sheet"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="kpi-runtime/demo/KPI.demo-data.js?v=1"></script>
+    <script src="utility/runtime/util/integration/KPI.util.metering.bridge.js?v=197"></script>
+    <script src="kpi-runtime/sections/KPI.section.builders.js?v=215"></script>
+    <script src="team-report/runtime/work/sections/KPI.sections.work.js?v=231"></script>
+    <script src="utility/runtime/util/sections/KPI.sections.util.js?v=240"></script>
+    <script src="data-entry/runtime/data/sections/KPI.sections.data.js?v=2"></script>
+    <script src="audit/runtime/audit/sections/KPI.sections.audit.js"></script>
+    <script src="kpi-runtime/sections/KPI.sections.owner.js?v=2"></script>
+    <script src="kpi-runtime/sections/KPI.section.registry.js?v=1"></script>
+
+    <!-- 로직 스크립트 -->
+    <script src="kpi-runtime/core/KPI.core.js"></script>
+    <script src="utility/runtime/util/KPI.util.data-sync.js?v=206"></script>
+    <script src="utility/runtime/util/KPI.util.production-import.js?v=2"></script>
+    <script src="utility/runtime/util/production/KPI.util.production.archive.js"></script>
+    <script src="utility/runtime/util/production/KPI.util.production.extractor.js?v=14"></script>
+    <script src="utility/runtime/util/production/KPI.util.production.dataset-tools.js"></script>
+    <script src="utility/runtime/util/KPI.util.production-management.js"></script>
+    <script src="utility/runtime/util/KPI.util.maintenance.js"></script>
+    <script src="team-report/runtime/work/KPI.work.shared.js?v=239"></script>
+    <script src="team-report/runtime/work/KPI.work.shared.team-calendar.categories.js?v=1"></script>
+    <script src="team-report/runtime/work/KPI.work.shared.team-calendar.state.js?v=1"></script>
+    <script src="team-report/runtime/work/KPI.work.shared.team-calendar.summary.js?v=1"></script>
+    <script src="team-report/runtime/work/KPI.work.production.js?v=238"></script>
+    <script src="team-report/runtime/work/KPI.work.production.history.js?v=1"></script>
+    <script src="team-report/runtime/work/KPI.work.production.overview.js?v=1"></script>
+    <script src="team-report/runtime/work/KPI.work.production.draft.js?v=1"></script>
+    <script src="team-report/runtime/work/KPI.work.team-calendar.js?v=237"></script>
+    <script src="team-report/runtime/work/KPI.work.team-calendar.selection.js?v=1"></script>
+    <script src="team-report/runtime/work/KPI.work.team-calendar.draft-actions.js?v=1"></script>
+    <script src="team-report/runtime/work/KPI.work.team-calendar.render.js?v=1"></script>
+    <script src="team-report/runtime/work/history/KPI.work.history.core.js?v=217"></script>
+    <script src="team-report/runtime/work/history/KPI.work.history.core.records.js?v=1"></script>
+    <script src="team-report/runtime/work/history/KPI.work.history.core.storage.js?v=1"></script>
+    <script src="team-report/runtime/work/history/KPI.work.history.view.layout.js?v=248"></script>
+    <script src="team-report/runtime/work/history/layout/templates.js?v=248"></script>
+    <script src="team-report/runtime/work/history/KPI.work.history.view.render.js?v=233"></script>
+    <script src="team-report/runtime/work/history/render/card-parts.js?v=233"></script>
+    <script src="team-report/runtime/work/history/render/print.js?v=233"></script>
+    <script src="team-report/runtime/work/history/KPI.work.history.view.actions.js?v=232"></script>
+    <script src="team-report/runtime/work/history/KPI.work.history.view.actions.search.js?v=1"></script>
+    <script src="team-report/runtime/work/history/KPI.work.history.view.actions.record.js?v=1"></script>
+    <script src="team-report/runtime/work/history/KPI.work.history.view.actions.document.js?v=1"></script>
+    <script src="team-report/runtime/work/history/KPI.work.history.view.js"></script>
+    <script src="audit/runtime/audit/records/KPI.audit.records.data.js"></script>
+    <script src="audit/runtime/audit/records/KPI.audit.records.options.js"></script>
+    <script src="audit/runtime/audit/records/KPI.audit.records.lux-workspace.js?v=291"></script>
+    <script src="audit/runtime/audit/records/KPI.audit.records.render.js"></script>
+    <script src="utility/runtime/util/energy/KPI.util.energy.dual.js"></script>
+    <script src="utility/runtime/util/energy/KPI.util.energy.chart.js"></script>
+    <script src="utility/runtime/util/energy/KPI.util.energy.tabs.js?v=206"></script>
+    <script src="utility/runtime/util/energy/KPI.util.energy.renderers.js?v=332"></script>
+    <script src="utility/runtime/util/energy/KPI.util.energy.modal.chart.js?v=332"></script>
+    <script src="utility/runtime/util/report/KPI.util.report.state.js?v=335"></script>
+    <script src="utility/runtime/util/report/KPI.util.report.builder.sync.js?v=334"></script>
+    <script src="utility/runtime/util/report/KPI.util.report.formatters.js"></script>
+    <script src="utility/runtime/util/report/KPI.util.report.filters.js?v=333"></script>
+    <script src="utility/runtime/util/report/KPI.util.report.deltas.js"></script>
+    <script src="utility/runtime/util/report/KPI.util.report.production.js?v=334"></script>
+    <script src="utility/runtime/util/report/KPI.util.report.runner.js?v=331"></script>
+    <script src="utility/runtime/util/report/KPI.util.report.tables.js"></script>
+    <script src="utility/runtime/util/report/KPI.util.report.detached.js?v=338"></script>
+    <script src="utility/runtime/util/report/KPI.util.report.modal.base.js?v=331"></script>
+    <script src="utility/runtime/util/report/KPI.util.report.builder.charts.js?v=334"></script>
+    <script src="utility/runtime/util/report/KPI.util.report.builder.state.js?v=333"></script>
+    <script src="utility/runtime/util/report/KPI.util.report.builder.tables.js?v=334"></script>
+    <script src="utility/runtime/util/report/KPI.util.report.builder.modal.js?v=334"></script>
+    <script src="utility/runtime/util/report/KPI.util.report.secondary-modals.js"></script>
+    <script src="utility/runtime/util/report/KPI.util.report.modal.render.js"></script>
+    <script src="utility/runtime/util/report/KPI.util.report.panel.js"></script>
+    <script src="utility/runtime/util/report/sheet/config.js?v=054"></script>
+    <script src="utility/runtime/util/report/sheet/options.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/controls.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/billing.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/electric/table-render.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/electric/runtime-sync.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/electric/meter-model.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/electric/comparison-summary.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/gas/comparison-summary.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/gas/scoped-metrics.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/gas/runtime-sync.js?v=054"></script>
+    <script src="utility/runtime/util/report/sheet/panel/runtime.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/panel/preview.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/windows/detached-interactions.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/windows.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/modal/actions.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/modal/shell.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/modal/render.js?v=054"></script>
+    <script src="utility/runtime/util/report/sheet/analysis/state.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/analysis/compare-select.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/analysis/chart-controls.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/analysis/range-ratio.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/analysis/electric/chart-model.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/analysis/electric/model.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/analysis/gas/model.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/analysis/render.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/analysis/popup-tables.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/summary/render.js?v=053"></script>
+    <script src="utility/runtime/util/report/KPI.util.report.sheet.js?v=054"></script>
+    <script src="utility/runtime/util/energy/KPI.util.energy.tabs.override.js?v=012"></script>
+    <script src="utility/runtime/util/analytics/KPI.util.analytics.js"></script>
+    <script src="team-report/runtime/work/KPI.work.renderers.weekly-actions.js?v=1"></script>
+    <script src="team-report/runtime/work/KPI.work.renderers.print.js?v=1"></script>
+    <script src="team-report/runtime/work/KPI.work.renderers.monthly-plan.js?v=1"></script>
+    <script src="team-report/runtime/work/KPI.work.renderers.js?v=1"></script>
+    <script src="utility/runtime/util/KPI.util.runtime.js?v=207"></script>
+    <script src="audit/runtime/audit/KPI.audit.runtime.js"></script>
+    <script src="team-report/runtime/work/KPI.work.runtime.js?v=227"></script>
+    <script src="kpi-runtime/app/KPI.app.js?v=250"></script>
+</body>
+</html>

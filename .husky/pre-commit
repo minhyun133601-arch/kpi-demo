@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+set -eu
+
+npm --prefix "./kpi-runtime/internal-server" run verify:server-structure

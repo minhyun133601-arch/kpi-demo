@@ -1,0 +1,508 @@
+        /* Work log */
+        .work-panel { display: flex; flex-direction: column; gap: 1rem; }
+        .work-toolbar { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; justify-content: space-between; }
+        .work-week-meta { display: flex; flex-direction: column; gap: 0.1rem; }
+        .work-week-title { font-size: 1.1rem; font-weight: 800; color: #0f172a; }
+        .work-week-range { font-size: 0.85rem; color: #64748b; }
+        .work-controls { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+        .work-select { border: 1px solid #e2e8f0; background: #fff; padding: 6px 10px; border-radius: 10px; font-size: 0.9rem; color: #0f172a; }
+        .work-btn { border: 1px solid #e2e8f0; background: #fff; padding: 6px 10px; border-radius: 10px; font-size: 0.85rem; color: #0f172a; cursor: pointer; transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease; }
+        .work-btn:hover { transform: translateY(-1px); border-color: #cbd5e1; box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08); }
+        .work-btn:active { transform: translateY(0); box-shadow: none; }
+        .work-btn.primary { border-color: #2563eb; color: #1d4ed8; background: #eff6ff; }
+        .work-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem; }
+        .work-day-card { border: 1px solid #e2e8f0; border-top: 4px solid var(--day-color); border-radius: 14px; background: #ffffff; box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06); overflow: visible; }
+        .work-day-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: rgba(15, 23, 42, 0.02); }
+        .work-day-label { font-weight: 800; color: #0f172a; }
+        .work-day-date { font-size: 0.8rem; color: #64748b; }
+        .work-fields { display: flex; flex-direction: column; gap: 0.5rem; padding: 12px; }
+        .work-field { display: flex; flex-direction: column; gap: 0.3rem; }
+        .work-entry { border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px; background: #f8fafc; display: flex; flex-direction: column; gap: 0.6rem; }
+        .work-entry-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: 0.6rem; align-items: end; }
+        .work-entry-row > * { min-width: 0; }
+        .work-entry-remove { background: #fee2e2; border-color: #fecaca; color: #991b1b; }
+        .work-entry-remove:disabled { opacity: 0.5; cursor: not-allowed; }
+        .work-team-select { display: grid; grid-template-columns: auto 1fr; gap: 0.5rem; align-items: center; }
+        .work-team-icon { width: 32px; height: 32px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+        .work-team-select-wrap { position: relative; width: 100%; }
+        .work-team-trigger { display: flex; align-items: center; gap: 0.5rem; width: 100%; border: 1px solid #e2e8f0; border-radius: 10px; padding: 7px 10px; background: #fff; font-size: 0.9rem; color: #0f172a; cursor: pointer; justify-content: space-between; }
+        .work-team-trigger:hover { border-color: #cbd5e1; }
+        .work-team-label { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600; }
+        .work-team-chevron { color: #94a3b8; font-size: 0.8rem; }
+        .work-team-menu { position: absolute; top: calc(100% + 6px); left: 0; right: 0; min-width: 220px; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12); padding: 6px; display: none; max-height: 240px; overflow: auto; z-index: 30; }
+        .work-team-select-wrap.open .work-team-menu { display: block; }
+        .work-team-option { display: flex; align-items: center; gap: 0.6rem; width: 100%; padding: 8px 10px; border-radius: 10px; border: none; background: transparent; cursor: pointer; text-align: left; font-size: 0.83rem; color: #0f172a; }
+        .work-team-option span:last-child { flex: 1; white-space: normal; word-break: keep-all; line-height: 1.2; }
+        .work-team-option:hover { background: #f1f5f9; }
+        .work-team-option.is-selected { background: #e0f2fe; }
+        .work-team-option-icon { width: 28px; height: 28px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem; }
+        .work-label { font-size: 0.72rem; color: #64748b; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+        .work-input,
+        .work-select-input { width: 100%; border: 1px solid #e2e8f0; border-radius: 10px; padding: 8px 10px; font-size: 0.9rem; color: #0f172a; outline: none; background: #fff; }
+        .work-input:focus,
+        .work-select-input:focus,
+        .work-textarea:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2); }
+        .work-select-input:disabled { background: #f1f5f9; color: #94a3b8; }
+        .work-textarea { width: 100%; min-height: 110px; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; resize: vertical; font-size: 0.9rem; color: #0f172a; outline: none; }
+        .work-textarea::placeholder, .work-input::placeholder { color: #94a3b8; }
+        .work-autosave { font-size: 0.75rem; color: #64748b; }
+        @media (max-width: 900px) {
+            .work-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Work team monthly calendar */
+        .work-chooser-shell { display: grid; gap: 12px; }
+        .work-chooser-hero {
+            position: relative;
+            overflow: hidden;
+            border-radius: 26px;
+            padding: 18px 20px;
+            color: #ffffff;
+            background: linear-gradient(138deg, #166534 0%, #16a34a 56%, #bbf7d0 100%);
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
+        }
+        .work-chooser-hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 86% 18%, rgba(255, 255, 255, 0.22), transparent 28%), linear-gradient(120deg, rgba(255, 255, 255, 0.07), transparent 42%, rgba(15, 23, 42, 0.12));
+            pointer-events: none;
+        }
+        .work-chooser-hero-copy { position: relative; z-index: 1; display: grid; gap: 0.75rem; }
+        .work-chooser-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            width: max-content;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            font-size: 0.76rem;
+            font-weight: 900;
+        }
+        .work-chooser-title {
+            margin: 0;
+            font-size: clamp(1.8rem, 2.7vw, 2.5rem);
+            line-height: 1.02;
+            font-weight: 900;
+            letter-spacing: -0.035em;
+        }
+        .work-chooser-sub {
+            margin: 0;
+            max-width: 56ch;
+            font-size: 0.92rem;
+            line-height: 1.55;
+            color: rgba(255, 255, 255, 0.92);
+        }
+        .work-chooser-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+            align-items: center;
+        }
+        .work-chooser-meta-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 6px 11px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.22);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.74rem;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.96);
+        }
+        .work-chooser-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 10px;
+        }
+        .work-chooser-card {
+            border: 1px solid #dbe7f4;
+            border-radius: 20px;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            padding: 13px 14px;
+            display: grid;
+            gap: 8px;
+            text-align: left;
+            cursor: pointer;
+            transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+            box-shadow: 0 14px 28px rgba(15, 23, 42, 0.06);
+        }
+        .work-chooser-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--chooser-color, #16a34a);
+            box-shadow: 0 18px 30px rgba(15, 23, 42, 0.1);
+        }
+        .work-chooser-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .work-chooser-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: color-mix(in srgb, var(--chooser-color, #16a34a) 16%, white);
+            color: var(--chooser-color, #16a34a);
+            font-size: 1rem;
+        }
+        .work-chooser-card-icon svg {
+            width: 22px;
+            height: 22px;
+            display: block;
+        }
+        .work-chooser-card-key {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 30px;
+            height: 30px;
+            border-radius: 10px;
+            background: #f1f5f9;
+            color: #0f172a;
+            font-size: 0.78rem;
+            font-weight: 900;
+            border: 1px solid #e2e8f0;
+        }
+        .work-chooser-card-title { font-size: 0.94rem; font-weight: 900; color: #0f172a; }
+        .work-chooser-card-desc { font-size: 0.76rem; line-height: 1.45; color: #64748b; font-weight: 700; }
+        .work-chooser-card-foot {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            width: max-content;
+            max-width: 100%;
+            padding: 5px 9px;
+            border-radius: 999px;
+            background: #f8fafc;
+            color: var(--chooser-color, #16a34a);
+            border: 1px solid #e2e8f0;
+            font-size: 0.7rem;
+            font-weight: 900;
+        }
+        .work-team-shell { display: grid; gap: 10px; }
+        .work-team-glyph { display: inline-flex; align-items: center; justify-content: center; color: currentColor; flex: 0 0 auto; }
+        .work-team-glyph svg { width: 100%; height: 100%; display: block; }
+        .work-team-glyph.is-xs { width: 16px; height: 16px; }
+        .work-team-glyph.is-sm { width: 18px; height: 18px; }
+        .work-team-glyph.is-md { width: 26px; height: 26px; }
+        .work-team-glyph.is-lg { width: 92px; height: 92px; }
+
+        .work-team-hero { position: relative; overflow: hidden; border-radius: 26px; padding: 20px 22px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem; align-items: center; color: #ffffff; background: linear-gradient(138deg, var(--team-accent, #2563eb) 0%, var(--team-accent-2, #38bdf8) 56%, #dbeafe 100%); box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18); }
+        .work-team-hero::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 86% 18%, rgba(255, 255, 255, 0.2), transparent 28%), linear-gradient(120deg, rgba(255, 255, 255, 0.07), transparent 42%, rgba(15, 23, 42, 0.12)); pointer-events: none; }
+        .work-team-hero-copy { position: relative; z-index: 1; display: grid; gap: 0.75rem; min-width: 0; }
+        .work-team-brand { display: inline-flex; align-items: center; gap: 12px; width: max-content; }
+        .work-team-brand-logo { width: 54px; height: 54px; object-fit: contain; background: rgba(255, 255, 255, 0.96); border-radius: 16px; padding: 8px; border: 1px solid rgba(255, 255, 255, 0.5); box-shadow: 0 10px 22px rgba(15, 23, 42, 0.16); }
+        .work-team-brand-copy { display: grid; gap: 4px; }
+        .work-team-brand-chip { display: inline-flex; align-items: center; width: max-content; padding: 4px 10px; border-radius: 999px; background: rgba(15, 23, 42, 0.24); font-size: 0.72rem; font-weight: 900; letter-spacing: 0.12em; }
+        .work-team-brand-name { font-size: 0.8rem; font-weight: 700; color: rgba(255, 255, 255, 0.9); }
+        .work-team-kicker { display: inline-flex; align-items: center; gap: 8px; width: max-content; padding: 7px 12px; border-radius: 999px; background: rgba(255, 255, 255, 0.14); border: 1px solid rgba(255, 255, 255, 0.24); font-size: 0.78rem; font-weight: 900; }
+        .work-team-hero-title { margin: 0; font-size: clamp(1.9rem, 2.8vw, 2.7rem); line-height: 1.02; font-weight: 900; letter-spacing: -0.035em; }
+        .work-team-hero-sub { margin: 0; max-width: 50ch; font-size: 0.92rem; line-height: 1.5; color: rgba(255, 255, 255, 0.9); }
+        .work-team-hero-actions { display: flex; flex-wrap: wrap; gap: 0.55rem; align-items: center; }
+        .work-team-range-chip { display: inline-flex; align-items: center; gap: 7px; padding: 6px 11px; border-radius: 999px; background: rgba(15, 23, 42, 0.2); font-size: 0.76rem; font-weight: 800; color: rgba(255, 255, 255, 0.95); }
+        .work-team-preview { position: relative; z-index: 1; display: flex; justify-content: flex-end; }
+        .work-team-preview-card { position: relative; width: 220px; height: 220px; border-radius: 28px; border: 1px solid rgba(255, 255, 255, 0.22); background: rgba(255, 255, 255, 0.16); backdrop-filter: blur(8px); display: grid; place-items: center; gap: 10px; padding: 20px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12); animation: workTeamFloat 5.6s ease-in-out infinite; }
+        .work-team-preview-card::after { content: ""; position: absolute; inset: 16px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.18); }
+        .work-team-preview-inner { position: relative; z-index: 1; display: grid; place-items: center; gap: 10px; }
+        .work-team-preview-label { font-size: 0.84rem; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; }
+        .work-team-note { display: flex; align-items: center; gap: 8px; padding: 0 4px; font-size: 0.79rem; color: #475569; }
+        .work-team-page { min-height: 100%; height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 16px; padding: 18px; background: linear-gradient(180deg, #f8fbff 0%, #ffffff 44%, #f6f9fc 100%); }
+        .work-team-page-head { min-width: 0; display: grid; gap: 16px; }
+        .work-team-page-body { min-height: 0; display: grid; grid-template-columns: minmax(220px, 248px) minmax(0, 1fr); gap: 16px; align-items: stretch; }
+        .work-team-outline { min-height: 0; display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 12px; padding: 16px; border-radius: 28px; border: 1px solid #dbe7f4; background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); box-shadow: 0 18px 36px rgba(15, 23, 42, 0.06); }
+        .work-team-outline-head { display: grid; gap: 6px; }
+        .work-team-outline-kicker { display: inline-flex; width: max-content; padding: 4px 10px; border-radius: 999px; background: #eff6ff; color: #1d4ed8; font-size: 0.7rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; }
+        .work-team-outline-title { margin: 0; font-size: 1rem; font-weight: 900; color: #0f172a; }
+        .work-team-outline-desc { margin: 0; font-size: 0.78rem; line-height: 1.5; color: #64748b; }
+        .work-team-outline-list { min-height: 0; display: grid; gap: 10px; align-content: start; }
+        .work-team-outline-item { width: 100%; display: flex; align-items: center; gap: 12px; padding: 13px 14px; border-radius: 20px; border: 1px solid #dbe7f4; background: linear-gradient(180deg, #ffffff 0%, color-mix(in srgb, var(--team-outline-soft, #eff6ff) 58%, #ffffff) 100%); color: #0f172a; text-align: left; font: inherit; cursor: pointer; transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease, background 140ms ease; }
+        .work-team-outline-item:hover { transform: translateY(-1px); border-color: color-mix(in srgb, var(--team-outline-accent, #2563eb) 50%, #cbd5e1); box-shadow: 0 14px 24px rgba(15, 23, 42, 0.08); }
+        .work-team-outline-item.is-active { border-color: var(--team-outline-accent, #2563eb); background: linear-gradient(180deg, color-mix(in srgb, var(--team-outline-soft, #eff6ff) 88%, #ffffff) 0%, #ffffff 100%); box-shadow: 0 18px 28px rgba(15, 23, 42, 0.1); }
+        .work-team-outline-number { width: 34px; height: 34px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; background: color-mix(in srgb, var(--team-outline-accent, #2563eb) 14%, #ffffff); color: var(--team-outline-accent, #2563eb); font-size: 0.82rem; font-weight: 900; flex: 0 0 auto; }
+        .work-team-outline-copy { min-width: 0; display: grid; gap: 3px; }
+        .work-team-outline-label { font-size: 0.88rem; font-weight: 900; color: #0f172a; line-height: 1.2; }
+        .work-team-outline-meta { font-size: 0.72rem; font-weight: 800; color: #64748b; line-height: 1.2; }
+        .work-team-calendar-inline-shell { min-width: 0; min-height: 100%; height: 100%; display: flex; padding: 0; background: #ffffff; }
+        .work-team-inline-stage { min-width: 0; min-height: 0; flex: 1 1 auto; display: flex; }
+        .work-team-calendar-inline-host { flex: 1 1 auto; min-width: 0; min-height: 0; display: flex; overflow: hidden; }
+
+        .work-team-calendar-modal { position: fixed; inset: 0; padding: 0; background: rgba(2, 6, 23, 0.56); backdrop-filter: blur(9px); display: none; align-items: stretch; justify-content: stretch; z-index: 1400; }
+        .work-team-calendar-modal.is-open { display: flex; animation: workTeamBackdropIn 0.22s ease; }
+        .work-team-calendar-modal.is-inline { position: static; inset: auto; width: 100%; height: 100%; min-height: 0; padding: 0; background: transparent; backdrop-filter: none; display: none; align-items: stretch; justify-content: stretch; z-index: auto; flex: 1 1 auto; }
+        .work-team-calendar-modal.is-inline.is-open { display: flex; animation: none; }
+        .work-team-calendar-modal.is-browser-fullscreen,
+        .work-team-calendar-modal:fullscreen { width: 100vw; height: 100dvh; background: rgba(2, 6, 23, 0.56); backdrop-filter: blur(9px); }
+        .work-team-calendar-dialog { width: 100vw; height: 100dvh; border-radius: 0; overflow: hidden; display: grid; grid-template-rows: auto minmax(0, 1fr); background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); box-shadow: none; animation: workTeamModalIn 0.26s cubic-bezier(0.22, 1, 0.36, 1); }
+        .work-team-calendar-modal.is-inline .work-team-calendar-dialog { width: 100%; height: 100%; min-height: 0; border-radius: 28px; box-shadow: 0 26px 44px rgba(15, 23, 42, 0.12); animation: none; }
+        .work-team-calendar-modal.is-browser-fullscreen .work-team-calendar-dialog,
+        .work-team-calendar-modal:fullscreen .work-team-calendar-dialog { width: 100vw; height: 100dvh; border-radius: 0; box-shadow: none; animation: none; }
+        .work-team-calendar-dialog.is-browser-fullscreen,
+        .work-team-calendar-dialog:fullscreen { width: 100vw; height: 100dvh; border-radius: 0; box-shadow: none; animation: none; }
+        .work-team-calendar-topbar { position: relative; overflow: hidden; padding: 16px 18px 14px; color: #ffffff; background: linear-gradient(138deg, var(--team-accent, #2563eb) 0%, var(--team-accent-2, #38bdf8) 56%, #dbeafe 100%); display: grid; gap: 12px; }
+        .work-team-calendar-topbar::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 86% 16%, rgba(255, 255, 255, 0.22), transparent 26%), linear-gradient(120deg, rgba(255, 255, 255, 0.06), transparent 42%, rgba(15, 23, 42, 0.12)); pointer-events: none; }
+        .work-team-calendar-head { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, auto) minmax(260px, 1fr) auto; align-items: center; gap: 12px; }
+        .work-team-calendar-modal.is-inline .work-team-calendar-head { grid-template-columns: minmax(0, 1fr) auto; }
+        .work-team-calendar-brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+        .work-team-calendar-brand-copy { display: grid; gap: 4px; min-width: 0; }
+        .work-team-calendar-brand-title { font-size: 1.02rem; font-weight: 900; line-height: 1.08; }
+        .work-team-calendar-brand-sub { font-size: 0.78rem; color: rgba(255, 255, 255, 0.88); }
+        .work-team-calendar-head-actions { display: inline-flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+        .work-team-calendar-fullscreen-toggle,
+        .work-team-calendar-close { width: 42px; height: 42px; border: 1px solid rgba(255, 255, 255, 0.34); border-radius: 14px; background: rgba(15, 23, 42, 0.18); color: #ffffff; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease, background 120ms ease; }
+        .work-team-calendar-fullscreen-toggle:hover,
+        .work-team-calendar-close:hover { transform: translateY(-1px); border-color: rgba(255, 255, 255, 0.52); box-shadow: 0 10px 18px rgba(15, 23, 42, 0.16); }
+        .work-team-calendar-fullscreen-toggle.is-active { background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.58); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 10px 18px rgba(15, 23, 42, 0.16); }
+        .work-team-calendar-fullscreen-toggle-icon { display: inline-flex; align-items: center; justify-content: center; }
+        .work-team-calendar-fullscreen-toggle svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+        .work-team-calendar-switches { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; min-width: 0; align-items: stretch; }
+        .work-team-calendar-switch { position: relative; min-width: 0; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 15px; background: linear-gradient(135deg, rgba(15, 23, 42, 0.26) 0%, rgba(15, 23, 42, 0.08) 100%), var(--switch-soft, #eff6ff); color: rgba(255, 255, 255, 0.94); padding: 9px 11px; display: flex; align-items: center; justify-content: flex-start; gap: 8px; font-size: 0.82rem; font-weight: 900; cursor: pointer; transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease, background 140ms ease; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08); backdrop-filter: blur(6px); }
+        .work-team-calendar-switch::before { content: ""; width: 8px; height: 8px; border-radius: 999px; background: var(--switch-accent, #2563eb); box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12); flex: 0 0 auto; }
+        .work-team-calendar-switch:hover { transform: translateY(-1px); border-color: rgba(255, 255, 255, 0.36); box-shadow: 0 12px 20px rgba(15, 23, 42, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.12); }
+        .work-team-calendar-switch.is-active { background: linear-gradient(135deg, var(--switch-accent, #2563eb) 0%, var(--switch-accent-2, #38bdf8) 100%); border-color: rgba(255, 255, 255, 0.6); color: #ffffff; box-shadow: 0 14px 24px rgba(15, 23, 42, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.18); }
+        .work-team-calendar-switch-glyph { width: 24px; height: 24px; border-radius: 8px; background: rgba(255, 255, 255, 0.14); border: 1px solid rgba(255, 255, 255, 0.18); display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+        .work-team-calendar-switch-copy { min-width: 0; display: flex; align-items: center; gap: 3px; flex: 1 1 auto; }
+        .work-team-calendar-switch-text { display: block; min-width: 0; flex: 0 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.94rem; line-height: 1.06; letter-spacing: -0.01em; }
+        .work-team-calendar-switch-sub { display: block; min-width: 0; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.74rem; line-height: 1.06; font-weight: 800; color: rgba(255, 255, 255, 0.8); letter-spacing: 0.005em; }
+        .work-team-calendar-switch.is-active .work-team-calendar-switch-sub { color: rgba(255, 255, 255, 0.94); }
+        .work-team-calendar-toolbar { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+        .work-team-calendar-nav { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; flex: 1 1 auto; min-width: 0; padding: 6px; border-radius: 18px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.14); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08); }
+        .work-team-calendar-arrow { width: 48px; height: 48px; border: 1px solid rgba(255, 255, 255, 0.42); border-radius: 16px; background: rgba(15, 23, 42, 0.24); color: #ffffff; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease, background 140ms ease; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12); }
+        .work-team-calendar-arrow:hover { transform: translateY(-1px) scale(1.02); background: rgba(15, 23, 42, 0.32); border-color: rgba(255, 255, 255, 0.58); box-shadow: 0 10px 18px rgba(15, 23, 42, 0.18); }
+        .work-team-calendar-arrow:disabled { opacity: 0.42; cursor: not-allowed; box-shadow: none; transform: none; }
+        .work-team-calendar-select { min-width: 126px; border: 1px solid rgba(255, 255, 255, 0.32); border-radius: 14px; padding: 10px 13px; background: rgba(15, 23, 42, 0.24); color: #ffffff; font-size: 0.86rem; font-weight: 800; outline: none; }
+        .work-team-calendar-select option { color: #0f172a; }
+        .work-team-calendar-meta { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+        .work-team-calendar-utility-strip { display: flex; align-items: stretch; gap: 8px; flex: 1 1 320px; min-width: min(100%, 320px); flex-wrap: wrap; }
+        .work-team-calendar-utility-chip { min-width: 168px; max-width: 100%; padding: 8px 12px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.18); background: rgba(15, 23, 42, 0.2); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12); display: grid; gap: 3px; }
+        .work-team-calendar-utility-chip.is-button { appearance: none; text-align: left; cursor: pointer; transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease, background 140ms ease; }
+        .work-team-calendar-utility-chip.is-button:hover { transform: translateY(-1px); border-color: rgba(255, 255, 255, 0.38); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 12px 18px rgba(15, 23, 42, 0.18); }
+        .work-team-calendar-utility-chip.is-button.is-active { background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.5); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 14px 22px rgba(15, 23, 42, 0.2); }
+        .work-team-calendar-utility-label { font-size: 0.64rem; font-weight: 900; color: rgba(255, 255, 255, 0.74); letter-spacing: 0.08em; text-transform: uppercase; }
+        .work-team-calendar-utility-value { font-size: 0.82rem; font-weight: 900; color: #ffffff; line-height: 1.16; word-break: keep-all; }
+        .work-team-calendar-utility-meta { font-size: 0.69rem; font-weight: 800; color: rgba(255, 255, 255, 0.84); line-height: 1.16; }
+        .work-team-calendar-utility-hint { display: inline-flex; align-items: center; justify-content: center; width: max-content; margin-top: 4px; padding: 3px 7px; border-radius: 999px; background: rgba(255, 255, 255, 0.12); color: rgba(255, 255, 255, 0.92); font-size: 0.62rem; font-weight: 900; letter-spacing: 0.04em; }
+        .work-team-calendar-utility-choices { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; margin-top: 2px; }
+        .work-team-calendar-utility-choice { min-height: 24px; padding: 3px 8px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.22); background: rgba(255, 255, 255, 0.08); color: rgba(255, 255, 255, 0.86); font-size: 0.64rem; font-weight: 900; cursor: pointer; transition: background 120ms ease, border-color 120ms ease, transform 120ms ease; }
+        .work-team-calendar-utility-choice:hover { transform: translateY(-1px); border-color: rgba(255, 255, 255, 0.4); background: rgba(255, 255, 255, 0.14); }
+        .work-team-calendar-utility-choice.is-active { border-color: rgba(255, 255, 255, 0.56); background: rgba(255, 255, 255, 0.2); color: #ffffff; }
+        .work-team-calendar-utility-popup-total { display: grid; gap: 2px; padding: 10px 12px; border-radius: 14px; border: 1px solid #dbeafe; background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%); }
+        .work-team-calendar-utility-popup-total-value { font-size: 0.96rem; font-weight: 900; color: #0f172a; }
+        .work-team-calendar-utility-popup-total-meta { font-size: 0.76rem; font-weight: 800; color: #475569; }
+        .work-team-calendar-utility-detail-list { display: grid; gap: 5px; margin-top: 6px; }
+        .work-team-calendar-utility-detail-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .work-team-calendar-utility-detail-label { display: inline-flex; align-items: center; justify-content: center; min-height: 20px; padding: 2px 7px; border-radius: 999px; background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; font-size: 0.66rem; font-weight: 900; }
+        .work-team-calendar-utility-detail-value { font-size: 0.72rem; font-weight: 900; color: #0f172a; }
+        .work-team-calendar-utility-detail-meta { font-size: 0.7rem; font-weight: 800; color: #64748b; }
+        .work-team-calendar-chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; background: rgba(15, 23, 42, 0.2); border: 1px solid rgba(255, 255, 255, 0.18); font-size: 0.78rem; font-weight: 800; color: rgba(255, 255, 255, 0.94); }
+        .work-team-calendar-toggle { display: inline-flex; align-items: center; gap: 8px; padding: 8px 13px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.18); background: rgba(15, 23, 42, 0.22); color: #ffffff; font-size: 0.78rem; font-weight: 900; cursor: pointer; transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease, background 140ms ease; }
+        .work-team-calendar-toggle:hover { transform: translateY(-1px); border-color: rgba(255, 255, 255, 0.34); box-shadow: 0 10px 18px rgba(15, 23, 42, 0.16); }
+        .work-team-calendar-toggle.is-active { background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.46); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 10px 18px rgba(15, 23, 42, 0.14); }
+        .work-team-calendar-toggle:disabled { opacity: 0.42; cursor: not-allowed; box-shadow: none; transform: none; }
+        .work-team-calendar-main { min-height: 0; padding: 12px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; align-items: stretch; }
+        .work-team-calendar-main.has-detail { grid-template-columns: minmax(0, 1fr); gap: 12px; align-items: stretch; }
+        .work-team-calendar-board { position: relative; min-width: 0; height: 100%; min-height: 0; border-radius: 24px; border: 1px solid #dbe7f4; background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75), 0 18px 36px rgba(15, 23, 42, 0.08); overflow: hidden; }
+        .work-team-calendar-detail-slot { min-height: 0; display: flex; }
+        .work-team-calendar-detail-slot .work-team-calendar-editor { width: 100%; height: 100%; min-height: 0; overflow: auto; align-content: start; }
+        .work-team-calendar-detail-slot.is-work-active .work-team-calendar-editor { border-color: rgba(37, 99, 235, 0.22); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 18px 34px rgba(15, 23, 42, 0.1); }
+        .work-team-calendar-detail-slot.is-empty .work-team-calendar-editor { border-style: dashed; border-color: #dbe7f4; background: linear-gradient(180deg, #fbfdff 0%, #f8fafc 100%); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8); }
+        .work-team-calendar-detail-placeholder { flex: 1 1 auto; min-height: 100%; border-radius: 18px; background: radial-gradient(circle at 24% 22%, rgba(37, 99, 235, 0.08), transparent 34%), linear-gradient(180deg, rgba(255, 255, 255, 0.78) 0%, rgba(248, 250, 252, 0.96) 100%); }
+        .work-team-calendar-grid { height: 100%; min-height: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); grid-template-rows: 34px repeat(6, minmax(0, 1fr)); gap: 8px; padding: 12px; }
+        .work-team-calendar-weekday { display: flex; align-items: center; justify-content: center; text-align: center; font-size: 0.74rem; font-weight: 900; color: #64748b; letter-spacing: 0.08em; text-transform: uppercase; }
+        .work-team-calendar-day { min-height: 0; border: 1px solid #e2e8f0; border-radius: 20px; background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); padding: 12px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px; text-align: left; cursor: pointer; transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease, background 140ms ease; }
+        .work-team-calendar-day:hover { transform: translateY(-2px); border-color: var(--team-accent, #2563eb); box-shadow: 0 14px 24px rgba(15, 23, 42, 0.1); }
+        .work-team-calendar-day.is-out { background: #f8fafc; color: #94a3b8; cursor: default; opacity: 0.65; box-shadow: none; transform: none; }
+        .work-team-calendar-day.is-locked,
+        .work-team-calendar-day:disabled { cursor: not-allowed; }
+        .work-team-calendar-day.is-today { border-color: rgba(15, 23, 42, 0.06); background: linear-gradient(180deg, var(--team-tint, #eff6ff) 0%, #ffffff 100%); }
+        .work-team-calendar-day.is-selected { border-color: var(--team-accent, #2563eb); background: linear-gradient(180deg, #ffffff 0%, var(--team-tint, #eff6ff) 100%); box-shadow: 0 16px 28px rgba(15, 23, 42, 0.12), inset 0 0 0 1px rgba(255, 255, 255, 0.78); }
+        .work-team-calendar-day.is-locked { border-color: #e2e8f0; background: repeating-linear-gradient(135deg, #f8fafc 0, #f8fafc 10px, #f1f5f9 10px, #f1f5f9 20px); color: #94a3b8; box-shadow: none; transform: none; }
+        .work-team-calendar-day.is-locked:hover { border-color: #e2e8f0; box-shadow: none; transform: none; }
+        .work-team-calendar-day.is-locked.is-selected { border-color: #cbd5e1; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.72); }
+        .work-team-calendar-day.is-offday { border-color: #fdba74; background: linear-gradient(180deg, #fff7ed 0%, #ffffff 100%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.74); }
+        .work-team-calendar-day.is-offday:hover { border-color: #f59e0b; box-shadow: 0 14px 24px rgba(249, 115, 22, 0.16); }
+        .work-team-calendar-day.is-offday.is-selected { border-color: #ea580c; background: linear-gradient(180deg, #fff7ed 0%, #ffedd5 100%); box-shadow: 0 18px 28px rgba(249, 115, 22, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.82); }
+        .work-team-calendar-day-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; min-height: 0; }
+        .work-team-calendar-day-main { min-width: 0; display: grid; gap: 2px; align-content: start; flex: 1 1 auto; }
+        .work-team-calendar-day-flag-slot { flex: 0 0 auto; min-height: 24px; display: inline-flex; align-items: flex-start; justify-content: flex-end; gap: 4px; flex-wrap: wrap; max-width: 96px; }
+        .work-team-calendar-day-number { font-size: 1.08rem; font-weight: 900; color: #0f172a; }
+        .work-team-calendar-day.is-out .work-team-calendar-day-number { color: #94a3b8; }
+        .work-team-calendar-day.is-locked .work-team-calendar-day-number { color: #94a3b8; }
+        .work-team-calendar-day.is-selected .work-team-calendar-day-number { color: var(--team-accent, #2563eb); }
+        .work-team-calendar-day.is-locked.is-selected .work-team-calendar-day-number { color: #64748b; }
+        .work-team-calendar-day.is-offday .work-team-calendar-day-number { color: #9a3412; }
+        .work-team-calendar-day-summary { min-width: 0; font-size: 0.72rem; font-weight: 800; color: #64748b; line-height: 1.3; white-space: normal; word-break: keep-all; }
+        .work-team-calendar-day.is-filled .work-team-calendar-day-summary { color: var(--team-accent, #2563eb); }
+        .work-team-calendar-day.is-locked .work-team-calendar-day-summary { color: #94a3b8; }
+        .work-team-calendar-day-summary.is-kpi { display: inline-flex; align-items: center; gap: 5px; width: fit-content; padding: 2px 8px; border-radius: 999px; background: #fef3c7; border: 1px solid #fcd34d; color: #b45309; }
+        .work-team-calendar-day.is-filled .work-team-calendar-day-summary.is-kpi { color: #b45309; }
+        .work-team-calendar-day.is-locked .work-team-calendar-day-summary.is-kpi { color: #92400e; border-color: #e2e8f0; background: #f8fafc; }
+        .work-team-calendar-day.is-offday .work-team-calendar-day-top { flex-direction: column; align-items: center; flex: 1; }
+        .work-team-calendar-day.is-offday .work-team-calendar-day-main { width: 100%; display: flex; justify-content: space-between; align-items: flex-start; flex: 0 0 auto; }
+        .work-team-calendar-day.is-offday .work-team-calendar-day-flag-slot { flex: 1; display: flex; align-items: center; justify-content: center; }
+        .work-team-calendar-day-flag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 999px; background: var(--team-tint, #eff6ff); color: var(--team-accent, #2563eb); font-size: 0.68rem; font-weight: 900; }
+        .work-team-calendar-day.is-locked .work-team-calendar-day-flag { background: #e2e8f0; color: #64748b; }
+        .work-team-calendar-day-flag.is-offday { background: #fff7ed; color: #c2410c; border: 1px solid #fdba74; font-size: 0.78rem; padding: 5px 12px; }
+        .work-team-calendar-day-flag.is-kpi { background: #fef3c7; border: 1px solid #fcd34d; color: #92400e; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7); }
+        .work-team-calendar-day-flag.is-placeholder { visibility: hidden; pointer-events: none; }
+        .work-team-calendar-day.is-drop-target { border-color: var(--team-accent, #2563eb); background: linear-gradient(180deg, #ffffff 0%, var(--team-tint, #eff6ff) 100%); box-shadow: 0 18px 30px rgba(15, 23, 42, 0.14), inset 0 0 0 1px rgba(255, 255, 255, 0.82); transform: translateY(-2px); }
+        .work-team-calendar-editor { grid-column: 1 / -1; padding: 14px 16px; display: grid; gap: 12px; border: 1px solid #dbe7f4; border-radius: 22px; background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 14px 28px rgba(15, 23, 42, 0.08); }
+        .work-team-calendar-overlay-layer { position: absolute; inset: 0; z-index: 3; pointer-events: auto; }
+        .work-team-calendar-overlay-backdrop { position: absolute; inset: 0; border: none; background: rgba(15, 23, 42, 0.18); backdrop-filter: blur(2px); cursor: pointer; }
+        .work-team-calendar-editor.is-floating { position: absolute; top: 18px; left: 18px; width: min(980px, calc(100% - 28px)); max-width: 980px; max-height: calc(100% - 28px); overflow: auto; pointer-events: auto; box-shadow: 0 28px 48px rgba(15, 23, 42, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.84); backdrop-filter: blur(10px); }
+        .work-team-calendar-editor.is-floating.is-dragging { box-shadow: 0 34px 58px rgba(15, 23, 42, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.84); }
+        .work-team-calendar-editor-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+        .work-team-calendar-editor-handle { display: grid; gap: 4px; min-width: 0; cursor: grab; user-select: none; }
+        .work-team-calendar-editor.is-floating.is-dragging .work-team-calendar-editor-handle { cursor: grabbing; }
+        .work-team-calendar-editor-title { font-size: 0.96rem; font-weight: 900; color: #0f172a; }
+        .work-team-calendar-editor-sub { font-size: 0.75rem; color: #64748b; margin-top: 2px; }
+        .work-team-calendar-editor-count { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; max-width: 100%; padding: 5px 9px; border-radius: 999px; border: 1px solid #dbeafe; background: #eff6ff; color: #1d4ed8; font-size: 0.72rem; font-weight: 900; line-height: 1.22; }
+        .work-team-calendar-editor-actions { display: inline-flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+        .work-team-calendar-editor-btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 34px; padding: 7px 12px; border-radius: 999px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; font-size: 0.76rem; font-weight: 900; cursor: pointer; transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease, background 120ms ease, color 120ms ease; }
+        .work-team-calendar-editor-btn:hover { transform: translateY(-1px); border-color: #94a3b8; box-shadow: 0 10px 18px rgba(15, 23, 42, 0.08); }
+        .work-team-calendar-editor-btn.is-primary { border-color: var(--team-accent, #2563eb); background: var(--team-accent, #2563eb); color: #ffffff; }
+        .work-team-calendar-editor-btn.is-primary:hover { border-color: var(--team-accent, #2563eb); }
+        .work-team-calendar-editor-btn.is-danger { border-color: #fecaca; background: #fef2f2; color: #b91c1c; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8); }
+        .work-team-calendar-editor-btn.is-danger:hover { border-color: #f87171; background: #fee2e2; color: #991b1b; }
+        .work-team-calendar-editor-btn:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; transform: none; }
+        .work-team-calendar-editor-btn:disabled:hover { border-color: #cbd5e1; background: #ffffff; color: #334155; box-shadow: none; transform: none; }
+        .work-team-calendar-editor-btn.is-danger:disabled:hover { border-color: #fecaca; background: #fef2f2; color: #b91c1c; }
+        .work-team-calendar-file-input { display: none; }
+        .work-team-calendar-field { display: grid; gap: 6px; }
+        .work-team-calendar-field.is-split { grid-template-columns: minmax(180px, 0.9fr) minmax(0, 1.1fr); gap: 12px; align-items: start; }
+        .work-team-calendar-field-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+        .work-team-calendar-field-label { font-size: 0.74rem; font-weight: 900; color: #334155; letter-spacing: 0.04em; }
+        .work-team-calendar-field-hint { font-size: 0.72rem; color: #64748b; }
+        .work-team-calendar-input { width: 100%; min-height: 42px; border: 1px solid #cbd5e1; border-radius: 14px; padding: 10px 12px; font-family: inherit; font-size: 0.84rem; line-height: 1.4; color: #0f172a; background: #ffffff; outline: none; }
+        .work-team-calendar-input:focus,
+        .work-team-calendar-textarea:focus { border-color: var(--team-accent, #2563eb); box-shadow: 0 0 0 3px rgba(191, 219, 254, 0.6); }
+        .work-team-calendar-textarea { width: 100%; min-height: 88px; resize: vertical; border: 1px solid #cbd5e1; border-radius: 14px; padding: 10px 12px; font-family: inherit; font-size: 0.84rem; line-height: 1.5; color: #0f172a; background: #ffffff; outline: none; }
+        .work-team-calendar-textarea.is-main { min-height: 182px; }
+        .work-team-calendar-textarea.is-remark { min-height: 112px; }
+        .work-team-calendar-member-grid { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; }
+        .work-team-calendar-member-toggle { display: inline-flex; align-items: center; justify-content: center; min-height: 28px; padding: 4px 10px; border-radius: 999px; border: 1px solid #cbd5e1; background: #ffffff; color: #475569; font-size: 0.72rem; font-weight: 900; cursor: pointer; transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease, background 120ms ease, color 120ms ease; }
+        .work-team-calendar-member-toggle:hover { transform: translateY(-1px); border-color: #94a3b8; box-shadow: 0 8px 14px rgba(15, 23, 42, 0.08); }
+        .work-team-calendar-member-toggle.is-active { background: var(--team-tint, #eff6ff); border-color: var(--team-accent, #2563eb); color: var(--team-accent, #2563eb); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.76); }
+        .work-team-calendar-selected-list { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-height: 28px; }
+        .work-team-calendar-selected-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 999px; border: 1px solid #e2e8f0; background: #f8fafc; color: #334155; font-size: 0.72rem; font-weight: 800; }
+        .work-team-calendar-selected-empty { font-size: 0.74rem; color: #94a3b8; }
+        .work-team-calendar-work-view { display: grid; gap: 10px; }
+        .work-team-calendar-history-view { gap: 12px; }
+        .work-team-calendar-work-card { display: grid; gap: 8px; padding: 12px; border-radius: 16px; border: 1px solid #dbe7f4; background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%); }
+        .work-team-calendar-work-card.is-history-compact { gap: 10px; border-left: 4px solid var(--team-accent, #2563eb); background: linear-gradient(180deg, #ffffff 0%, color-mix(in srgb, var(--team-tint, #eff6ff) 60%, #ffffff) 100%); box-shadow: 0 10px 18px rgba(15, 23, 42, 0.05); }
+        .work-team-calendar-work-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+        .work-team-calendar-work-date { font-size: 0.76rem; font-weight: 900; color: #0f172a; }
+        .work-team-calendar-work-cost { display: inline-flex; align-items: center; justify-content: center; min-height: 28px; padding: 4px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.88); border: 1px solid color-mix(in srgb, var(--team-accent, #2563eb) 24%, #dbe7f4); color: var(--team-accent, #2563eb); font-size: 0.72rem; font-weight: 900; }
+        .work-team-calendar-work-title { font-size: 0.82rem; font-weight: 900; color: #1e293b; }
+        .work-team-calendar-work-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+        .work-team-calendar-work-pill { display: inline-flex; align-items: center; justify-content: center; min-height: 24px; padding: 3px 8px; border-radius: 999px; background: rgba(255, 255, 255, 0.82); border: 1px solid #dbe7f4; color: #475569; font-size: 0.68rem; font-weight: 800; }
+        .work-team-calendar-work-pill.is-kpi { background: #fef3c7; border-color: #fcd34d; color: #92400e; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65); }
+        .work-team-calendar-work-summary { font-size: 0.76rem; line-height: 1.45; color: #334155; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .work-team-calendar-work-block { display: grid; gap: 5px; }
+        .work-team-calendar-work-label { font-size: 0.68rem; font-weight: 900; color: #64748b; letter-spacing: 0.04em; }
+        .work-team-calendar-work-text { font-size: 0.78rem; line-height: 1.5; color: #334155; white-space: pre-wrap; word-break: break-word; }
+        .work-team-calendar-work-attachments { display: flex; flex-wrap: wrap; gap: 6px; }
+        .work-team-calendar-work-attachment { display: inline-flex; align-items: center; gap: 5px; padding: 4px 8px; border-radius: 999px; border: 1px solid #e2e8f0; background: #ffffff; color: #475569; font-size: 0.7rem; font-weight: 800; max-width: 100%; }
+        .work-team-calendar-title-preview { display: inline-flex; align-items: center; gap: 7px; padding: 7px 10px; border-radius: 14px; border: 1px dashed #bfdbfe; background: #f8fbff; color: #1d4ed8; font-size: 0.73rem; font-weight: 800; }
+        .work-team-calendar-storage-note { font-size: 0.72rem; color: #64748b; }
+        .work-team-calendar-storage-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .work-team-calendar-storage-status { font-size: 0.72rem; font-weight: 800; color: #64748b; }
+        .work-team-calendar-storage-status.is-connected { color: #166534; }
+        .work-team-calendar-attachment-list { display: grid; gap: 8px; }
+        .work-team-calendar-attachment-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 10px; border-radius: 14px; border: 1px solid #e2e8f0; background: #ffffff; }
+        .work-team-calendar-attachment-main { min-width: 0; display: grid; gap: 2px; }
+        .work-team-calendar-attachment-name { font-size: 0.78rem; font-weight: 800; color: #0f172a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .work-team-calendar-attachment-meta { font-size: 0.68rem; color: #64748b; }
+        .work-team-calendar-attachment-actions { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .work-team-calendar-attachment-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 28px; padding: 4px 9px; border-radius: 999px; border: 1px solid #cbd5e1; background: #f8fafc; color: #334155; font-size: 0.7rem; font-weight: 900; cursor: pointer; transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease, background 120ms ease; }
+        .work-team-calendar-attachment-btn:hover { transform: translateY(-1px); border-color: #94a3b8; box-shadow: 0 8px 14px rgba(15, 23, 42, 0.08); }
+        .work-team-calendar-attachment-empty { font-size: 0.74rem; color: #94a3b8; }
+        .work-team-calendar-production-groups { display: grid; gap: 10px; }
+        .work-team-calendar-production-group { display: grid; gap: 8px; padding: 10px 12px; border-radius: 16px; border: 1px solid #dbe7f4; background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%); }
+        .work-team-calendar-production-group.is-offday { border-color: #fed7aa; background: linear-gradient(180deg, #fff7ed 0%, #ffffff 100%); }
+        .work-team-calendar-production-group-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+        .work-team-calendar-production-date { font-size: 0.76rem; font-weight: 900; color: #0f172a; }
+        .work-team-calendar-production-count { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 999px; background: var(--team-tint, #eff6ff); color: var(--team-accent, #2563eb); font-size: 0.68rem; font-weight: 900; }
+        .work-team-calendar-production-summary { font-size: 0.7rem; font-weight: 800; color: #475569; }
+        .work-team-calendar-production-summary.is-offday { color: #c2410c; }
+        .work-team-calendar-production-list { display: grid; gap: 7px; }
+        .work-team-calendar-production-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 10px; border-radius: 14px; border: 1px solid #e2e8f0; background: #ffffff; }
+        .work-team-calendar-production-item.is-utility-detail-card { align-items: flex-start; justify-content: flex-start; }
+        .work-team-calendar-production-item.is-utility-detail-card .work-team-calendar-production-main { flex: 1 1 auto; }
+        .work-team-calendar-production-main { min-width: 0; display: grid; gap: 2px; }
+        .work-team-calendar-production-name { font-size: 0.77rem; font-weight: 900; color: #0f172a; }
+        .work-team-calendar-production-meta { font-size: 0.69rem; color: #64748b; }
+        .work-team-calendar-production-stat-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 3px; }
+        .work-team-calendar-production-chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 7px; border-radius: 999px; border: 1px solid #dbeafe; background: #f8fbff; color: #1e40af; font-size: 0.66rem; font-weight: 900; white-space: nowrap; }
+        .work-team-calendar-production-amount { flex: 0 0 auto; font-size: 0.73rem; font-weight: 900; color: var(--team-accent, #2563eb); white-space: nowrap; }
+        .work-team-calendar-production-empty { font-size: 0.74rem; color: #94a3b8; }
+        .work-team-calendar-production-empty.is-offday { display: inline-flex; align-items: center; gap: 8px; padding: 12px 14px; border-radius: 14px; border: 1px dashed #fdba74; background: linear-gradient(180deg, #fff7ed 0%, #ffffff 100%); color: #c2410c; font-weight: 900; }
+        .work-team-calendar-team-groups { display: grid; gap: 10px; }
+        .work-team-calendar-team-group { display: grid; gap: 8px; padding: 10px 12px; border-radius: 16px; border: 1px solid #dbe7f4; background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%); }
+        .work-team-calendar-team-group-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+        .work-team-calendar-team-group-title { font-size: 0.78rem; font-weight: 900; color: #0f172a; }
+        .work-team-calendar-team-group-meta { font-size: 0.69rem; font-weight: 800; color: #64748b; }
+
+        @keyframes workTeamFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes workTeamBackdropIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes workTeamModalIn {
+            from { opacity: 0; transform: translateY(16px) scale(0.988); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @media (max-width: 1200px) {
+            .work-team-hero { grid-template-columns: 1fr; }
+            .work-team-preview { justify-content: flex-start; }
+            .work-team-page-body { grid-template-columns: 1fr; }
+            .work-team-outline-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .work-team-calendar-head { grid-template-columns: 1fr; }
+            .work-team-calendar-head-actions { justify-content: flex-start; }
+            .work-team-calendar-switches { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .work-team-calendar-modal.is-inline .work-team-calendar-head { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 760px) {
+            .work-team-page { padding: 12px; gap: 12px; }
+            .work-team-outline { padding: 14px; border-radius: 22px; }
+            .work-team-outline-list { grid-template-columns: 1fr; }
+            .work-team-hero { padding: 16px; border-radius: 22px; }
+            .work-team-preview-card { width: 180px; height: 180px; }
+            .work-team-calendar-modal { padding: 0; }
+            .work-team-calendar-dialog { height: 100dvh; border-radius: 0; }
+            .work-team-calendar-modal.is-inline .work-team-calendar-dialog { height: 100%; min-height: 0; border-radius: 22px; }
+            .work-team-calendar-topbar { padding: 14px; gap: 10px; }
+            .work-team-calendar-switches { grid-template-columns: 1fr; }
+            .work-team-calendar-toolbar { align-items: stretch; }
+            .work-team-calendar-nav,
+            .work-team-calendar-meta { width: 100%; }
+            .work-team-calendar-utility-strip { width: 100%; min-width: 0; }
+            .work-team-calendar-utility-chip { flex: 1 1 180px; min-width: 0; }
+            .work-team-calendar-select { flex: 1 1 0; min-width: 0; }
+            .work-team-calendar-main { padding: 8px; grid-template-columns: 1fr; }
+            .work-team-calendar-main.has-detail { grid-template-columns: 1fr; }
+            .work-team-calendar-detail-slot.is-empty { display: none; }
+            .work-team-calendar-grid { gap: 6px; padding: 8px; }
+            .work-team-calendar-day { padding: 8px; border-radius: 16px; }
+            .work-team-calendar-day-number { font-size: 0.92rem; }
+            .work-team-calendar-day-flag { padding: 3px 6px; font-size: 0.62rem; }
+            .work-team-calendar-editor { border-radius: 18px; padding: 12px; }
+            .work-team-calendar-editor.is-floating { left: 12px !important; top: 12px !important; width: calc(100% - 24px); max-width: none; }
+            .work-team-calendar-field.is-split { grid-template-columns: 1fr; }
+            .work-team-calendar-editor-head,
+            .work-team-calendar-field-head { align-items: stretch; }
+            .work-team-calendar-member-grid { gap: 5px; }
+            .work-team-calendar-member-toggle { min-height: 26px; padding: 4px 9px; font-size: 0.68rem; }
+            .work-team-calendar-editor-actions,
+            .work-team-calendar-attachment-actions { width: 100%; justify-content: flex-start; }
+            .work-team-calendar-attachment-item { align-items: flex-start; flex-direction: column; }
+            .work-team-calendar-production-item { align-items: flex-start; flex-direction: column; }
+        }

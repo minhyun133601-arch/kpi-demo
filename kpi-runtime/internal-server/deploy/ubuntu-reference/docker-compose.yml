@@ -1,0 +1,86 @@
+name: ${COMPOSE_PROJECT_NAME:-kpi-onprem}
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - backend
+
+  app:
+    image: node:20-bookworm-slim
+    restart: unless-stopped
+    working_dir: /srv/kpi/kpi-runtime/internal-server
+    command:
+      - /bin/sh
+      - -lc
+      - |
+        if [ ! -d node_modules/pg ]; then
+          npm ci --omit=dev
+        fi
+        npm start
+    environment:
+      KPI_SERVER_HOST: 0.0.0.0
+      KPI_SERVER_PORT: ${KPI_SERVER_PORT:-3100}
+      KPI_DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      KPI_AUTH_ENABLED: "true"
+      KPI_LOGIN_ENABLED: "true"
+      KPI_COOKIE_SECRET: ${KPI_COOKIE_SECRET}
+      KPI_SESSION_TTL_HOURS: ${KPI_SESSION_TTL_HOURS:-12}
+      KPI_SESSION_PRUNE_INTERVAL_MINUTES: ${KPI_SESSION_PRUNE_INTERVAL_MINUTES:-30}
+      KPI_AUTO_MIGRATE: "true"
+      KPI_STORAGE_ROOT: /srv/kpi-runtime
+    volumes:
+      - ../../../..:/srv/kpi:ro
+      - app-node-modules:/srv/kpi/kpi-runtime/internal-server/node_modules
+      - ./runtime-var:/srv/kpi-runtime
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"fetch('http://127.0.0.1:' + (process.env.KPI_SERVER_PORT || '3100') + '/api/health').then((res)=>process.exit(res.ok?0:1)).catch(()=>process.exit(1))\""
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    networks:
+      - backend
+
+  proxy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      app:
+        condition: service_healthy
+    ports:
+      - 127.0.0.1:8080:80
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    networks:
+      - backend
+
+volumes:
+  postgres-data:
+  app-node-modules:
+  caddy-data:
+  caddy-config:
+
+networks:
+  backend:
+    driver: bridge

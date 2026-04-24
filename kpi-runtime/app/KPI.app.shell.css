@@ -1,0 +1,9 @@
+/*
+ * Compatibility manifest for legacy single-file shell CSS loading.
+ * Runtime now loads split styles directly from KPI.html to keep static-asset smoke coverage explicit.
+ */
+@import url("./styles/shell/dashboard.css?v=057");
+@import url("./styles/shell/shell-chrome.css?v=057");
+@import url("./styles/work/work.css?v=057");
+@import url("./styles/metering/metering.css?v=060");
+@import url("./styles/audit/audit.css?v=057");

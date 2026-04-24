@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KPI Demo Command Console</title>
+  <link
+    rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231f2723'/%3E%3Cpath d='M8 24V8h3v6.5L17.5 8H22l-7 7.5 7.3 8.5h-4.6L12 17.2V24H8Z' fill='%23f5f7f5'/%3E%3C/svg%3E"
+  />
+  <link rel="stylesheet" href="/styles.css?v=20260414r" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero-band">
+      <div class="hero-copy">
+        <p class="eyebrow">LOCAL DEMO COMMANDS</p>
+        <h1>KPI 데모 명령 콘솔</h1>
+        <p class="hero-summary">정적 데모와 선택형 서버 런타임을 현재 포트 기준으로 관리합니다.</p>
+        <div class="hero-meta">
+          <span class="meta-chip">정적 데모 5500</span>
+          <span class="meta-chip">런타임 3100</span>
+          <span class="meta-chip">DB 5434</span>
+          <span class="meta-chip"><span>명령 콘솔</span><strong id="opsHeaderUrl">-</strong></span>
+          <span class="meta-chip meta-chip-wide"><span>commands</span><strong id="opsHeaderRoot">-</strong></span>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <button id="refreshButton" class="secondary-button" type="button">
+          <span class="ui-icon button-icon" data-icon="refresh" aria-hidden="true"></span>
+          <span>상태 새로고침</span>
+        </button>
+        <button id="openKpiButton" class="primary-button" type="button">
+          <span class="ui-icon button-icon" data-icon="monitor" aria-hidden="true"></span>
+          <span>KPI 런타임 로그인 열기</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="page-main">
+      <section class="status-strip">
+        <article id="scheduleTile" class="status-tile">
+          <div class="status-headline">
+            <span class="status-light" aria-hidden="true"></span>
+            <span class="ui-icon status-icon" data-icon="clock" aria-hidden="true"></span>
+            <span class="status-label">컴퓨터 예약</span>
+          </div>
+          <strong id="scheduleStatus">확인 중</strong>
+          <span id="scheduleSummary" class="status-meta">시작 / 종료 예약 상태</span>
+          <div id="scheduleActions" class="status-actions"></div>
+        </article>
+        <article id="kpiTile" class="status-tile">
+          <div class="status-headline">
+            <span class="status-light" aria-hidden="true"></span>
+            <span class="ui-icon status-icon" data-icon="server" aria-hidden="true"></span>
+            <span class="status-label">KPI 런타임 3100</span>
+          </div>
+          <strong id="kpiStatus">확인 중</strong>
+          <span id="kpiSummary" class="status-meta">-</span>
+          <div id="kpiActions" class="status-actions"></div>
+        </article>
+        <article id="postgresTile" class="status-tile">
+          <div class="status-headline">
+            <span class="status-light" aria-hidden="true"></span>
+            <span class="ui-icon status-icon" data-icon="database" aria-hidden="true"></span>
+            <span class="status-label">PostgreSQL 5434</span>
+          </div>
+          <strong id="postgresStatus">확인 중</strong>
+          <span id="postgresSummary" class="status-meta">-</span>
+        </article>
+        <article id="startupTile" class="status-tile">
+          <div class="status-headline">
+            <span class="status-light" aria-hidden="true"></span>
+            <span class="ui-icon status-icon" data-icon="clock" aria-hidden="true"></span>
+            <span class="status-label">부팅 자동실행</span>
+          </div>
+          <strong id="startupStatus">확인 중</strong>
+          <span class="status-meta">현재 사용자 시작프로그램</span>
+          <div id="startupActions" class="status-actions"></div>
+        </article>
+        <article id="resultTile" class="status-tile status-result-tile">
+          <div class="status-headline">
+            <span class="status-light" aria-hidden="true"></span>
+            <span class="ui-icon status-icon" data-icon="spark" aria-hidden="true"></span>
+            <span class="status-label">최근 결과</span>
+          </div>
+          <strong id="resultTileSummary">대기 중</strong>
+          <span id="resultTileMeta" class="status-meta">아직 실행한 작업이 없습니다.</span>
+        </article>
+      </section>
+
+      <section class="workbench workbench-tabs">
+        <nav class="tab-bar" aria-label="운영 콘솔 분류">
+          <button class="tab-button is-active" data-tab="server" type="button">
+            <span class="ui-icon tab-icon" data-icon="server" aria-hidden="true"></span>
+            <span>서버 관리</span>
+          </button>
+          <button class="tab-button" data-tab="data" type="button">
+            <span class="ui-icon tab-icon" data-icon="database" aria-hidden="true"></span>
+            <span>계정 관리</span>
+          </button>
+        </nav>
+
+        <section class="tab-panel tab-panel-layout is-active" data-tab-panel="server">
+          <div class="section-stack">
+            <section class="section section-compact">
+              <div class="section-head">
+                <div class="section-title-group">
+                  <span class="ui-icon section-icon" data-icon="terminal" aria-hidden="true"></span>
+                  <div>
+                    <h2>로그 보기</h2>
+                    <p>최근 로그 60줄을 바로 확인합니다.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="toolbar-row toolbar-row-tight">
+                <button class="secondary-button log-button" data-log-key="serverActions" type="button">서버 액션</button>
+                <button class="secondary-button log-button" data-log-key="serverStdout" type="button">서버 stdout</button>
+                <button class="secondary-button log-button" data-log-key="serverStderr" type="button">서버 stderr</button>
+                <button class="secondary-button log-button" data-log-key="postgres" type="button">PostgreSQL</button>
+              </div>
+              <pre id="logOutput" class="output-box drag-scroll">로그를 선택해 주세요.</pre>
+            </section>
+          </div>
+
+          <div class="section-stack">
+            <section class="section">
+              <div class="section-head">
+                <div class="section-title-group">
+                  <span class="ui-icon section-icon" data-icon="tools" aria-hidden="true"></span>
+                  <div>
+                    <h2>DB / 도구</h2>
+                    <p>DB 콘솔과 운영 보조 작업을 처리합니다.</p>
+                  </div>
+                </div>
+              </div>
+              <div id="toolActions" class="action-list"></div>
+            </section>
+
+            <section class="section section-compact">
+              <div class="section-head section-head-inline">
+                <div class="section-title-group">
+                  <span class="ui-icon section-icon" data-icon="table" aria-hidden="true"></span>
+                  <div>
+                    <h2>DB 테이블</h2>
+                    <p>테이블 목록을 이 화면에서 바로 확인합니다.</p>
+                  </div>
+                </div>
+                <button id="loadTablesButton" class="secondary-button" type="button">불러오기</button>
+              </div>
+              <pre id="tablesOutput" class="output-box drag-scroll">아직 불러오지 않았습니다.</pre>
+            </section>
+          </div>
+        </section>
+
+        <section class="tab-panel tab-panel-single" data-tab-panel="data">
+          <div class="section-stack">
+            <section class="section">
+              <div class="section-head">
+                <div class="section-title-group">
+                  <span class="ui-icon section-icon" data-icon="user" aria-hidden="true"></span>
+                  <div>
+                    <h2>계정 관리</h2>
+                    <p>오너, 직원 계정과 비밀번호 작업을 처리합니다.</p>
+                  </div>
+                </div>
+              </div>
+              <div id="accountActions" class="disclosure-list"></div>
+            </section>
+
+            <section class="section">
+              <div class="section-head section-head-inline">
+                <div class="section-title-group">
+                  <span class="ui-icon section-icon" data-icon="list" aria-hidden="true"></span>
+                  <div>
+                    <h2>사용자 현황</h2>
+                    <p>현재 DB에 등록된 계정 상태를 확인합니다.</p>
+                  </div>
+                </div>
+                <div class="summary-group">
+                  <span class="summary-pill">총 사용자 <strong id="userCountStat">0명</strong></span>
+                  <span class="summary-pill">활성 세션 <strong id="sessionCountStat">0개</strong></span>
+                </div>
+              </div>
+              <div class="toolbar-row">
+                <button id="reloadUsersButton" class="secondary-button" type="button">사용자 목록 새로고침</button>
+              </div>
+              <div class="table-wrap drag-scroll">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>아이디</th>
+                      <th>표시 이름</th>
+                      <th>역할</th>
+                      <th>최근 접속</th>
+                      <th>세션</th>
+                    </tr>
+                  </thead>
+                  <tbody id="usersTableBody">
+                    <tr><td colspan="5">불러오는 중...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div id="scheduleModal" class="modal-shell" hidden>
+    <div class="modal-backdrop" data-modal-close="true"></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="scheduleModalTitle">
+      <div class="modal-head">
+        <div class="modal-copy">
+          <p class="eyebrow">COMPUTER SCHEDULE</p>
+          <h2 id="scheduleModalTitle">시작 / 종료 예약</h2>
+          <p id="scheduleModalDescription">시작 또는 종료 시간을 예약합니다.</p>
+        </div>
+        <button id="scheduleModalClose" class="secondary-button modal-close-button" type="button">닫기</button>
+      </div>
+      <form id="scheduleModalForm" class="field-grid modal-form"></form>
+    </div>
+  </div>
+
+  <script src="/app.js?v=20260414r" type="module"></script>
+</body>
+</html>

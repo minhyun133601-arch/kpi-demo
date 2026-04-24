@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
+  <title id="title">KPI Demo logo</title>
+  <desc id="desc">Generic public demo logo with KD initials.</desc>
+  <rect width="160" height="160" rx="28" fill="#f6faf7"/>
+  <rect x="14" y="14" width="132" height="132" rx="24" fill="#1f6f5b"/>
+  <path d="M40 110V50h14v24l23-24h18L69 78l28 32H79L54 81v29H40Z" fill="#ffffff"/>
+  <path d="M103 50h17c20 0 32 11 32 30s-12 30-32 30h-17V50Zm16 46c10 0 17-5 17-16s-7-16-17-16h-1v32h1Z" fill="#d7f5e8"/>
+</svg>

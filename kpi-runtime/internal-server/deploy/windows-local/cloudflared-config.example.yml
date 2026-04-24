@@ -1,0 +1,9 @@
+tunnel: REPLACE_WITH_TUNNEL_UUID
+credentials-file: C:\Users\user\.cloudflared\REPLACE_WITH_TUNNEL_UUID.json
+
+ingress:
+  - hostname: tool.example.com
+    service: http://127.0.0.1:3100
+  - hostname: admin.example.com
+    service: http://127.0.0.1:3100
+  - service: http_status:404

@@ -1,0 +1,10 @@
+:80 {
+    encode zstd gzip
+
+    handle /api/* {
+        reverse_proxy 127.0.0.1:3100
+    }
+
+    root * C:/Users/user/Desktop/KPI-kpi
+    file_server
+}
