@@ -58,7 +58,7 @@ jobs:
       KPI_LOGIN_ENABLED: "false"
       KPI_SERVER_PORT: "3192"
       KPI_BASE_URL: "http://127.0.0.1:3192"
-      KPI_DATABASE_URL: "postgresql://postgres:postgres@127.0.0.1:5434/postgres"
+      KPI_DATABASE_URL: "postgresql://postgres:postgres@127.0.0.1:5400/postgres"
     services:
       postgres:
         image: postgres:17
@@ -67,7 +67,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: postgres
         ports:
-          - 5434:5432
+          - 5400:5432
         options: >-
           --health-cmd "pg_isready -U postgres -d postgres"
           --health-interval 10s

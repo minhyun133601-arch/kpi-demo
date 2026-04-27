@@ -959,12 +959,23 @@
           <article class="history-entry">
             <div class="history-meta">
               <span class="status-badge recent">2026-04-27</span>
+              <span class="status-badge modified">privacy gate</span>
+            </div>
+            <h3 data-i18n-key="historyPrivacyGateTitle">Public repository ignore rules were tightened</h3>
+            <p data-i18n-key="historyPrivacyGateBody">Git ignore coverage now blocks local environment files, credentials, generated databases, exported documents, screenshots, and work-log contents from accidental public commits.</p>
+            <ul class="history-detail">
+              <li data-i18n-key="historyPrivacyGateDetail">Touched area: root .gitignore, runtime env examples, GitHub CI PostgreSQL port, Caddy example path, Repository Map live exclusions, public naming cleanup, and Repository Map history. Privacy: README remains tracked as a public-safe guide, while private local artifacts and upload-style files are excluded and historical handoff wording is generalized. Verification: tracked/untracked/ignored status checks, sensitive-string scans, stale-port scan, markdown scan, format check, lint, targeted node tests, and Repository Map syntax import.</li>
+            </ul>
+          </article>
+          <article class="history-entry">
+            <div class="history-meta">
+              <span class="status-badge recent">2026-04-27</span>
               <span class="status-badge modified">server handoff</span>
             </div>
             <h3 data-i18n-key="historyResumePromptTitle">Server Repository Map handoff was prepared</h3>
-            <p data-i18n-key="historyResumePromptBody">The temporary self-introduction prompt file was removed, and a desktop handoff folder now extracts the Repository Map code for private KPI-Server migration.</p>
+            <p data-i18n-key="historyResumePromptBody">The temporary self-introduction prompt file was removed, and a local handoff folder now extracts the Repository Map code for private KPI Demo Runtime migration.</p>
             <ul class="history-detail">
-              <li data-i18n-key="historyResumePromptDetail">Touched area: work-log prompt cleanup, Repository Map history, and external desktop handoff folder. Privacy: no private organization, person, site, equipment, production, metering, billing, or maintenance data was added. Verification: handoff file readback, prompt-file deletion check, sensitive-string scan, and Repository Map syntax check.</li>
+              <li data-i18n-key="historyResumePromptDetail">Touched area: work-log prompt cleanup, Repository Map history, and local handoff output. Privacy: no private organization, person, site, equipment, production, metering, billing, or maintenance data was added. Verification: handoff file readback, prompt-file deletion check, sensitive-string scan, and Repository Map syntax check.</li>
             </ul>
           </article>
           <article class="history-entry">
@@ -1163,9 +1174,12 @@
         staticNote: 'Static fallback map below mirrors the public-facing structure summary when the owner-console API is not running.',
         historyTitle: 'Integrated Change History',
         historyKicker: 'This section replaces the separate technical and plain-language change-log files for portfolio readers.',
+        historyPrivacyGateTitle: 'Public repository ignore rules were tightened',
+        historyPrivacyGateBody: 'Git ignore coverage now blocks local environment files, credentials, generated databases, exported documents, screenshots, and work-log contents from accidental public commits.',
+        historyPrivacyGateDetail: 'Touched area: root .gitignore, runtime env examples, GitHub CI PostgreSQL port, Caddy example path, Repository Map live exclusions, public naming cleanup, and Repository Map history. Privacy: README remains tracked as a public-safe guide, while private local artifacts and upload-style files are excluded and historical handoff wording is generalized. Verification: tracked/untracked/ignored status checks, sensitive-string scans, stale-port scan, markdown scan, format check, lint, targeted node tests, and Repository Map syntax import.',
         historyResumePromptTitle: 'Server Repository Map handoff was prepared',
-        historyResumePromptBody: 'The temporary self-introduction prompt file was removed, and a desktop handoff folder now extracts the Repository Map code for private KPI-Server migration.',
-        historyResumePromptDetail: 'Touched area: work-log prompt cleanup, Repository Map history, and external desktop handoff folder. Privacy: no private organization, person, site, equipment, production, metering, billing, or maintenance data was added. Verification: handoff file readback, prompt-file deletion check, sensitive-string scan, and Repository Map syntax check.',
+        historyResumePromptBody: 'The temporary self-introduction prompt file was removed, and a local handoff folder now extracts the Repository Map code for private KPI Demo Runtime migration.',
+        historyResumePromptDetail: 'Touched area: work-log prompt cleanup, Repository Map history, and local handoff output. Privacy: no private organization, person, site, equipment, production, metering, billing, or maintenance data was added. Verification: handoff file readback, prompt-file deletion check, sensitive-string scan, and Repository Map syntax check.',
         historyCompanyNameCleanupTitle: 'Specific organization labels were removed',
         historyCompanyNameCleanupBody: 'README and the demo bootstrap metadata now use generic organization wording instead of named demo-company labels.',
         historyCompanyNameCleanupDetail: 'Touched area: README, KPI demo seed metadata, and Repository Map. Privacy: organization labels were generalized to Demo Organization and no company-specific records were added. Verification: company-name scan across source files and markdown sensitive-string scan.',
@@ -1216,7 +1230,7 @@
         flow3Body: 'The Node server on 3104 and PostgreSQL on 5400 are optional.',
         flow4Title: '4. Use owner tools locally',
         flow4Body: 'The operations console targets port 3215 and remains a local helper.',
-        privacyNote: 'This map intentionally omits private data, local credentials, generated database files, and AI-tool workspace folders. It describes the public portfolio structure, not every local artifact.',
+        privacyNote: 'This map intentionally omits private data, local credentials, generated database files, uploaded documents, screenshots, work-log contents, and AI-tool workspace folders. It describes the public portfolio structure, not every local artifact.',
         loadingLive: 'Loading live repository data.',
         liveUnavailable: 'Owner-console repository API is not available.',
         liveUnavailablePrefix: 'Live map unavailable',
@@ -1254,9 +1268,12 @@
         staticNote: '오너 콘솔 API가 꺼져 있으면 아래 정적 지도가 공개용 구조 요약을 대신 보여줍니다.',
         historyTitle: '통합 변경 이력',
         historyKicker: '이 영역이 포트폴리오 독자를 위한 별도 기술/쉬운 설명 변경 기록 문서를 대신합니다.',
+        historyPrivacyGateTitle: '공개 저장소용 Git 제외 규칙 보강',
+        historyPrivacyGateBody: '로컬 환경 파일, 자격 증명, 생성 DB, 내보낸 문서, 스크린샷, 작업 기록 내용이 실수로 공개 커밋에 들어가지 않도록 Git 제외 범위를 넓혔습니다.',
+        historyPrivacyGateDetail: '이번에 건드린 위치: 루트 .gitignore, 런타임 env 예시, GitHub CI PostgreSQL 포트, Caddy 예시 경로, Repository Map 실시간 제외 규칙, 공개 명칭 정리, Repository Map 이력. 개인정보 영향: README는 공개-safe 안내 파일로 계속 추적하고, 비공개 로컬 산출물과 업로드형 파일은 제외하며 과거 전달 문구는 일반화했습니다. 검증: 추적/미추적/무시 상태 확인, 민감 문자열 스캔, 오래된 포트 스캔, 마크다운 스캔, 포맷 확인, lint, 대상 node 테스트, Repository Map 문법 import.',
         historyResumePromptTitle: '서버용 Repository Map 전달 폴더 준비',
-        historyResumePromptBody: '임시 자소서 프롬프트 파일은 제거했고, 비공개 KPI-Server로 옮길 Repository Map 코드를 바탕화면 전달 폴더로 추출했습니다.',
-        historyResumePromptDetail: '이번에 건드린 위치: work-log 프롬프트 정리, Repository Map 이력, 바탕화면 전달 폴더. 개인정보 영향: 실제 조직, 사람, 현장, 설비, 생산, 검침, 청구, 정비 데이터 추가 없음. 검증: 전달 파일 읽기 확인, 프롬프트 삭제 확인, 민감 문자열 스캔, Repository Map 문법 확인.',
+        historyResumePromptBody: '임시 자소서 프롬프트 파일은 제거했고, 비공개 KPI Demo Runtime 이전용 Repository Map 코드를 로컬 전달 폴더로 추출했습니다.',
+        historyResumePromptDetail: '이번에 건드린 위치: work-log 프롬프트 정리, Repository Map 이력, 로컬 전달 산출물. 개인정보 영향: 실제 조직, 사람, 현장, 설비, 생산, 검침, 청구, 정비 데이터 추가 없음. 검증: 전달 파일 읽기 확인, 프롬프트 삭제 확인, 민감 문자열 스캔, Repository Map 문법 확인.',
         historyCompanyNameCleanupTitle: '특정 조직 라벨 제거',
         historyCompanyNameCleanupBody: 'README와 데모 초기 데이터의 조직명 표기를 특정 회사명처럼 보이지 않도록 일반 문구로 바꾸었습니다.',
         historyCompanyNameCleanupDetail: '이번에 건드린 위치: README, KPI 데모 seed 메타데이터, Repository Map. 개인정보 영향: 조직 라벨을 Demo Organization으로 일반화했고 회사별 기록은 추가하지 않았습니다. 검증: 소스 전체 회사명 스캔과 마크다운 민감 문자열 스캔.',
@@ -1307,7 +1324,7 @@
         flow3Body: '3104 Node 서버와 5400 PostgreSQL은 선택형입니다.',
         flow4Title: '4. 오너 도구는 로컬에서만 사용',
         flow4Body: '운영 콘솔은 3215 포트를 기준으로 하는 로컬 보조 도구입니다.',
-        privacyNote: '이 지도는 민감 데이터, 로컬 자격 증명, 생성된 DB 파일, AI 도구 작업 폴더를 의도적으로 제외합니다. 모든 로컬 산출물이 아니라 공개 포트폴리오 구조를 설명합니다.',
+        privacyNote: '이 지도는 민감 데이터, 로컬 자격 증명, 생성된 DB 파일, 업로드 문서, 스크린샷, 작업 기록 내용, AI 도구 작업 폴더를 의도적으로 제외합니다. 모든 로컬 산출물이 아니라 공개 포트폴리오 구조를 설명합니다.',
         loadingLive: '실시간 저장소 데이터를 불러오는 중입니다.',
         liveUnavailable: '오너 콘솔 저장소 API를 사용할 수 없습니다.',
         liveUnavailablePrefix: '실시간 지도를 불러오지 못했습니다',

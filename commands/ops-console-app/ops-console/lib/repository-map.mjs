@@ -32,6 +32,38 @@ const EXCLUDED_EXTENSIONS = new Set([
   '.sqlite',
   '.sqlite3'
 ]);
+const EXCLUDED_ATTACHMENT_EXTENSIONS = new Set([
+  '.7z',
+  '.bak',
+  '.backup',
+  '.bmp',
+  '.cer',
+  '.crt',
+  '.csv',
+  '.doc',
+  '.docx',
+  '.dump',
+  '.gif',
+  '.heic',
+  '.jpeg',
+  '.jpg',
+  '.key',
+  '.p12',
+  '.pdf',
+  '.pem',
+  '.pfx',
+  '.png',
+  '.ppt',
+  '.pptx',
+  '.rar',
+  '.tsv',
+  '.webp',
+  '.xls',
+  '.xlsm',
+  '.xlsx',
+  '.zip'
+]);
+const PRIVATE_CONTENT_PREFIXES = ['work-log/', 'team-report/work-log/teams/'];
 const TOP_LEVEL_META = new Map([
   ['KPI.html', { tone: 'blue', label: 'main shell', labelKo: '메인 셸', desc: 'main dashboard entry', descKo: '메인 대시보드 실행 파일' }],
   [
@@ -74,7 +106,12 @@ function isExcludedPath(relativePath = '', name = '') {
     return true;
   }
 
-  if (EXCLUDED_EXTENSIONS.has(path.extname(basename).toLowerCase())) {
+  const extension = path.extname(basename).toLowerCase();
+  if (EXCLUDED_EXTENSIONS.has(extension) || EXCLUDED_ATTACHMENT_EXTENSIONS.has(extension)) {
+    return true;
+  }
+
+  if (basename !== '.gitkeep' && PRIVATE_CONTENT_PREFIXES.some((prefix) => normalized.startsWith(prefix))) {
     return true;
   }
 
@@ -322,7 +359,9 @@ export function getRepositoryMap() {
       hidden: true,
       localRuntime: true,
       generated: true,
-      env: true
+      env: true,
+      attachments: true,
+      workLogContents: true
     }
   };
 }

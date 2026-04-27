@@ -5,6 +5,6 @@
         reverse_proxy 127.0.0.1:3104
     }
 
-    root * C:/Users/user/Desktop/KPI-kpi
+    root * C:/Users/user/Desktop/KPI-Demo
     file_server
 }
