@@ -1,0 +1,1651 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KPI Demo Repository Map</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --surface: #ffffff;
+      --surface-soft: #f9fbff;
+      --line: #d7dee9;
+      --line-strong: #aeb9ca;
+      --text: #172033;
+      --muted: #5f6b7c;
+      --blue: #2563eb;
+      --green: #16a34a;
+      --violet: #7c3aed;
+      --amber: #d97706;
+      --rose: #db2777;
+      --cyan: #0891b2;
+      --slate: #64748b;
+      --radius: 8px;
+      --shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family:
+        "Segoe UI",
+        -apple-system,
+        BlinkMacSystemFont,
+        "Noto Sans KR",
+        sans-serif;
+      line-height: 1.45;
+    }
+
+    .page {
+      width: min(1480px, calc(100% - 32px));
+      margin: 24px auto;
+    }
+
+    .header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 20px;
+      align-items: start;
+      margin-bottom: 18px;
+    }
+
+    .title-block {
+      display: grid;
+      gap: 8px;
+    }
+
+    .eyebrow {
+      color: var(--blue);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      max-width: 780px;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(150px, 1fr));
+      gap: 8px;
+      min-width: 340px;
+    }
+
+    .language-toggle {
+      display: inline-flex;
+      width: fit-content;
+      gap: 4px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 4px;
+    }
+
+    .language-button {
+      min-height: 30px;
+      padding: 5px 10px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+
+    .language-button.is-active {
+      background: #eff6ff;
+      color: var(--blue);
+    }
+
+    .status-chip {
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--blue);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 9px 10px;
+      box-shadow: 0 1px 0 rgba(15, 23, 42, 0.03);
+    }
+
+    .status-chip:nth-child(2) {
+      border-left-color: var(--green);
+    }
+
+    .status-chip:nth-child(3) {
+      border-left-color: var(--amber);
+    }
+
+    .status-chip:nth-child(4) {
+      border-left-color: var(--violet);
+    }
+
+    .status-label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .status-value {
+      display: block;
+      margin-top: 2px;
+      color: var(--text);
+      font-family: Consolas, "SFMono-Regular", monospace;
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      margin-bottom: 14px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    button:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      background: var(--slate);
+    }
+
+    .dot.blue { background: var(--blue); }
+    .dot.green { background: var(--green); }
+    .dot.violet { background: var(--violet); }
+    .dot.amber { background: var(--amber); }
+    .dot.rose { background: var(--rose); }
+    .dot.cyan { background: var(--cyan); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.05fr 1.15fr 1.15fr 1fr;
+      gap: 14px;
+    }
+
+    .panel {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--slate);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel.blue { border-top-color: var(--blue); }
+    .panel.green { border-top-color: var(--green); }
+    .panel.violet { border-top-color: var(--violet); }
+    .panel.amber { border-top-color: var(--amber); }
+    .panel.rose { border-top-color: var(--rose); }
+    .panel.cyan { border-top-color: var(--cyan); }
+    .panel.slate { border-top-color: var(--slate); }
+    .span-2 { grid-column: span 2; }
+
+    .live-map {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 14px;
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--blue);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .live-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 15px 16px 12px;
+    }
+
+    .live-head-copy {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .live-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .refresh-button,
+    .filter-button {
+      min-height: 34px;
+      padding: 7px 10px;
+      font-size: 0.76rem;
+    }
+
+    .filter-button.is-active {
+      border-color: var(--blue);
+      background: #eff6ff;
+      color: var(--blue);
+    }
+
+    .live-source {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .live-summary {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+      padding: 0 16px;
+    }
+
+    .live-summary-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface-soft);
+      padding: 10px;
+    }
+
+    .live-summary-label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .live-summary-value {
+      display: block;
+      margin-top: 3px;
+      color: var(--text);
+      font-size: 1.15rem;
+      font-weight: 900;
+    }
+
+    .live-content {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(320px, 0.8fr);
+      gap: 14px;
+      padding: 0 16px 16px;
+      min-width: 0;
+    }
+
+    .live-panel {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      overflow: hidden;
+    }
+
+    .live-panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface-soft);
+    }
+
+    .live-panel-title {
+      margin: 0;
+      font-size: 0.92rem;
+      letter-spacing: 0;
+    }
+
+    .live-tree,
+    .recent-list {
+      padding: 12px;
+    }
+
+    .live-tree {
+      max-height: 760px;
+      overflow: auto;
+    }
+
+    .live-node-list {
+      display: grid;
+      gap: 4px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .live-node-list .live-node-list {
+      margin-left: 14px;
+      padding-left: 12px;
+      border-left: 1px solid var(--line);
+    }
+
+    .live-node-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+      padding: 4px 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .live-node-name {
+      color: var(--text);
+      font-family: Consolas, "SFMono-Regular", monospace;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .live-node-desc {
+      color: var(--muted);
+      overflow-wrap: anywhere;
+    }
+
+    .live-node-icon {
+      width: 10px;
+      height: 10px;
+      flex: 0 0 auto;
+      border-radius: 3px;
+      background: var(--slate);
+    }
+
+    .live-node-icon.blue { background: var(--blue); }
+    .live-node-icon.green { background: var(--green); }
+    .live-node-icon.violet { background: var(--violet); }
+    .live-node-icon.amber { background: var(--amber); }
+    .live-node-icon.rose { background: var(--rose); }
+    .live-node-icon.cyan { background: var(--cyan); }
+
+    .badge-list {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-left: auto;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 19px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 1px 6px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .status-badge.modified { border-color: #bfdbfe; background: #eff6ff; color: #1d4ed8; }
+    .status-badge.added { border-color: #bbf7d0; background: #f0fdf4; color: #15803d; }
+    .status-badge.untracked { border-color: #fde68a; background: #fffbeb; color: #a16207; }
+    .status-badge.renamed { border-color: #ddd6fe; background: #f5f3ff; color: #6d28d9; }
+    .status-badge.deleted { border-color: #fecdd3; background: #fff1f2; color: #be123c; }
+    .status-badge.recent { border-color: #bae6fd; background: #f0f9ff; color: #0369a1; }
+
+    .recent-item {
+      display: grid;
+      gap: 5px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .recent-item:last-child {
+      border-bottom: 0;
+    }
+
+    .recent-path {
+      color: var(--text);
+      font-family: Consolas, "SFMono-Regular", monospace;
+      font-size: 0.8rem;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .recent-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .live-feedback {
+      padding: 12px 16px;
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    .static-map-note {
+      margin: -2px 0 12px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .is-hidden {
+      display: none !important;
+    }
+
+    .panel-head {
+      display: grid;
+      gap: 5px;
+      padding: 15px 16px 12px;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface-soft);
+    }
+
+    .panel-title {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin: 0;
+      font-size: 1rem;
+      letter-spacing: 0;
+    }
+
+    .panel-kicker {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 8px;
+      color: var(--muted);
+      background: #fff;
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+
+    .body {
+      padding: 14px 16px 16px;
+    }
+
+    .tree {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .tree ul {
+      list-style: none;
+      margin: 4px 0 6px 11px;
+      padding-left: 13px;
+      border-left: 1px solid var(--line-strong);
+    }
+
+    .tree li {
+      position: relative;
+      padding: 5px 0;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .tree ul li::before {
+      content: "";
+      position: absolute;
+      top: 17px;
+      left: -13px;
+      width: 9px;
+      height: 1px;
+      background: var(--line-strong);
+    }
+
+    .name {
+      color: var(--text);
+      font-family: Consolas, "SFMono-Regular", monospace;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .desc {
+      margin-left: 6px;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .flow-step {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 12px;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .flow-step strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--text);
+      font-size: 0.88rem;
+    }
+
+    .note {
+      margin-top: 14px;
+      border: 1px solid #f0d99a;
+      border-radius: var(--radius);
+      background: #fffaf0;
+      padding: 12px 14px;
+      color: #6f4b00;
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    .history {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .history-entry {
+      display: grid;
+      gap: 7px;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--violet);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 12px 14px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+    }
+
+    .history-entry h3 {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.96rem;
+      letter-spacing: 0;
+    }
+
+    .history-entry p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .history-detail {
+      display: grid;
+      gap: 4px;
+      margin: 2px 0 0;
+      padding: 0;
+      list-style: none;
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.45;
+    }
+
+    .history-detail li {
+      border-top: 1px solid var(--line);
+      padding-top: 5px;
+    }
+
+    .history-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    @media (max-width: 1180px) {
+      .header {
+        grid-template-columns: 1fr;
+      }
+
+      .status-grid {
+        min-width: 0;
+        width: min(680px, 100%);
+      }
+
+      .layout {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .live-summary {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .live-content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .page {
+        width: calc(100% - 20px);
+        margin: 14px auto;
+      }
+
+      h1 {
+        font-size: 1.55rem;
+      }
+
+      .layout,
+      .flow,
+      .status-grid,
+      .live-summary {
+        grid-template-columns: 1fr;
+      }
+
+      .span-2 {
+        grid-column: span 1;
+      }
+
+      .live-head,
+      .live-panel-head {
+        display: grid;
+      }
+
+      .live-actions {
+        justify-content: flex-start;
+      }
+
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <div class="title-block">
+        <div class="eyebrow">KPI Demo</div>
+        <h1 data-i18n-key="title">Repository Map</h1>
+        <div class="subtitle" data-i18n-key="subtitle">
+          A public-safe visual guide to the current KPI Demo folder layout. This console page is the single portfolio-facing place for structure, change history, privacy notes, and verification context.
+        </div>
+        <div class="language-toggle" aria-label="Language">
+          <button class="language-button is-active" type="button" data-lang="en" aria-pressed="true">English</button>
+          <button class="language-button" type="button" data-lang="ko" aria-pressed="false">한국어</button>
+        </div>
+      </div>
+      <div class="status-grid" aria-label="Local port summary">
+        <div class="status-chip">
+          <span class="status-label" data-i18n-key="portStatic">Static demo</span>
+          <span class="status-value">5500 / KPI.html</span>
+        </div>
+        <div class="status-chip">
+          <span class="status-label" data-i18n-key="portRuntime">Runtime</span>
+          <span class="status-value">3104 / login</span>
+        </div>
+        <div class="status-chip">
+          <span class="status-label">PostgreSQL</span>
+          <span class="status-value">5400</span>
+        </div>
+        <div class="status-chip">
+          <span class="status-label" data-i18n-key="portOps">Ops console</span>
+          <span class="status-value">3215</span>
+        </div>
+      </div>
+    </header>
+
+    <nav class="legend" aria-label="Map legend">
+      <span class="legend-item"><i class="dot blue"></i><span data-i18n-key="legendShell">Main shell</span></span>
+      <span class="legend-item"><i class="dot green"></i><span data-i18n-key="legendRuntime">Node runtime</span></span>
+      <span class="legend-item"><i class="dot violet"></i><span data-i18n-key="legendOps">Operations commands</span></span>
+      <span class="legend-item"><i class="dot amber"></i><span data-i18n-key="legendUtility">Utility tools</span></span>
+      <span class="legend-item"><i class="dot rose"></i><span data-i18n-key="legendWork">Work reporting</span></span>
+      <span class="legend-item"><i class="dot cyan"></i><span data-i18n-key="legendAudit">Audit and entry</span></span>
+      <span class="legend-item"><i class="dot"></i><span data-i18n-key="legendDocs">Rules and assets</span></span>
+    </nav>
+
+    <section class="live-map" aria-label="Live repository map">
+      <div class="live-head">
+        <div class="live-head-copy">
+          <h2 class="panel-title"><span data-i18n-key="liveTitle">Live Repository Structure</span> <span class="tag" id="live-source-chip">checking</span></h2>
+          <div class="panel-kicker" id="live-source-text" data-i18n-key="liveLoading">Loading the local owner-console repository map API.</div>
+        </div>
+        <div class="live-actions" aria-label="Repository map filters">
+          <button class="filter-button is-active" type="button" data-filter="all" data-i18n-key="filterAll">All</button>
+          <button class="filter-button" type="button" data-filter="changed" data-i18n-key="filterChanged">Changed</button>
+          <button class="filter-button" type="button" data-filter="recent" data-i18n-key="filterRecent">Recent</button>
+          <button class="refresh-button" id="live-refresh" type="button" data-i18n-key="refresh">Refresh</button>
+        </div>
+      </div>
+
+      <div class="live-summary" id="live-summary" aria-label="Live repository summary"></div>
+
+      <div class="live-content">
+        <section class="live-panel" aria-label="Current repository tree">
+          <div class="live-panel-head">
+            <h2 class="live-panel-title" data-i18n-key="currentTree">Current Tree</h2>
+            <span class="live-source" id="live-generated-at">-</span>
+          </div>
+          <div class="live-feedback" id="live-feedback">Waiting for repository data.</div>
+          <div class="live-tree" id="live-tree"></div>
+        </section>
+        <aside class="live-panel" aria-label="Recent and changed files">
+          <div class="live-panel-head">
+            <h2 class="live-panel-title" data-i18n-key="recentTitle">Recent / Added / Modified</h2>
+            <span class="live-source" id="live-recent-count">0 files</span>
+          </div>
+          <div class="recent-list" id="recent-list"></div>
+        </aside>
+      </div>
+    </section>
+
+    <div class="static-map-note" id="static-map-note">
+      <span data-i18n-key="staticNote">Static fallback map below mirrors the public-facing structure summary when the owner-console API is not running.</span>
+    </div>
+
+    <section class="layout" id="static-map" aria-label="Repository folder map">
+      <article class="panel slate">
+        <div class="panel-head">
+          <h2 class="panel-title">Root Config And Docs <span class="tag">public entry</span></h2>
+          <div class="panel-kicker">Top-level documentation and repository configuration visible in the public summary.</div>
+        </div>
+        <div class="body">
+          <ul class="tree">
+            <li><span class="name">.github/</span><span class="desc">GitHub workflow definitions</span></li>
+            <li><span class="name">.husky/</span><span class="desc">local Git hook configuration</span></li>
+            <li><span class="name">.gitattributes</span><span class="desc">line-ending normalization rules</span></li>
+            <li><span class="name">.gitignore</span><span class="desc">ignored local state and generated artifacts</span></li>
+            <li><span class="name">AGENTS.md</span><span class="desc">single authority document for AI work rules</span></li>
+            <li><span class="name">README.md</span><span class="desc">run and demo-mode guide</span></li>
+            <li><span class="name">KPI.html</span><span class="desc">main static dashboard shell</span></li>
+            <li><span class="name">Repository Map</span><span class="desc">bilingual structure, change history, privacy, and verification guide inside the owner console</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="panel blue">
+        <div class="panel-head">
+          <h2 class="panel-title">kpi-runtime/ <span class="tag">dashboard shell</span></h2>
+          <div class="panel-kicker">Shared front-end shell and optional server-backed runtime surface.</div>
+        </div>
+        <div class="body">
+          <ul class="tree">
+            <li><span class="name">app/</span><span class="desc">navigation, viewer, auth, and shell JS</span></li>
+            <li><span class="name">app/styles/</span><span class="desc">shell, work, metering, and audit CSS</span></li>
+            <li><span class="name">core/</span><span class="desc">shared browser runtime logic</span></li>
+            <li><span class="name">demo/</span><span class="desc">synthetic static fixtures</span></li>
+            <li><span class="name">sections/</span><span class="desc">dashboard section registry and builders</span></li>
+            <li><span class="name">internal-server/</span><span class="desc">optional Node and PostgreSQL runtime</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="panel green span-2">
+        <div class="panel-head">
+          <h2 class="panel-title">kpi-runtime/internal-server/ <span class="tag">optional backend</span></h2>
+          <div class="panel-kicker">The server version keeps API, repository, service, migration, and test layers separate.</div>
+        </div>
+        <div class="body">
+          <ul class="tree">
+            <li><span class="name">deploy/</span><span class="desc">Windows local and Ubuntu reference deployment examples</span></li>
+            <li><span class="name">e2e/</span><span class="desc">Playwright browser smoke checks</span></li>
+            <li><span class="name">scripts/windows/</span><span class="desc">start, stop, backup, restore, account, and DB helpers</span></li>
+            <li>
+              <span class="name">src/</span><span class="desc">server implementation</span>
+              <ul>
+                <li><span class="name">db/migrations/</span><span class="desc">PostgreSQL schema migrations</span></li>
+                <li><span class="name">lib/</span><span class="desc">HTTP, storage, bootstrap, permissions, and file helpers</span></li>
+                <li><span class="name">repositories/</span><span class="desc">database access layer</span></li>
+                <li><span class="name">routes/</span><span class="desc">HTTP route handlers</span></li>
+                <li><span class="name">services/</span><span class="desc">business rules and state assembly</span></li>
+                <li><span class="name">server.js</span><span class="desc">runtime entry point</span></li>
+              </ul>
+            </li>
+            <li><span class="name">test/</span><span class="desc">frontend, route, service, database, and script tests</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="panel violet">
+        <div class="panel-head">
+          <h2 class="panel-title">commands/ <span class="tag">local operations</span></h2>
+          <div class="panel-kicker">Two root double-click shortcuts, with implementation scripts kept under internal support folders.</div>
+        </div>
+        <div class="body">
+          <ul class="tree">
+            <li><span class="name">open-kpi-demo.cmd</span><span class="desc">starts the static demo and local operations console</span></li>
+            <li><span class="name">close-kpi-demo.cmd</span><span class="desc">stops the static demo and local operations console</span></li>
+            <li>
+              <span class="name">commands/internal/</span><span class="desc">support scripts hidden from the root command-file list</span>
+              <ul>
+                <li><span class="name">start-kpi-demo-static.ps1</span><span class="desc">static server launcher for port 5500</span></li>
+                <li><span class="name">stop-kpi-demo-static.ps1</span><span class="desc">static server shutdown helper</span></li>
+              </ul>
+            </li>
+            <li>
+              <span class="name">commands/ops-console-app/</span><span class="desc">owner-side local control surface</span>
+              <ul>
+                <li><span class="name">commands/ops-console-app/ops-console/server.mjs</span><span class="desc">console API, live repository map, and local tool endpoints</span></li>
+                <li><span class="name">commands/ops-console-app/ops-console/lib/</span><span class="desc">command registry, service bridge, and repository map helper</span></li>
+                <li><span class="name">commands/ops-console-app/ops-console/public/</span><span class="desc">console UI assets and repository-map.html</span></li>
+                <li><span class="name">commands/ops-console-app/scripts/</span><span class="desc">start and stop wrappers</span></li>
+              </ul>
+            </li>
+            <li><span class="name">commands/internal/var/</span><span class="desc">ignored static-demo runtime state</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="panel amber span-2">
+        <div class="panel-head">
+          <h2 class="panel-title">utility/ <span class="tag">metering and analysis</span></h2>
+          <div class="panel-kicker">Utility screens, production extraction, reporting, and metering support code.</div>
+        </div>
+        <div class="body">
+          <ul class="tree">
+            <li>
+              <span class="name">apps/</span><span class="desc">standalone utility applications</span>
+              <ul>
+                <li><span class="name">utility/apps/metering/</span><span class="desc">billing, calendar, equipment, save, team monthly, overview, and settlement UI</span></li>
+                <li><span class="name">utility/apps/production-extractor/</span><span class="desc">synthetic production data import and export helper</span></li>
+              </ul>
+            </li>
+            <li>
+              <span class="name">runtime/util/</span><span class="desc">dashboard-integrated utility runtime</span>
+              <ul>
+                <li><span class="name">analytics/</span><span class="desc">KPI analysis module</span></li>
+                <li><span class="name">energy/</span><span class="desc">energy chart and tab renderers</span></li>
+                <li><span class="name">integration/</span><span class="desc">metering bridge</span></li>
+                <li><span class="name">production/</span><span class="desc">production dataset and archive helpers</span></li>
+                <li><span class="name">report/sheet/</span><span class="desc">electric, gas, billing, modal, panel, summary, and analysis modules</span></li>
+                <li><span class="name">sections/</span><span class="desc">utility dashboard section entry points</span></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="panel rose">
+        <div class="panel-head">
+          <h2 class="panel-title">team-report/ <span class="tag">work reporting</span></h2>
+          <div class="panel-kicker">Team work screens, history views, and report rendering.</div>
+        </div>
+        <div class="body">
+          <ul class="tree">
+            <li>
+              <span class="name">runtime/work/</span><span class="desc">team work dashboard runtime</span>
+              <ul>
+                <li><span class="name">history/</span><span class="desc">history core, layout, render, and actions</span></li>
+                <li><span class="name">sections/</span><span class="desc">team-report section entry point</span></li>
+              </ul>
+            </li>
+            <li><span class="name">team-report/work-log/teams/</span><span class="desc">team-level work-log storage area</span></li>
+            <li><span class="name">work-log/</span><span class="desc">root placeholder for shared work-log storage</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="panel cyan">
+        <div class="panel-head">
+          <h2 class="panel-title">audit/ and data-entry/ <span class="tag">records</span></h2>
+          <div class="panel-kicker">Inspection, audit, and manual-entry screen boundaries.</div>
+        </div>
+        <div class="body">
+          <ul class="tree">
+            <li>
+              <span class="name">audit/runtime/audit/</span><span class="desc">audit module runtime</span>
+              <ul>
+                <li><span class="name">records/</span><span class="desc">audit record rendering and data helpers</span></li>
+                <li><span class="name">sections/</span><span class="desc">audit section entry point</span></li>
+              </ul>
+            </li>
+            <li><span class="name">data-entry/runtime/data/sections/</span><span class="desc">manual data-entry section modules</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="panel slate">
+        <div class="panel-head">
+          <h2 class="panel-title">shared-assets/ <span class="tag">public assets</span></h2>
+          <div class="panel-kicker">Committed assets must stay generic and portfolio safe.</div>
+        </div>
+        <div class="body">
+          <ul class="tree">
+            <li><span class="name">kpi-demo-logo.svg</span><span class="desc">generic KPI Demo logo</span></li>
+            <li><span class="name">no original logos</span><span class="desc">private screenshots and internal evidence files stay out of the repo</span></li>
+          </ul>
+        </div>
+      </article>
+    </section>
+
+    <section class="history" aria-label="Integrated change history">
+      <article class="panel violet">
+        <div class="panel-head">
+          <h2 class="panel-title" data-i18n-key="historyTitle">Integrated Change History <span class="tag">portfolio context</span></h2>
+        <div class="panel-kicker" data-i18n-key="historyKicker">This section replaces the separate technical and plain-language change-log files for portfolio readers.</div>
+        </div>
+        <div class="body">
+          <article class="history-entry">
+            <div class="history-meta">
+              <span class="status-badge recent">2026-04-27</span>
+              <span class="status-badge added">resume prompt</span>
+            </div>
+            <h3 data-i18n-key="historyResumePromptTitle">Reusable self-introduction prompt was added</h3>
+            <p data-i18n-key="historyResumePromptBody">A text prompt now summarizes the KPI Demo structure and functions so a resume-writing AI can reuse accurate portfolio context.</p>
+            <ul class="history-detail">
+              <li data-i18n-key="historyResumePromptDetail">Touched area: work-log prompt text file and Repository Map. Privacy: no private organization, person, site, equipment, production, metering, billing, or maintenance data was added; the prompt uses public-safe synthetic labels only. Verification: prompt readback, sensitive-string scan, and Repository Map syntax check.</li>
+            </ul>
+          </article>
+          <article class="history-entry">
+            <div class="history-meta">
+              <span class="status-badge recent">2026-04-26</span>
+              <span class="status-badge modified">privacy scan</span>
+            </div>
+            <h3 data-i18n-key="historyCompanyNameCleanupTitle">Specific organization labels were removed</h3>
+            <p data-i18n-key="historyCompanyNameCleanupBody">README and the demo bootstrap metadata now use generic organization wording instead of named demo-company labels.</p>
+            <ul class="history-detail">
+              <li data-i18n-key="historyCompanyNameCleanupDetail">Touched area: README, KPI demo seed metadata, and Repository Map. Privacy: organization labels were generalized to Demo Organization and no company-specific records were added. Verification: company-name scan across source files and markdown sensitive-string scan.</li>
+            </ul>
+          </article>
+          <article class="history-entry">
+            <div class="history-meta">
+              <span class="status-badge recent">2026-04-26</span>
+              <span class="status-badge modified">utility seed</span>
+            </div>
+            <h3 data-i18n-key="historyUtilityElectricSeedTitle">Monthly electricity demo readings were normalized</h3>
+            <p data-i18n-key="historyUtilityElectricSeedBody">The synthetic monthly electricity input sheet now uses monotonically increasing dummy meter readings so the calendar no longer flags demo rows as reading errors.</p>
+            <ul class="history-detail">
+              <li data-i18n-key="historyUtilityElectricSeedDetail">Touched area: KPI demo seed data, KPI.html cache key, and Repository Map. Privacy: no real metering or billing values were added; all values remain synthetic. Verification: JavaScript syntax check and browser check of Data Management > Utility Entry > Monthly Electricity.</li>
+            </ul>
+          </article>
+          <article class="history-entry">
+            <div class="history-meta">
+              <span class="status-badge recent">2026-04-26</span>
+              <span class="status-badge modified">agent rules</span>
+            </div>
+            <h3 data-i18n-key="historyAgentDemoRulesTitle">Agent instructions were simplified for the public demo</h3>
+            <p data-i18n-key="historyAgentDemoRulesBody">AGENTS.md now describes only demo-safe repository rules and removes wording that could read like organization-specific or non-demo preparation context.</p>
+            <ul class="history-detail">
+              <li data-i18n-key="historyAgentDemoRulesDetail">Touched area: AGENTS.md and Repository Map. Privacy: no real names, addresses, private records, or organization-specific material were added; the wording now keeps only public demo guidance. Verification: markdown sensitive-string scan and readable file check.</li>
+            </ul>
+          </article>
+          <article class="history-entry">
+            <div class="history-meta">
+              <span class="status-badge recent">2026-04-26</span>
+              <span class="status-badge modified">work history seed</span>
+            </div>
+            <h3 data-i18n-key="historyWorkLogSeedTitle">Work history demo data was filled from sanitized git-clone context</h3>
+            <p data-i18n-key="historyWorkLogSeedBody">The Team Work History screen now shows denser synthetic records, including portfolio-safe entries derived from the local git clone's runtime and public-demo preparation history.</p>
+            <ul class="history-detail">
+              <li data-i18n-key="historyWorkLogSeedDetail">Touched area: KPI demo seed data, Data Management work-history shortcut, work-history footer label, KPI.html cache keys, and Repository Map. Privacy: commit context was rewritten into generic portfolio work-log entries with synthetic teams, operators, documents, costs, and products only. Verification: JavaScript syntax check, targeted work-history smoke checks, and static browser screenshots.</li>
+            </ul>
+          </article>
+          <article class="history-entry">
+            <div class="history-meta">
+              <span class="status-badge recent">2026-04-26</span>
+              <span class="status-badge modified">screenshot set</span>
+            </div>
+            <h3 data-i18n-key="historyScreenshotSetTitle">Portfolio screenshot set was prepared</h3>
+            <p data-i18n-key="historyScreenshotSetBody">The equipment history card, legal equipment management popup, utility graph report, team calendars with production items, and owner console were prepared for Korean portfolio screenshots.</p>
+            <ul class="history-detail">
+              <li data-i18n-key="historyScreenshotSetDetail">Touched area: Korean synthetic labels in demo data, Audit legal section title, KPI.html cache keys, and Repository Map. Privacy: only synthetic teams, facilities, products, operators, agencies, and values are shown. Verification: JavaScript syntax checks, static browser screenshot pass, and owner-console health check on port 3215.</li>
+            </ul>
+          </article>
+          <article class="history-entry">
+            <div class="history-meta">
+              <span class="status-badge recent">2026-04-26</span>
+              <span class="status-badge modified">cover cleanup</span>
+            </div>
+            <h3 data-i18n-key="historyCoverSimpleTitle">Portfolio cover was simplified</h3>
+            <p data-i18n-key="historyCoverSimpleBody">The dashboard cover now keeps only the temporary KD Demo and 2026 policy wording, with the lower behavior-code section removed from the visible home screen.</p>
+            <ul class="history-detail">
+              <li data-i18n-key="historyCoverSimpleDetail">Touched area: KPI app home renderer, matching navigation source, KPI.html cache key, and Repository Map. Privacy: no private data added; the cover uses generic portfolio wording only. Verification: JavaScript syntax checks and static browser smoke for the home cover.</li>
+            </ul>
+          </article>
+          <article class="history-entry">
+            <div class="history-meta">
+              <span class="status-badge recent">2026-04-26</span>
+              <span class="status-badge modified">portfolio capture</span>
+            </div>
+            <h3 data-i18n-key="historyPortfolioPopupTitle">Portfolio capture data and popups were expanded</h3>
+            <p data-i18n-key="historyPortfolioPopupBody">The legal facility and equipment history card screens now open portfolio-friendly popups, and the synthetic utility data is filled across monthly, daily, production, billing, and document-style demo surfaces.</p>
+            <ul class="history-detail">
+              <li data-i18n-key="historyPortfolioPopupDetail">Touched area: KPI.html cache keys, demo data, utility section labels, data-entry section/runtime, audit section/runtime, data and audit stylesheets, and the optional server DB seed script. Privacy: only synthetic plants, lines, equipment, agencies, operators, documents, and utility values. Verification: syntax checks, runtime lint/tests, markdown sensitive scan, and static browser smoke for the popup screens.</li>
+            </ul>
+          </article>
+          <article class="history-entry">
+            <div class="history-meta">
+              <span class="status-badge recent">2026-04-26</span>
+              <span class="status-badge modified">repository map</span>
+            </div>
+            <h3 data-i18n-key="historyMapTitle">Repository map became the single explanation surface</h3>
+            <p data-i18n-key="historyMapBody">The owner-console repository map now carries structure, change history, privacy notes, and verification context in English and Korean.</p>
+            <ul class="history-detail">
+              <li data-i18n-key="historyMapDetail">Touched area: repository-map.html, repository-map.mjs, AGENTS.md, and README.md. Privacy: no private data added; standalone change-log documents retired. Verification: syntax checks and browser smoke for the console map.</li>
+            </ul>
+          </article>
+          <article class="history-entry">
+            <div class="history-meta">
+              <span class="status-badge recent">2026-04-26</span>
+              <span class="status-badge added">data entry</span>
+            </div>
+            <h3 data-i18n-key="historyEquipmentCardTitle">Data management received the equipment history card form</h3>
+            <p data-i18n-key="historyEquipmentCardBody">The Data Management > Equipment History Card screen now renders a structured equipment card with synthetic operating info, detail fields, maintenance history, related documents, photo preview, and print action.</p>
+            <ul class="history-detail">
+              <li data-i18n-key="historyEquipmentCardDetail">Touched area: data-entry section registry, data runtime renderer, data stylesheet, demo data, KPI.html asset loading, e2e expectation, and repository map. Privacy: original standalone preview was removed and only synthetic equipment, worker, vendor, site, and document labels are used. Verification: syntax checks and browser smoke for Data Management > Equipment History Card.</li>
+            </ul>
+          </article>
+          <article class="history-entry">
+            <div class="history-meta">
+              <span class="status-badge recent">2026-04-26</span>
+              <span class="status-badge modified">audit structure</span>
+            </div>
+            <h3 data-i18n-key="historyAuditLegalStructureTitle">Audit legal facility preview now follows reusable content blocks</h3>
+            <p data-i18n-key="historyAuditLegalStructureBody">The legal facility screen now reads equipment cards, alerts, calendar events, document status, and facility rows from structured demo data so future preview content can be added in place.</p>
+            <ul class="history-detail">
+              <li data-i18n-key="historyAuditLegalStructureDetail">Touched area: audit render runtime, audit stylesheet, demo data, and repository map. Privacy: only synthetic facility, agency, event, and document labels. Verification: syntax checks and browser smoke for Audit > Legal Facility.</li>
+            </ul>
+          </article>
+          <article class="history-entry">
+            <div class="history-meta">
+              <span class="status-badge recent">2026-04-26</span>
+              <span class="status-badge added">audit</span>
+            </div>
+            <h3 data-i18n-key="historyAuditLegalTitle">Audit legal facility preview added</h3>
+            <p data-i18n-key="historyAuditLegalBody">The Audit section now includes a legal facility preview with synthetic statutory inspection schedules, deadline status, and a document-style preview card.</p>
+            <ul class="history-detail">
+              <li data-i18n-key="historyAuditLegalDetail">Touched area: audit section registry, audit render runtime, audit save-provider guard, and demo data. Privacy: only synthetic facility, agency, and inspection labels. Verification: syntax checks and browser smoke for Audit > Legal Facility.</li>
+            </ul>
+          </article>
+          <article class="history-entry">
+            <div class="history-meta">
+              <span class="status-badge recent">2026-04-26</span>
+              <span class="status-badge modified">owner launch</span>
+            </div>
+            <h3 data-i18n-key="historyOwnerTitle">Owner-only opens the operations console in a separate window</h3>
+            <p data-i18n-key="historyOwnerBody">The KPI dashboard no longer embeds owner-only console tabs. Selecting Owner Only launches the local operations console as a detached popup that can stay open after the KPI window closes.</p>
+            <ul class="history-detail">
+              <li data-i18n-key="historyOwnerDetail">Touched area: owner section script, KPI app popup launcher, shell CSS, and KPI.html cache keys. Privacy: localhost-only behavior. Verification: popup launch browser smoke and syntax checks.</li>
+            </ul>
+          </article>
+          <article class="history-entry">
+            <div class="history-meta">
+              <span class="status-badge recent">2026-04-26</span>
+              <span class="status-badge added">commands</span>
+            </div>
+            <h3 data-i18n-key="historyCommandsTitle">The root command folder was reduced to two visible files</h3>
+            <p data-i18n-key="historyCommandsBody">Only open-kpi-demo.cmd and close-kpi-demo.cmd remain as double-click commands. Support scripts moved under commands/internal.</p>
+            <ul class="history-detail">
+              <li data-i18n-key="historyCommandsDetail">Touched area: root command files, commands/internal support scripts, .gitignore, and console command registry. Privacy: generated local runtime state stays ignored. Verification: command scan and start/stop smoke.</li>
+            </ul>
+          </article>
+          <article class="history-entry">
+            <div class="history-meta">
+              <span class="status-badge recent">2026-04-25</span>
+              <span class="status-badge modified">ports</span>
+            </div>
+            <h3 data-i18n-key="historyPortsTitle">Local ports were standardized</h3>
+            <p data-i18n-key="historyPortsBody">The public static demo stays on 5500, the optional Node runtime uses 3104, PostgreSQL uses 5400, and the operations console starts from 3215.</p>
+            <ul class="history-detail">
+              <li data-i18n-key="historyPortsDetail">Touched area: runtime config, deploy examples, Windows scripts, README, and smoke checks. Privacy: port-only configuration change. Verification: config scan plus targeted runtime checks.</li>
+            </ul>
+          </article>
+        </div>
+      </article>
+    </section>
+
+    <section class="flow" aria-label="Suggested reading flow">
+      <div class="flow-step"><strong data-i18n-key="flow1Title">1. Open the static demo</strong><span data-i18n-key="flow1Body">Run the root server on port 5500 and open KPI.html.</span></div>
+      <div class="flow-step"><strong data-i18n-key="flow2Title">2. Review demo data</strong><span data-i18n-key="flow2Body">Static data comes from kpi-runtime/demo and stays synthetic.</span></div>
+      <div class="flow-step"><strong data-i18n-key="flow3Title">3. Use the runtime only if needed</strong><span data-i18n-key="flow3Body">The Node server on 3104 and PostgreSQL on 5400 are optional.</span></div>
+      <div class="flow-step"><strong data-i18n-key="flow4Title">4. Use owner tools locally</strong><span data-i18n-key="flow4Body">The operations console targets port 3215 and remains a local helper.</span></div>
+    </section>
+
+    <aside class="note" data-i18n-key="privacyNote">
+      This map intentionally omits private data, local credentials, generated database files, and AI-tool
+      workspace folders. It describes the public portfolio structure, not every local artifact.
+    </aside>
+  </main>
+  <script>
+    const i18n = {
+      en: {
+        title: 'Repository Map',
+        subtitle: 'A public-safe visual guide to the current KPI Demo folder layout. This console page is the single portfolio-facing place for structure, change history, privacy notes, and verification context.',
+        portStatic: 'Static demo',
+        portRuntime: 'Runtime',
+        portOps: 'Ops console',
+        legendShell: 'Main shell',
+        legendRuntime: 'Node runtime',
+        legendOps: 'Operations commands',
+        legendUtility: 'Utility tools',
+        legendWork: 'Work reporting',
+        legendAudit: 'Audit and entry',
+        legendDocs: 'Rules and assets',
+        liveTitle: 'Live Repository Structure',
+        liveLoading: 'Loading the local owner-console repository map API.',
+        filterAll: 'All',
+        filterChanged: 'Changed',
+        filterRecent: 'Recent',
+        refresh: 'Refresh',
+        currentTree: 'Current Tree',
+        recentTitle: 'Recent / Added / Modified',
+        staticNote: 'Static fallback map below mirrors the public-facing structure summary when the owner-console API is not running.',
+        historyTitle: 'Integrated Change History',
+        historyKicker: 'This section replaces the separate technical and plain-language change-log files for portfolio readers.',
+        historyResumePromptTitle: 'Reusable self-introduction prompt was added',
+        historyResumePromptBody: 'A text prompt now summarizes the KPI Demo structure and functions so a resume-writing AI can reuse accurate portfolio context.',
+        historyResumePromptDetail: 'Touched area: work-log prompt text file and Repository Map. Privacy: no private organization, person, site, equipment, production, metering, billing, or maintenance data was added; the prompt uses public-safe synthetic labels only. Verification: prompt readback, sensitive-string scan, and Repository Map syntax check.',
+        historyCompanyNameCleanupTitle: 'Specific organization labels were removed',
+        historyCompanyNameCleanupBody: 'README and the demo bootstrap metadata now use generic organization wording instead of named demo-company labels.',
+        historyCompanyNameCleanupDetail: 'Touched area: README, KPI demo seed metadata, and Repository Map. Privacy: organization labels were generalized to Demo Organization and no company-specific records were added. Verification: company-name scan across source files and markdown sensitive-string scan.',
+        historyUtilityElectricSeedTitle: 'Monthly electricity demo readings were normalized',
+        historyUtilityElectricSeedBody: 'The synthetic monthly electricity input sheet now uses monotonically increasing dummy meter readings so the calendar no longer flags demo rows as reading errors.',
+        historyUtilityElectricSeedDetail: 'Touched area: KPI demo seed data, KPI.html cache key, and Repository Map. Privacy: no real metering or billing values were added; all values remain synthetic. Verification: JavaScript syntax check and browser check of Data Management > Utility Entry > Monthly Electricity.',
+        historyAgentDemoRulesTitle: 'Agent instructions were simplified for the public demo',
+        historyAgentDemoRulesBody: 'AGENTS.md now describes only demo-safe repository rules and removes wording that could read like organization-specific or non-demo preparation context.',
+        historyAgentDemoRulesDetail: 'Touched area: AGENTS.md and Repository Map. Privacy: no real names, addresses, private records, or organization-specific material were added; the wording now keeps only public demo guidance. Verification: markdown sensitive-string scan and readable file check.',
+        historyWorkLogSeedTitle: 'Work history demo data was filled from sanitized git-clone context',
+        historyWorkLogSeedBody: "The Team Work History screen now shows denser synthetic records, including portfolio-safe entries derived from the local git clone's runtime and public-demo preparation history.",
+        historyWorkLogSeedDetail: 'Touched area: KPI demo seed data, Data Management work-history shortcut, work-history footer label, KPI.html cache keys, and Repository Map. Privacy: commit context was rewritten into generic portfolio work-log entries with synthetic teams, operators, documents, costs, and products only. Verification: JavaScript syntax check, targeted work-history smoke checks, and static browser screenshots.',
+        historyScreenshotSetTitle: 'Portfolio screenshot set was prepared',
+        historyScreenshotSetBody: 'The equipment history card, legal equipment management popup, utility graph report, team calendars with production items, and owner console were prepared for Korean portfolio screenshots.',
+        historyScreenshotSetDetail: 'Touched area: Korean synthetic labels in demo data, Audit legal section title, KPI.html cache keys, and Repository Map. Privacy: only synthetic teams, facilities, products, operators, agencies, and values are shown. Verification: JavaScript syntax checks, static browser screenshot pass, and owner-console health check on port 3215.',
+        historyCoverSimpleTitle: 'Portfolio cover was simplified',
+        historyCoverSimpleBody: 'The dashboard cover now keeps only the temporary KD Demo and 2026 policy wording, with the lower behavior-code section removed from the visible home screen.',
+        historyCoverSimpleDetail: 'Touched area: KPI app home renderer, matching navigation source, KPI.html cache key, and Repository Map. Privacy: no private data added; the cover uses generic portfolio wording only. Verification: JavaScript syntax checks and static browser smoke for the home cover.',
+        historyPortfolioPopupTitle: 'Portfolio capture data and popups were expanded',
+        historyPortfolioPopupBody: 'The legal facility and equipment history card screens now open portfolio-friendly popups, and the synthetic utility data is filled across monthly, daily, production, billing, and document-style demo surfaces.',
+        historyPortfolioPopupDetail: 'Touched area: KPI.html cache keys, demo data, utility section labels, data-entry section/runtime, audit section/runtime, data and audit stylesheets, and the optional server DB seed script. Privacy: only synthetic plants, lines, equipment, agencies, operators, documents, and utility values. Verification: syntax checks, runtime lint/tests, markdown sensitive scan, and static browser smoke for the popup screens.',
+        historyMapTitle: 'Repository map became the single explanation surface',
+        historyMapBody: 'The owner-console repository map now carries structure, change history, privacy notes, and verification context in English and Korean.',
+        historyMapDetail: 'Touched area: repository-map.html, repository-map.mjs, AGENTS.md, and README.md. Privacy: no private data added; standalone change-log documents retired. Verification: syntax checks and browser smoke for the console map.',
+        historyEquipmentCardTitle: 'Data management received the equipment history card form',
+        historyEquipmentCardBody: 'The Data Management > Equipment History Card screen now renders a structured equipment card with synthetic operating info, detail fields, maintenance history, related documents, photo preview, and print action.',
+        historyEquipmentCardDetail: 'Touched area: data-entry section registry, data runtime renderer, data stylesheet, demo data, KPI.html asset loading, e2e expectation, and repository map. Privacy: original standalone preview was removed and only synthetic equipment, worker, vendor, site, and document labels are used. Verification: syntax checks and browser smoke for Data Management > Equipment History Card.',
+        historyAuditLegalStructureTitle: 'Audit legal facility preview now follows reusable content blocks',
+        historyAuditLegalStructureBody: 'The legal facility screen now reads equipment cards, alerts, calendar events, document status, and facility rows from structured demo data so future preview content can be added in place.',
+        historyAuditLegalStructureDetail: 'Touched area: audit render runtime, audit stylesheet, demo data, and repository map. Privacy: only synthetic facility, agency, event, and document labels. Verification: syntax checks and browser smoke for Audit > Legal Facility.',
+        historyAuditLegalTitle: 'Audit legal facility preview added',
+        historyAuditLegalBody: 'The Audit section now includes a legal facility preview with synthetic statutory inspection schedules, deadline status, and a document-style preview card.',
+        historyAuditLegalDetail: 'Touched area: audit section registry, audit render runtime, audit save-provider guard, and demo data. Privacy: only synthetic facility, agency, and inspection labels. Verification: syntax checks and browser smoke for Audit > Legal Facility.',
+        historyOwnerTitle: 'Owner-only opens the operations console in a separate window',
+        historyOwnerBody: 'The KPI dashboard no longer embeds owner-only console tabs. Selecting Owner Only launches the local operations console as a detached popup that can stay open after the KPI window closes.',
+        historyOwnerDetail: 'Touched area: owner section script, KPI app popup launcher, shell CSS, and KPI.html cache keys. Privacy: localhost-only behavior. Verification: popup launch browser smoke and syntax checks.',
+        historyCommandsTitle: 'The root command folder was reduced to two visible files',
+        historyCommandsBody: 'Only open-kpi-demo.cmd and close-kpi-demo.cmd remain as double-click commands. Support scripts moved under commands/internal.',
+        historyCommandsDetail: 'Touched area: root command files, commands/internal support scripts, .gitignore, and console command registry. Privacy: generated local runtime state stays ignored. Verification: command scan and start/stop smoke.',
+        historyPortsTitle: 'Local ports were standardized',
+        historyPortsBody: 'The public static demo stays on 5500, the optional Node runtime uses 3104, PostgreSQL uses 5400, and the operations console starts from 3215.',
+        historyPortsDetail: 'Touched area: runtime config, deploy examples, Windows scripts, README, and smoke checks. Privacy: port-only configuration change. Verification: config scan plus targeted runtime checks.',
+        flow1Title: '1. Open the static demo',
+        flow1Body: 'Run the root server on port 5500 and open KPI.html.',
+        flow2Title: '2. Review demo data',
+        flow2Body: 'Static data comes from kpi-runtime/demo and stays synthetic.',
+        flow3Title: '3. Use the runtime only if needed',
+        flow3Body: 'The Node server on 3104 and PostgreSQL on 5400 are optional.',
+        flow4Title: '4. Use owner tools locally',
+        flow4Body: 'The operations console targets port 3215 and remains a local helper.',
+        privacyNote: 'This map intentionally omits private data, local credentials, generated database files, and AI-tool workspace folders. It describes the public portfolio structure, not every local artifact.',
+        loadingLive: 'Loading live repository data.',
+        liveUnavailable: 'Owner-console repository API is not available.',
+        liveUnavailablePrefix: 'Live map unavailable',
+        updated: 'Updated',
+        files: 'Files',
+        folders: 'Folders',
+        modified: 'Modified',
+        added: 'Added',
+        untracked: 'Untracked',
+        recent: 'Recent',
+        fileCount: 'files',
+        noRecent: 'No recent or changed files in the visible scan.'
+      },
+      ko: {
+        title: '저장소 지도',
+        subtitle: '현재 KPI Demo 폴더 구조를 공개 포트폴리오 기준으로 보여주는 화면입니다. 구조, 변경 이력, 개인정보 보호 기준, 검증 맥락을 이 Repository Map 한 곳에 모았습니다.',
+        portStatic: '정적 데모',
+        portRuntime: '런타임',
+        portOps: '운영 콘솔',
+        legendShell: '메인 화면',
+        legendRuntime: 'Node 런타임',
+        legendOps: '운영 명령',
+        legendUtility: '유틸리티',
+        legendWork: '업무 리포트',
+        legendAudit: '점검과 입력',
+        legendDocs: '규칙과 자산',
+        liveTitle: '실시간 저장소 구조',
+        liveLoading: '로컬 오너 콘솔의 저장소 지도 API를 불러오는 중입니다.',
+        filterAll: '전체',
+        filterChanged: '변경',
+        filterRecent: '최근',
+        refresh: '새로고침',
+        currentTree: '현재 트리',
+        recentTitle: '최근 / 추가 / 수정',
+        staticNote: '오너 콘솔 API가 꺼져 있으면 아래 정적 지도가 공개용 구조 요약을 대신 보여줍니다.',
+        historyTitle: '통합 변경 이력',
+        historyKicker: '이 영역이 포트폴리오 독자를 위한 별도 기술/쉬운 설명 변경 기록 문서를 대신합니다.',
+        historyResumePromptTitle: '자소서용 AI 전달 프롬프트 추가',
+        historyResumePromptBody: '자소서 작성 AI가 KPI Demo의 구조와 기능을 정확히 이해할 수 있도록 재사용 가능한 텍스트 프롬프트를 work-log에 추가했습니다.',
+        historyResumePromptDetail: '이번에 건드린 위치: work-log 프롬프트 텍스트 파일, Repository Map. 개인정보 영향: 실제 조직, 사람, 현장, 설비, 생산, 검침, 청구, 정비 데이터 추가 없음; 공개 안전 합성 라벨만 사용. 검증: 프롬프트 파일 읽기 확인, 민감 문자열 스캔, Repository Map 문법 확인.',
+        historyCompanyNameCleanupTitle: '특정 조직 라벨 제거',
+        historyCompanyNameCleanupBody: 'README와 데모 초기 데이터의 조직명 표기를 특정 회사명처럼 보이지 않도록 일반 문구로 바꾸었습니다.',
+        historyCompanyNameCleanupDetail: '이번에 건드린 위치: README, KPI 데모 seed 메타데이터, Repository Map. 개인정보 영향: 조직 라벨을 Demo Organization으로 일반화했고 회사별 기록은 추가하지 않았습니다. 검증: 소스 전체 회사명 스캔과 마크다운 민감 문자열 스캔.',
+        historyUtilityElectricSeedTitle: '월간 전기 더미 검침값 정리',
+        historyUtilityElectricSeedBody: '월간 전기 기입 시트의 합성 검침값이 날짜가 지날수록 작아지지 않도록 조정해서, 데모 달력에 오류 배지가 뜨지 않게 했습니다.',
+        historyUtilityElectricSeedDetail: '이번에 건드린 위치: KPI 데모 seed 데이터, KPI.html 캐시 키, Repository Map. 개인정보 영향: 실제 검침값이나 청구값 추가 없음; 모든 값은 합성 데이터 유지. 검증: JavaScript 문법 확인, 데이터 관리 > 유틸리티 기입 > 월간 전기 브라우저 확인.',
+        historyAgentDemoRulesTitle: '에이전트 규칙을 공개 데모용으로 단순화',
+        historyAgentDemoRulesBody: 'AGENTS.md는 이제 데모 저장소 안전 규칙만 설명하고, 실제 조직이나 데모 외 준비 맥락처럼 보일 수 있는 문구를 제거했습니다.',
+        historyAgentDemoRulesDetail: '이번에 건드린 위치: AGENTS.md, Repository Map. 개인정보 영향: 실제 이름, 주소, 비공개 기록, 특정 조직 자료 추가 없음; 공개 데모용 안내만 남김. 검증: markdown 민감 문자열 스캔, 파일 읽기 확인.',
+        historyWorkLogSeedTitle: '작업내역 더미 데이터를 git clone 맥락 기반으로 보강',
+        historyWorkLogSeedBody: '팀별 작업내역 화면에 더 촘촘한 합성 기록을 넣고, 로컬 git clone의 런타임 전환과 공개 데모 준비 이력을 개인정보 없는 포트폴리오용 항목으로 바꿔 담았습니다.',
+        historyWorkLogSeedDetail: '이번에 건드린 위치: KPI 데모 seed 데이터, 데이터 관리 작업내역 바로가기, 작업내역 footer 문구, KPI.html 캐시 키, Repository Map. 개인정보 영향: 커밋 맥락은 일반 작업내역 문장으로 재작성했고 합성 팀, 작업자, 문서, 비용, 제품만 사용. 검증: JavaScript 문법 확인, 작업내역 대상 스모크 확인, 정적 브라우저 스크린샷.',
+        historyScreenshotSetTitle: '포트폴리오 스크린샷 세트 준비',
+        historyScreenshotSetBody: '설비 이력카드, 법정 설비 관리 팝업, 유틸리티 그래프 보고서, 생산 품목이 보이는 팀별 캘린더, 오너 콘솔을 한국어 포트폴리오 캡처용으로 준비했습니다.',
+        historyScreenshotSetDetail: '이번에 건드린 위치: 데모 데이터의 한국어 합성 라벨, Audit 법정 설비 섹션 제목, KPI.html 캐시 키, Repository Map. 개인정보 영향: 합성 팀, 설비, 제품, 작업자, 기관, 값만 표시. 검증: JavaScript 문법 확인, 정적 브라우저 스크린샷 통과, 3215 오너 콘솔 헬스 체크.',
+        historyCoverSimpleTitle: '포트폴리오 표지 간소화',
+        historyCoverSimpleBody: '대시보드 표지는 임시 문구인 KD 데모와 26년 방침만 남기고, 아래 행동강령 영역은 보이는 홈 화면에서 제거했습니다.',
+        historyCoverSimpleDetail: '이번에 건드린 위치: KPI 앱 홈 렌더러, 동일한 내비게이션 원본, KPI.html 캐시 키, Repository Map. 개인정보 영향: 개인정보 추가 없음, 표지는 일반 포트폴리오 문구만 사용. 검증: JavaScript 문법 확인과 홈 표지 정적 브라우저 스모크.',
+        historyPortfolioPopupTitle: '포트폴리오 캡처용 데이터와 팝업 확장',
+        historyPortfolioPopupBody: '법정 설비와 설비 이력 카드 화면이 포트폴리오 캡처에 맞는 팝업으로 열리고, 유틸리티 합성 데이터는 월별, 일별, 생산량, 정산, 문서형 예시 화면까지 촘촘하게 채웠습니다.',
+        historyPortfolioPopupDetail: '이번에 건드린 위치: KPI.html 캐시 키, 데모 데이터, 유틸리티 섹션 문구, data-entry 섹션/런타임, audit 섹션/런타임, data 및 audit 스타일시트, 선택형 서버 DB seed 스크립트. 개인정보 영향: 합성 공장, 라인, 설비, 기관, 작업자, 문서, 유틸리티 값만 사용. 검증: 문법 확인, 런타임 lint/test, 마크다운 민감 문자열 스캔, 팝업 화면 정적 브라우저 스모크.',
+        historyMapTitle: 'Repository Map을 단일 설명 화면으로 통합',
+        historyMapBody: '오너 콘솔의 Repository Map 안에서 구조, 변경 이력, 개인정보 보호 기준, 검증 맥락을 영어와 한국어로 함께 보여줍니다.',
+        historyMapDetail: '이번에 건드린 위치: repository-map.html, repository-map.mjs, AGENTS.md, README.md. 개인정보 영향: 비공개 데이터 추가 없음, 별도 변경 기록 문서는 정리. 검증: 콘솔 지도 문법 확인과 브라우저 스모크.',
+        historyEquipmentCardTitle: '데이터 관리에 설비 이력카드 양식 반영',
+        historyEquipmentCardBody: '데이터 관리 > 설비 이력 카드 화면이 합성 가동정보, 상세 항목, 정비 이력, 관련 문서, 사진 미리보기, PDF 출력 버튼을 가진 구조화된 설비 카드로 렌더링됩니다.',
+        historyEquipmentCardDetail: '이번에 건드린 위치: data-entry 섹션 등록부, data 런타임 렌더러, data 스타일시트, 데모 데이터, KPI.html 자산 로딩, e2e 기대값, Repository Map. 개인정보 영향: 기존 독립 프리뷰는 제거했고 합성 설비명, 작업자, 제조사, 위치, 문서 라벨만 사용. 검증: 문법 확인과 Data Management > Equipment History Card 브라우저 스모크.',
+        historyAuditLegalStructureTitle: '오디트 법정 설비를 확장 가능한 콘텐츠 구조로 정리',
+        historyAuditLegalStructureBody: '법정 설비 화면이 설비 카드, 중요 알림, 일정 이벤트, 문서 현황, 설비 목록을 구조화된 데모 데이터에서 읽도록 바뀌어 앞으로 같은 위치에 내용을 더 붙일 수 있습니다.',
+        historyAuditLegalStructureDetail: '이번에 건드린 위치: 오디트 렌더 런타임, 오디트 스타일시트, 데모 데이터, Repository Map. 개인정보 영향: 합성 설비명, 기관명, 이벤트명, 문서 라벨만 사용. 검증: 문법 확인과 Audit > Legal Facility 브라우저 스모크.',
+        historyAuditLegalTitle: '오디트 법정 설비 프리뷰 추가',
+        historyAuditLegalBody: '오디트 섹션에 합성 법정 점검 일정, 기한 상태, 문서형 프리뷰 카드를 보여주는 법정 설비 화면을 추가했습니다.',
+        historyAuditLegalDetail: '이번에 건드린 위치: 오디트 섹션 등록부, 오디트 렌더 런타임, 오디트 저장 provider 보호 조건, 데모 데이터. 개인정보 영향: 합성 설비명, 기관명, 점검 라벨만 사용. 검증: 문법 확인과 Audit > Legal Facility 브라우저 스모크.',
+        historyOwnerTitle: '오너 전용은 운영 콘솔을 별도 창으로 실행',
+        historyOwnerBody: 'KPI 대시보드 안에 오너용 콘솔 탭을 더 이상 넣지 않습니다. 오너 전용을 누르면 KPI 창과 분리된 팝업으로 로컬 운영 콘솔이 열리고, KPI 창을 닫아도 그 창은 유지됩니다.',
+        historyOwnerDetail: '이번에 건드린 위치: 오너 섹션 스크립트, KPI 앱 팝업 실행부, shell CSS, KPI.html 캐시 키. 개인정보 영향: localhost 동작만 변경. 검증: 팝업 실행 브라우저 스모크와 문법 확인.',
+        historyCommandsTitle: '루트 commands 폴더의 실행 파일을 두 개로 정리',
+        historyCommandsBody: '더블클릭용 파일은 open-kpi-demo.cmd와 close-kpi-demo.cmd만 남겼고, 보조 스크립트는 commands/internal로 옮겼습니다.',
+        historyCommandsDetail: '이번에 건드린 위치: 루트 command 파일, commands/internal 보조 스크립트, .gitignore, 콘솔 명령 레지스트리. 개인정보 영향: 생성되는 로컬 실행 상태는 계속 Git에서 제외. 검증: 명령 파일 스캔과 시작/종료 스모크.',
+        historyPortsTitle: '로컬 포트 기준을 통일',
+        historyPortsBody: '정적 데모는 5500, 선택형 Node 런타임은 3104, PostgreSQL은 5400, 운영 콘솔은 3215부터 사용합니다.',
+        historyPortsDetail: '이번에 건드린 위치: 런타임 설정, 배포 예시, Windows 스크립트, README, 스모크 체크. 개인정보 영향: 포트 설정만 변경. 검증: 설정 스캔과 대상 런타임 확인.',
+        flow1Title: '1. 정적 데모 열기',
+        flow1Body: '루트 서버를 5500 포트로 열고 KPI.html을 실행합니다.',
+        flow2Title: '2. 데모 데이터 확인',
+        flow2Body: '정적 데이터는 kpi-runtime/demo에서 오며 모두 합성 데이터입니다.',
+        flow3Title: '3. 필요할 때만 런타임 사용',
+        flow3Body: '3104 Node 서버와 5400 PostgreSQL은 선택형입니다.',
+        flow4Title: '4. 오너 도구는 로컬에서만 사용',
+        flow4Body: '운영 콘솔은 3215 포트를 기준으로 하는 로컬 보조 도구입니다.',
+        privacyNote: '이 지도는 민감 데이터, 로컬 자격 증명, 생성된 DB 파일, AI 도구 작업 폴더를 의도적으로 제외합니다. 모든 로컬 산출물이 아니라 공개 포트폴리오 구조를 설명합니다.',
+        loadingLive: '실시간 저장소 데이터를 불러오는 중입니다.',
+        liveUnavailable: '오너 콘솔 저장소 API를 사용할 수 없습니다.',
+        liveUnavailablePrefix: '실시간 지도를 불러오지 못했습니다',
+        updated: '업데이트',
+        files: '파일',
+        folders: '폴더',
+        modified: '수정',
+        added: '추가',
+        untracked: '미추적',
+        recent: '최근',
+        fileCount: '개 파일',
+        noRecent: '표시할 최근 또는 변경 파일이 없습니다.'
+      }
+    };
+    const staticPhraseKo = {
+      'public entry': '공개 진입점',
+      'dashboard shell': '대시보드 셸',
+      'optional backend': '선택형 백엔드',
+      'local operations': '로컬 운영',
+      'metering and analysis': '계량과 분석',
+      'work history': '업무 이력',
+      'audit and data entry': '점검과 입력',
+      'public assets': '공개 자산',
+      'Top-level documentation and repository configuration visible in the public summary.': '공개 요약에 보이는 최상위 문서와 저장소 설정입니다.',
+      'Shared front-end shell and optional server-backed runtime surface.': '공통 프런트엔드 셸과 선택형 서버 런타임 영역입니다.',
+      'The server version keeps API, repository, service, migration, and test layers separate.': '서버 버전은 API, 저장소, 서비스, 마이그레이션, 테스트 계층을 분리해 둡니다.',
+      'Two root double-click shortcuts, with implementation scripts kept under internal support folders.': '루트에는 더블클릭 명령 두 개만 두고, 실제 구현 스크립트는 내부 보조 폴더에 둡니다.',
+      'Utility screens, production extraction, reporting, and metering support code.': '유틸리티 화면, 생산 데이터 추출, 리포트, 계량 보조 코드입니다.',
+      'Work-log, team calendar, and work-history reporting surfaces.': '작업 로그, 팀 캘린더, 업무 이력 리포트 화면입니다.',
+      'Audit screens and manual entry pages use public-safe synthetic labels.': '점검 화면과 수기 입력 화면은 공개 가능한 합성 라벨을 사용합니다.',
+      'Committed assets must stay generic and portfolio safe.': '커밋되는 자산은 일반적이고 포트폴리오 공개에 안전해야 합니다.',
+      'GitHub workflow definitions': 'GitHub 워크플로 정의',
+      'local Git hook configuration': '로컬 Git hook 설정',
+      'line-ending normalization rules': '줄바꿈 정규화 규칙',
+      'ignored local state and generated artifacts': '무시되는 로컬 상태와 생성 산출물',
+      'single authority document for AI work rules': 'AI 작업 기준을 담은 단일 권한 문서',
+      'run and demo-mode guide': '실행과 데모 모드 안내',
+      'main static dashboard shell': '메인 정적 대시보드 셸',
+      'bilingual structure, change history, privacy, and verification guide inside the owner console': '오너 콘솔 안의 한영 구조, 변경 이력, 개인정보 보호, 검증 안내',
+      'navigation, viewer, auth, and shell JS': '내비게이션, 뷰어, 인증, 셸 JS',
+      'shell, work, metering, and audit CSS': '셸, 업무, 계량, 점검 CSS',
+      'shared browser runtime logic': '공통 브라우저 런타임 로직',
+      'synthetic static fixtures': '합성 정적 fixture',
+      'dashboard section registry and builders': '대시보드 섹션 등록과 빌더',
+      'optional Node and PostgreSQL runtime': '선택형 Node와 PostgreSQL 런타임',
+      'Windows local and Ubuntu reference deployment examples': 'Windows 로컬과 Ubuntu 참조 배포 예시',
+      'Playwright browser smoke checks': 'Playwright 브라우저 스모크 확인',
+      'start, stop, backup, restore, account, and DB helpers': '시작, 종료, 백업, 복원, 계정, DB 보조 스크립트',
+      'server implementation': '서버 구현',
+      'PostgreSQL schema migrations': 'PostgreSQL 스키마 마이그레이션',
+      'HTTP, storage, bootstrap, permissions, and file helpers': 'HTTP, 저장소, 부트스트랩, 권한, 파일 보조 기능',
+      'database access layer': '데이터베이스 접근 계층',
+      'HTTP route handlers': 'HTTP 라우트 처리',
+      'business rules and state assembly': '업무 규칙과 상태 조립',
+      'runtime entry point': '런타임 진입점',
+      'frontend, route, service, database, and script tests': '프런트엔드, 라우트, 서비스, DB, 스크립트 테스트',
+      'starts the static demo and local operations console': '정적 데모와 로컬 운영 콘솔을 켭니다',
+      'stops the static demo and local operations console': '정적 데모와 로컬 운영 콘솔을 끕니다',
+      'support scripts hidden from the root command-file list': '루트 실행 파일 목록에서는 숨긴 보조 스크립트',
+      'static server launcher for port 5500': '5500 포트 정적 서버 시작 스크립트',
+      'static server shutdown helper': '정적 서버 종료 보조 스크립트',
+      'owner-side local control surface': '오너용 로컬 제어 화면',
+      'console API, live repository map, and local tool endpoints': '콘솔 API, 실시간 저장소 지도, 로컬 도구 엔드포인트',
+      'command registry, service bridge, and repository map helper': '명령 레지스트리, 서비스 브리지, 저장소 지도 보조 기능',
+      'console UI assets and repository-map.html': '콘솔 UI 자산과 repository-map.html',
+      'start and stop wrappers': '시작과 종료 wrapper',
+      'ignored static-demo runtime state': '무시되는 정적 데모 실행 상태',
+      'billing, calendar, equipment, save, team monthly, overview, and settlement UI': '청구, 캘린더, 설비, 저장, 팀 월간, 현황, 정산 UI',
+      'synthetic production data import and export helper': '합성 생산 데이터 가져오기/내보내기 보조 도구',
+      'dashboard-integrated utility runtime': '대시보드 통합 유틸리티 런타임',
+      'energy, analytics, report, production, maintenance, and metering modules': '에너지, 분석, 리포트, 생산, 정비, 계량 모듈',
+      'work-log UI and history runtime': '업무 로그 UI와 이력 런타임',
+      'team calendar, production, and history modules': '팀 캘린더, 생산, 이력 모듈',
+      'audit record UI and runtime modules': '점검 기록 UI와 런타임 모듈',
+      'manual data-entry section modules': '수기 데이터 입력 섹션 모듈',
+      'generic KPI Demo logo': '일반 KPI Demo 로고',
+      'private screenshots and internal evidence files stay out of the repo': '비공개 스크린샷과 내부 증빙 파일은 저장소에 넣지 않습니다'
+    };
+    const liveState = {
+      filter: 'all',
+      payload: null,
+      refreshTimer: 0,
+      language: 'en'
+    };
+    const liveElements = {
+      sourceChip: document.getElementById('live-source-chip'),
+      sourceText: document.getElementById('live-source-text'),
+      summary: document.getElementById('live-summary'),
+      tree: document.getElementById('live-tree'),
+      feedback: document.getElementById('live-feedback'),
+      recent: document.getElementById('recent-list'),
+      recentCount: document.getElementById('live-recent-count'),
+      generatedAt: document.getElementById('live-generated-at'),
+      staticMap: document.getElementById('static-map'),
+      staticNote: document.getElementById('static-map-note')
+    };
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function t(key) {
+      return i18n[liveState.language]?.[key] || i18n.en[key] || key;
+    }
+
+    function labelFor(node, key, fallback = '') {
+      if (liveState.language === 'ko') {
+        return node?.[`${key}Ko`] || node?.[key] || fallback;
+      }
+      return node?.[key] || fallback;
+    }
+
+    function applyLanguage() {
+      document.documentElement.lang = liveState.language === 'ko' ? 'ko' : 'en';
+      document.querySelectorAll('[data-i18n-key]').forEach((element) => {
+        element.textContent = t(element.dataset.i18nKey || '');
+      });
+      document.querySelectorAll('.panel-kicker, .desc, .tag').forEach((element) => {
+        if (element.id === 'live-source-chip') return;
+        if (element.dataset.i18nKey) return;
+        if (!element.dataset.i18nSource) {
+          element.dataset.i18nSource = element.textContent.trim().replace(/\s+/g, ' ');
+        }
+        const source = element.dataset.i18nSource;
+        element.textContent = liveState.language === 'ko' ? (staticPhraseKo[source] || source) : source;
+      });
+      document.querySelectorAll('[data-lang]').forEach((button) => {
+        button.classList.toggle('is-active', button.dataset.lang === liveState.language);
+        button.setAttribute('aria-pressed', button.dataset.lang === liveState.language ? 'true' : 'false');
+      });
+      if (liveState.payload) {
+        renderLiveMap(liveState.payload, liveState.endpoint || '');
+      } else if (liveElements.feedback && !liveElements.feedback.classList.contains('is-hidden')) {
+        liveElements.feedback.textContent = t('loadingLive');
+      }
+    }
+
+    function formatDateTime(value) {
+      const date = value ? new Date(value) : null;
+      if (!date || Number.isNaN(date.getTime())) return '-';
+      return new Intl.DateTimeFormat('en', {
+        month: 'short',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      }).format(date);
+    }
+
+    function getRepositoryMapEndpoints() {
+      const candidates = [];
+      const host = String(window.location.hostname || '').trim();
+      if (host) {
+        candidates.push(`http://${host}:3215/api/repository-map`);
+      }
+      candidates.push('http://127.0.0.1:3215/api/repository-map');
+      candidates.push('http://localhost:3215/api/repository-map');
+      return Array.from(new Set(candidates));
+    }
+
+    async function fetchRepositoryMap() {
+      const errors = [];
+      for (const endpoint of getRepositoryMapEndpoints()) {
+        try {
+          const response = await fetch(endpoint, { cache: 'no-store' });
+          const payload = await response.json();
+          if (response.ok && payload?.ok === true) {
+            return { endpoint, payload };
+          }
+          errors.push(`${endpoint}: ${payload?.error || response.status}`);
+        } catch (error) {
+          errors.push(`${endpoint}: ${error.message}`);
+        }
+      }
+      throw new Error(errors.join(' / '));
+    }
+
+    function badgeHtml(label, className = '') {
+      if (!label) return '';
+      return `<span class="status-badge ${escapeHtml(className)}">${escapeHtml(label)}</span>`;
+    }
+
+    function buildBadges(node) {
+      return [
+        badgeHtml(labelFor(node, 'statusLabel'), node.status),
+        badgeHtml(labelFor(node, 'recentLabel'), 'recent'),
+        badgeHtml(labelFor(node, 'label'), node.tone)
+      ].filter(Boolean).join('');
+    }
+
+    function nodeMatchesFilter(node) {
+      if (liveState.filter === 'all') return true;
+      if (liveState.filter === 'changed') return Boolean(node.status);
+      if (liveState.filter === 'recent') return Boolean(node.recentLabel);
+      return true;
+    }
+
+    function hasVisibleDescendant(node) {
+      if (nodeMatchesFilter(node)) return true;
+      return Array.isArray(node.children) && node.children.some(hasVisibleDescendant);
+    }
+
+    function renderNodeRow(node) {
+      const badges = buildBadges(node);
+      const descText = labelFor(node, 'desc');
+      const desc = descText ? `<span class="live-node-desc">${escapeHtml(descText)}</span>` : '';
+      return `
+        <span class="live-node-row">
+          <i class="live-node-icon ${escapeHtml(node.tone || '')}" aria-hidden="true"></i>
+          <span class="live-node-name">${escapeHtml(node.path || node.name)}</span>
+          ${desc}
+          <span class="badge-list">${badges}</span>
+        </span>
+      `;
+    }
+
+    function renderTreeNode(node, depth = 0) {
+      if (!hasVisibleDescendant(node)) return '';
+      const children = Array.isArray(node.children)
+        ? node.children.map((child) => renderTreeNode(child, depth + 1)).filter(Boolean).join('')
+        : '';
+      if (node.type === 'directory') {
+        const shouldOpen = liveState.filter !== 'all' || depth <= 1;
+        return `
+          <li>
+            <details ${shouldOpen ? 'open' : ''}>
+              <summary>${renderNodeRow(node)}</summary>
+              ${children ? `<ul class="live-node-list">${children}</ul>` : ''}
+            </details>
+          </li>
+        `;
+      }
+      return `<li>${renderNodeRow(node)}</li>`;
+    }
+
+    function renderSummary(payload) {
+      const totals = payload.totals || {};
+      const cards = [
+        [t('files'), totals.files || 0],
+        [t('folders'), totals.directories || 0],
+        [t('modified'), totals.modified || 0],
+        [t('added'), totals.added || 0],
+        [t('untracked'), totals.untracked || 0],
+        [t('recent'), totals.recent || 0]
+      ];
+      liveElements.summary.innerHTML = cards.map(([label, value]) => `
+        <article class="live-summary-card">
+          <span class="live-summary-label">${escapeHtml(label)}</span>
+          <span class="live-summary-value">${escapeHtml(value)}</span>
+        </article>
+      `).join('');
+    }
+
+    function renderRecent(payload) {
+      const recent = Array.isArray(payload.recent) ? payload.recent : [];
+      liveElements.recentCount.textContent = `${recent.length} ${t('fileCount')}`;
+      if (!recent.length) {
+        liveElements.recent.innerHTML = `<div class="live-feedback">${escapeHtml(t('noRecent'))}</div>`;
+        return;
+      }
+      liveElements.recent.innerHTML = recent.map((node) => `
+        <article class="recent-item">
+          <div class="recent-path">${escapeHtml(node.path || node.name)}</div>
+          <div class="recent-meta">
+            ${badgeHtml(labelFor(node, 'statusLabel'), node.status)}
+            ${badgeHtml(labelFor(node, 'recentLabel'), 'recent')}
+            <span>${escapeHtml(formatDateTime(node.updatedAt))}</span>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function renderLiveMap(payload, endpoint) {
+      liveState.payload = payload;
+      liveState.endpoint = endpoint;
+      liveElements.sourceChip.textContent = payload.git?.available ? 'live git + fs' : 'live fs';
+      liveElements.sourceText.textContent = liveState.language === 'ko'
+        ? `${endpoint}에서 불러왔습니다. .git, node_modules, runtime var, logs, env 파일은 제외합니다.`
+        : `Loaded from ${endpoint}. Excluded: .git, node_modules, runtime var, logs, and env files.`;
+      liveElements.generatedAt.textContent = `${t('updated')} ${formatDateTime(payload.generatedAt)}`;
+      liveElements.feedback.classList.add('is-hidden');
+      liveElements.staticMap.classList.add('is-hidden');
+      liveElements.staticNote.classList.add('is-hidden');
+      renderSummary(payload);
+      renderRecent(payload);
+      liveElements.tree.innerHTML = `<ul class="live-node-list">${renderTreeNode(payload.tree)}</ul>`;
+    }
+
+    async function loadLiveMap() {
+      liveElements.sourceChip.textContent = 'loading';
+      liveElements.feedback.classList.remove('is-hidden');
+      liveElements.feedback.textContent = t('loadingLive');
+      try {
+        const { endpoint, payload } = await fetchRepositoryMap();
+        renderLiveMap(payload, endpoint);
+      } catch (error) {
+        liveElements.sourceChip.textContent = 'static fallback';
+        liveElements.sourceText.textContent = t('liveUnavailable');
+        liveElements.feedback.classList.remove('is-hidden');
+        liveElements.feedback.textContent = `${t('liveUnavailablePrefix')}: ${error.message}`;
+        liveElements.staticMap.classList.remove('is-hidden');
+        liveElements.staticNote.classList.remove('is-hidden');
+      }
+    }
+
+    document.querySelectorAll('[data-filter]').forEach((button) => {
+      button.addEventListener('click', () => {
+        liveState.filter = button.dataset.filter || 'all';
+        document.querySelectorAll('[data-filter]').forEach((item) => {
+          item.classList.toggle('is-active', item === button);
+        });
+        if (liveState.payload) {
+          liveElements.tree.innerHTML = `<ul class="live-node-list">${renderTreeNode(liveState.payload.tree)}</ul>`;
+        }
+      });
+    });
+
+    document.getElementById('live-refresh')?.addEventListener('click', () => {
+      void loadLiveMap();
+    });
+
+    document.querySelectorAll('[data-lang]').forEach((button) => {
+      button.addEventListener('click', () => {
+        liveState.language = button.dataset.lang === 'ko' ? 'ko' : 'en';
+        applyLanguage();
+      });
+    });
+
+    applyLanguage();
+    void loadLiveMap();
+    liveState.refreshTimer = window.setInterval(() => {
+      void loadLiveMap();
+    }, 20000);
+  </script>
+</body>
+</html>

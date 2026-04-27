@@ -1,0 +1,427 @@
+아래 내용을 자소서 작성 AI에게 그대로 전달하세요.
+
+목적:
+이 문서는 KPI Demo를 모르는 AI가 프로젝트의 구조, 기능, 기술적 난이도, 포트폴리오 설명 포인트를 이해한 뒤 자기소개서, 경력기술서, 프로젝트 경험 문항, 면접 답변 초안을 작성하도록 돕는 재사용 프롬프트입니다.
+
+반드시 지킬 규칙:
+1. KPI Demo는 공개 포트폴리오용 제조 운영 KPI 데모입니다.
+2. 실제 회사명, 고객명, 직원명, 공장명, 설비명, 생산값, 검침값, 청구값은 쓰지 마세요.
+3. 조직은 Demo Organization, 현장은 Plant A/Plant B, 라인은 Line Alpha/Line Beta/Line Gamma/Line Delta, 설비는 Demo Boiler A나 Sample Equipment 같은 합성 라벨로 설명하세요.
+4. 실제 납품 시스템이라고 단정하지 마세요. "제조 운영 업무 흐름을 공개 가능한 합성 데이터로 재구성한 포트폴리오 데모"라고 표현하세요.
+5. 수치 성과는 사용자가 제공하지 않으면 만들지 마세요. 정량 성과가 없을 때는 "반복 입력을 줄이는 구조", "검증 가능한 데이터 흐름", "운영 점검을 쉽게 하는 도구"처럼 정성적으로 작성하세요.
+6. 사용자의 실제 역할 범위가 불명확하면 먼저 질문하세요.
+
+AI가 먼저 물어볼 질문:
+- 지원 직무와 회사/공고는 무엇인가요?
+- 자소서 문항과 글자 수 제한은 무엇인가요?
+- 이 프로젝트에서 실제로 맡은 범위는 어디까지인가요? 예: UI 설계, 프런트엔드, 백엔드, DB, 테스트, 문서화, 운영 스크립트
+- 강조하고 싶은 역량은 무엇인가요? 예: 문제 해결, 자동화, 데이터 정합성, UI/UX, 운영 안정성, 개인정보 보호
+- 실제 수치 성과가 있나요? 없으면 임의 수치를 만들지 않습니다.
+
+프로젝트 한 줄 요약:
+KPI Demo는 제조 운영 데이터를 합성 데이터로 재구성해 팀별 작업 일정, 유틸리티 검침/정산, 생산량 Excel 추출, 오디트, 설비 이력, 로컬 운영 콘솔, 선택형 Node/PostgreSQL 런타임까지 보여주는 포트폴리오용 KPI 관리 대시보드입니다.
+
+프로젝트 기본 정보:
+- 프로젝트명: KPI Demo
+- 런타임명: KPI Demo Runtime
+- 정적 데모 포트: 5500
+- 선택형 Node 런타임 포트: 3104
+- 선택형 PostgreSQL 포트: 5400
+- 로컬 운영 콘솔 포트: 3215
+- 기본 진입점: KPI.html
+- 선택형 런타임 데모 로그인: 1234 / 1234
+- 데이터 정책: 공개 가능한 합성 라벨과 더미 값만 사용
+
+전체 폴더 구조:
+- KPI.html
+  - 정적 포트폴리오 대시보드 진입점입니다.
+  - Tailwind CSS, Font Awesome, Noto Sans KR, XLSX를 불러옵니다.
+  - 데모 데이터, 섹션 정의, 공통 런타임, 업무/유틸리티/오디트/데이터 런타임, 앱 셸을 순서대로 로드합니다.
+- kpi-runtime/
+  - 대시보드 셸, 섹션 등록, 합성 데모 데이터, 선택형 Node 런타임의 중심 영역입니다.
+  - app/: 홈, 사이드바, 상세 뷰어, 전역 저장, 인증 표시, 오너 콘솔 팝업 실행
+  - app/styles/: shell, work, metering, data, audit CSS
+  - core/KPI.core.js: 브라우저 런타임 레지스트리
+  - demo/KPI.demo-data.js: 정적 데모 합성 fixture
+  - sections/: work, util, audit, data, owner 섹션 등록
+  - internal-server/: Node.js/PostgreSQL 선택형 서버 런타임
+- utility/
+  - 전기/가스/폐수/생산량 입력, 검침, 정산, 분석, 리포트, Excel 생산량 추출 기능입니다.
+- team-report/
+  - 팀별 작업 캘린더, 생산량 연동, 작업 이력, 주간/월간 보고 렌더링 기능입니다.
+- audit/
+  - 조도(Lux), 법정 설비 관리, 안전 관리 placeholder를 담당합니다.
+- data-entry/
+  - 유틸리티 기입, 작업 이력 기입 바로가기, 설비 이력 카드 화면을 제공합니다.
+- commands/
+  - open-kpi-demo.cmd와 close-kpi-demo.cmd, 로컬 운영 콘솔, 내부 보조 스크립트가 있습니다.
+- shared-assets/
+  - 공개 가능한 KPI Demo 로고 SVG를 보관합니다.
+- work-log/
+  - 작업 보조 자료를 두는 영역입니다.
+
+브라우저 런타임 구조:
+- KpiRuntime은 섹션별 기능을 느슨하게 연결하는 전역 레지스트리입니다.
+- registerSectionRenderer: 섹션 화면 렌더러 등록
+- registerSectionInitializer: 섹션 진입 후 초기화 작업 등록
+- registerDefaultContentDecorator: 기본 콘텐츠 보조 렌더링 등록
+- registerShortcutCloser: 팝업/단축 레이어 닫기 등록
+- registerBootTask: 앱 부팅 시 실행할 작업 등록
+- registerDefaultOpenOptions: 섹션 기본 열기 옵션 등록
+- registerViewChangeHandler: 화면 전환 후 처리 등록
+- registerSaveProvider: 전역 저장 버튼에서 사용할 저장 동작 등록
+- resolveSaveAction: 현재 화면에서 우선순위가 가장 높은 저장 동작 선택
+- recordSaveHistory: 저장 기록 저장
+- getServerRuntimeConfig/hasServerAuthority/canUseServerWrite: 서버 모드와 쓰기 가능 여부 판단
+
+대시보드 셸:
+- work, util, audit, data, owner 섹션을 카드와 사이드바로 탐색합니다.
+- 상세 뷰어는 접을 수 있는 사이드바와 본문 영역으로 구성됩니다.
+- 전역 저장 버튼은 현재 화면의 save provider를 찾아 저장합니다.
+- 최근 저장 시간 또는 문서 수정 시간을 표시합니다.
+- 서버 로그인 상태가 있으면 사용자, 역할, 계정 ID, 로그아웃 버튼을 표시합니다.
+- owner 권한 또는 로컬 preview 모드에서 Owner 섹션을 보여줍니다.
+- Owner 섹션은 대시보드 내부 탭이 아니라 별도 팝업으로 운영 콘솔을 엽니다.
+
+Work 섹션:
+- 목적: 팀별 작업 일정, 생산량, 업무 이력, 첨부 문서, 보고서 흐름을 관리합니다.
+- 팀/라인 예시: Line Alpha, Line Beta, Line Gamma, Line Delta, Facility Support
+- 주요 화면:
+  - 팀별 캘린더
+  - 통합 현황 캘린더
+  - 작업 이력 관리
+- 팀별 캘린더 기능:
+  - 주간/일자별 작업 항목 조회
+  - 팀, 공정, 제품, 작업 내용, 담당자, 생산량 요약 표시
+  - 라인별 색상과 아이콘으로 구분
+  - 유틸리티 전기/가스/폐수 선택과 연결되는 사이드바 흐름 지원
+  - 생산량 데이터와 작업 이력을 함께 보여주는 운영 캘린더 구조
+  - 날짜 선택, 작업 모달, 첨부 문서 열기
+- 통합 현황 기능:
+  - 여러 팀의 작업, 생산량, 유틸리티 관련 지표 비교
+  - 전체 팀/라인 운영 상황 요약
+- 작업 이력 기능:
+  - 작업 기록 생성, 수정, 삭제
+  - 검색 및 필터
+  - 팀별 이력 렌더링
+  - 첨부 슬롯 관리
+  - 전체 데이터 내보내기
+  - 현재 보기 인쇄
+  - 월간/주간 보고 렌더링
+- 자소서 포인트:
+  - 업무 기록을 일정, 생산량, 증빙 문서와 연결한 점
+  - 현장 업무 흐름을 사용자 동선 중심으로 재구성한 점
+  - 화면 렌더러, 상태, 저장, 첨부, 출력 기능을 나눠 유지보수성을 높인 점
+
+Utility 섹션:
+- 목적: 전기, 가스, 폐수, 생산량 데이터를 입력/조회/분석/보고합니다.
+- 카테고리: 전기, 가스, 폐수, 유틸리티 기입, 분석
+- 전기/가스/폐수 조회 기능:
+  - 월별 사용량과 비용 표시
+  - 팀/설비 탭 기반 조회
+  - 추세 그래프와 상세 표 표시
+  - KPI 카드와 차트 모달 제공
+  - 팝업 또는 분리 창으로 상세 리포트 확인
+- 분석 기능:
+  - 총액 비율 분석
+  - 전기/가스 검침표 미리보기
+  - 월 선택 기반 리포트
+  - 항목별 비용/사용량 비교
+  - 기간 대비 또는 전년 대비 분석
+  - 비율, 증감, 구성비, chart/table 변환
+  - 그래프 상세 모달과 독립 창
+- 리포트 기능:
+  - 유틸리티 종합 리포트
+  - 전기 검침표
+  - 가스 검침표
+  - 폐수 비용/사용량 리포트
+  - 분석 팝업 표
+  - 인쇄/PDF 캡처에 적합한 레이아웃
+- 자소서 포인트:
+  - 단순 입력 화면을 분석/보고까지 이어지는 운영 도구로 확장한 점
+  - 검침, 비용, 생산량을 한 모델에서 비교하도록 설계한 점
+  - 데이터 시각화와 표 기반 검증을 함께 제공한 점
+
+Metering 앱:
+- 위치: utility/apps/metering/
+- 목적: 월간 전기, 가스, 폐수, 생산량 데이터를 실제 입력 도구처럼 관리합니다.
+- 리소스 종류: electric, gas, waste, production
+- 입력 모드:
+  - equipment mode: 설비 또는 계량 항목별 입력
+  - team mode: 팀 또는 공장 단위 입력
+- 공통 기능:
+  - 월 선택, 달력 기반 일자 선택
+  - 완료/휴일 상태 표시
+  - 설비/항목 추가, 수정, 삭제
+  - 설비 순서 변경
+  - 빠른 입력
+  - 사용량 자동 계산
+  - 월간 사용량 요약
+  - 팀별 배정
+  - 전체 화면 팝업
+  - 로컬 저장과 서버 shared-store 저장 지원
+- 전기 기능:
+  - 설비별 검침값 입력
+  - 사용량 계수 적용
+  - 총전력/무효전력 등 요약 항목 구분
+  - 팀별 설비 배정
+  - Plant A/Plant B 정산 범위
+  - 기본요금, 전력량요금, 기후환경요금, 연료비조정액, 역률요금, 부가세, 전력기금 등 정산 필드
+  - 일부 정산 필드 자동 계산
+- 가스 기능:
+  - LNG/LPG 계량 항목 구분
+  - Plant A LNG, Plant A LPG, Plant B 정산 범위
+  - 사용량, 열량, 단가, 청구 금액 계산
+  - 경계 검침 보정과 월별 검침 흐름 관리
+- 폐수 기능:
+  - Plant A/Plant B 사용량과 비용 입력
+  - 처리 비용 구성 항목 입력
+  - 사용량 대비 단가 계산
+- 생산량 기능:
+  - 생산량 데이터를 팀/월 단위로 관리
+  - 생산량 추출 도구와 연결 가능
+- 청구/문서 기능:
+  - PDF 청구서 업로드 또는 로컬 문서 경로 관리
+  - 청구 문서 미리보기
+  - 서버 모드에서는 /api/billing-document와 /api/files로 저장/조회
+  - version conflict 감지
+- 자소서 포인트:
+  - 규칙이 다른 데이터를 공통 UI와 리소스별 분기 로직으로 다룬 점
+  - 입력, 계산, 문서, 저장, 충돌 처리까지 실제 운영 도구 관점을 반영한 점
+
+Production Extractor:
+- 위치: utility/apps/production-extractor/
+- 목적: 여러 Excel 파일에서 생산량 데이터를 추출해 KPI에 반영하거나 다운로드합니다.
+- 사용 라이브러리: XLSX
+- 대상 열:
+  - A: 생산일자
+  - B: 팀
+  - C: 라인명 또는 라인
+  - E: 품명
+  - F: 생산량
+- 기능:
+  - 여러 파일/여러 시트 동시 분석
+  - 헤더 검증
+  - 날짜 파싱
+  - 생산량 숫자 파싱
+  - 중복 행 제거
+  - 월/기간 요약
+  - 팀별 요약
+  - 라인별 필터, 검색, 정렬
+  - 전체 다운로드, 필터 결과 다운로드
+  - parent window postMessage로 KPI 화면에 생산량 전체 교체 요청
+  - iframe/embed 모드 지원
+- 자소서 포인트:
+  - 수동 복붙하던 Excel 데이터를 구조화된 데이터로 바꾸는 도구화 경험
+  - 파일 형식 오류, 중복, 필터링, KPI 반영까지 한 흐름으로 설계한 점
+
+Audit 섹션:
+- 카테고리: 조도(Lux), 법정 설비 관리, 안전 관리 placeholder
+- 조도(Lux) 기능:
+  - 연도/분기 기반 측정 기록
+  - 팀/구역/실 필터
+  - 기준값 대비 pass/fail 관리
+  - 미달 항목과 개선 조치 기록
+  - batch entry
+  - 측정값 입력 모달
+  - 조도 작업공간 preview
+  - 증빙 미리보기와 인쇄
+  - 서버 저장 가능 시 audit.lux 권한 기반 저장
+- 법정 설비 관리 기능:
+  - 설비 카드
+  - 점검 일정
+  - 마감일/초과/임박 상태
+  - 문서 현황
+  - 중요 알림
+  - 캘린더 이벤트
+  - 설비별 상세 preview popup
+  - 합성 설비/기관/문서 라벨 사용
+- 자소서 포인트:
+  - 점검 주기와 증빙 문서를 한 화면에서 추적하도록 설계한 점
+  - 필터, 상태 배지, 문서 preview로 감사 대응 흐름을 시각화한 점
+
+Data Management 섹션:
+- 유틸리티 기입: Utility 입력 화면으로 shortcut
+- 작업 이력 기입: Work 작업 이력 화면으로 shortcut
+- 설비 이력 카드:
+  - 기본 가동 정보
+  - 상세 사양
+  - 정비 이력
+  - 관련 문서 목록
+  - 사진/문서 preview
+  - 인쇄/PDF 출력에 적합한 카드 레이아웃
+  - 모든 값은 합성 설비/작업자/문서 라벨
+- 자소서 포인트:
+  - 입력 메뉴를 업무 목적 중심으로 shortcut화한 점
+  - 설비 정보, 정비 이력, 문서를 한 장의 운영 카드로 정리한 점
+
+Owner Console:
+- 위치: commands/ops-console-app/
+- 목적: 로컬에서 KPI Demo Runtime을 운영/점검하는 보조 콘솔입니다.
+- 포트: 3215
+- 화면: server tab, data tab, preview tab, repository-map.html
+- 상태 확인:
+  - KPI Runtime health
+  - PostgreSQL ready
+  - env 파일 존재 여부
+  - startup task 등록 여부
+  - 컴퓨터 시작/종료 예약 상태
+  - server stdout/stderr/PostgreSQL/server action logs tail
+- 실행 명령:
+  - server.start: Node 런타임과 PostgreSQL 시작
+  - server.stop: Node 런타임과 PostgreSQL 종료
+  - server.recover: 서버 복구 재시작, stale postmaster.pid 안전 정리
+  - startup.register/unregister: 자동 실행 등록/해제
+  - system.scheduleShutdown: 컴퓨터 시작 또는 종료 예약
+  - account.bootstrapOwner/createEmployee/resetPassword/deleteUser
+  - db.listTables/openConsole
+  - filesystem.openCommandsFolder/openLogsFolder
+- 자소서 포인트:
+  - 단순 앱 구현을 넘어서 실행, 복구, 계정, DB, 로그, 문서화까지 운영 관점을 반영한 점
+
+Repository Map:
+- 위치: commands/ops-console-app/ops-console/public/repository-map.html
+- API helper: commands/ops-console-app/ops-console/lib/repository-map.mjs
+- 목적:
+  - 저장소 구조를 시각화하고, 변경 이력, 개인정보 보호 기준, 검증 맥락을 한 화면에 모읍니다.
+  - 영어/한국어 보기 모드를 지원합니다.
+  - 오너 콘솔 API가 실행 중이면 live repository map을 보여주고, 아니면 정적 fallback 구조를 보여줍니다.
+- live map 기능:
+  - 파일/폴더 수 요약
+  - 변경/추가/미추적/최근 파일 표시
+  - tree depth 제한
+  - .git, node_modules, var, logs, env 파일 제외
+  - Git status와 파일 수정 시간을 조합해 최근/변경 목록 표시
+- 포트폴리오 기능:
+  - 폴더별 역할 설명
+  - 통합 변경 이력
+  - 개인정보 보호 메모
+  - 검증 흐름 설명
+- 자소서 포인트:
+  - 코드를 설명하는 문서도 제품 화면처럼 만들고, 구조/변경/검증/개인정보 기준을 한 곳에 모은 점
+  - 포트폴리오 공유 시 설명 누락과 민감 정보 노출 위험을 줄인 점
+
+Node/PostgreSQL 선택형 런타임:
+- 위치: kpi-runtime/internal-server/
+- 기술:
+  - Node.js ESM
+  - PostgreSQL
+  - pg
+  - ESLint
+  - Prettier
+  - Playwright
+  - node:test
+  - Windows PowerShell scripts
+- 기본값:
+  - host: 127.0.0.1
+  - port: 3104
+  - database URL: postgresql://postgres:postgres@127.0.0.1:5400/postgres
+  - storage root: kpi-runtime/internal-server/var
+- 서버 시작 흐름:
+  - 파일 저장소 초기화
+  - DB migration 실행
+  - 만료 세션 정리
+  - HTTP server 시작
+  - SIGINT/SIGTERM graceful shutdown
+- 주요 API:
+  - /login
+  - /api/health
+  - /api/bootstrap/status
+  - /api/bootstrap/owner
+  - /api/auth/login, /api/auth/logout, /api/auth/me
+  - /api/owner/access-overview
+  - /api/admin/users
+  - /api/modules/:moduleKey/records/:recordKey
+  - /api/util-production/daily
+  - /api/shared-store
+  - /api/billing-document
+  - /api/files/base64
+  - /api/files/:id/view, /download, DELETE
+- 서버 설계:
+  - routes: HTTP route handler
+  - services: 업무 규칙과 상태 조립
+  - repositories: DB 접근
+  - db/migrations: PostgreSQL schema migration
+  - lib: HTTP, 파일, 문서 저장, bootstrap, permission helper
+- 인증/권한:
+  - cookie session
+  - owner/admin/viewer 역할
+  - permission key 기반 read/write 검증
+  - 파일/모듈/shared-store 접근 권한 분리
+- 파일 정책:
+  - work history와 team calendar 문서 첨부는 확장자/MIME type 제한
+  - PDF, Excel, PowerPoint, Word, HWP/HWPX 계열 허용
+  - 최대 25MB 제한
+- 자소서 포인트:
+  - 정적 데모와 서버 저장형 구조를 분리해 유지한 점
+  - 인증, 권한, 파일 저장, 충돌 처리, migration, backup까지 서버 운영 기본기를 반영한 점
+
+검증 체계:
+- 정적 데모:
+  - python -m http.server 5500
+  - http://localhost:5500/KPI.html
+- 런타임:
+  - npm run format:check
+  - npm run lint
+  - npm test
+  - npm run verify
+  - npm run smoke:kpi-root
+  - npm run smoke:kpi-browser
+- targeted smoke:
+  - work team calendar
+  - work history
+  - utility report sheet
+  - electric/gas/waste metering
+  - billing document
+  - team overview
+  - production extractor
+  - audit and data rendering
+- 공개 안전성:
+  - 민감 문자열 스캔
+  - 실제 조직/개인/현장/설비/값 제거
+  - env, logs, runtime artifact 제외
+
+기술 스택 요약:
+- Frontend: HTML, CSS, JavaScript
+- Runtime architecture: browser global runtime registry, modular section renderer
+- Data parsing: XLSX
+- Backend: Node.js, HTTP server, PostgreSQL
+- Database: SQL migrations, repositories, services
+- Auth: cookie session, role/permission checks
+- File handling: base64 upload, document metadata, preview/download/delete
+- Local operations: PowerShell, cmd launchers, local owner console
+- Testing: node:test, Playwright, ESLint, Prettier
+- Documentation: README, AGENTS, owner-console Repository Map
+
+직무별 강조 방향:
+- 프론트엔드: 대시보드 셸, 섹션 레지스트리, 사이드바/뷰어, 모달, 차트, 인쇄/팝업, 복잡한 입력 상태 관리
+- 백엔드: Node/PostgreSQL, routes/services/repositories/migrations, 인증/권한, 파일 저장, version conflict
+- 풀스택: Excel import -> store -> dashboard -> report -> file document 전체 흐름
+- 데이터/운영 자동화: 생산량 Excel 추출, 검침/정산 자동 계산, 월별/팀별/설비별 요약
+- QA/운영: Playwright smoke, targeted tests, 운영 콘솔 health/log/status, 복구/백업/시작/종료 스크립트
+- 개인정보/보안: 공개용 합성 데이터 정책, 민감 문자열 제거, runtime artifact와 env 제외
+
+자소서에 쓸 수 있는 문장 후보:
+- 제조 운영 데이터를 단순 조회가 아니라 입력, 검증, 분석, 보고까지 이어지는 흐름으로 재구성했습니다.
+- 전기, 가스, 폐수처럼 계산 규칙이 다른 데이터를 공통 입력 구조와 리소스별 분기 로직으로 관리했습니다.
+- Excel 생산량 데이터를 다중 파일/시트 단위로 파싱하고 중복 제거, 필터링, KPI 반영까지 연결하는 도구를 설계했습니다.
+- 프런트엔드 화면을 섹션 렌더러, 초기화 작업, 저장 provider로 분리해 기능 확장 시 기존 화면 영향도를 줄였습니다.
+- 선택형 Node/PostgreSQL 런타임을 구성해 정적 데모와 서버 저장형 구조를 모두 설명할 수 있게 했습니다.
+- 로그인, 권한, 파일 업로드, 문서 preview, version conflict 처리까지 실제 운영 도구에 필요한 요소를 반영했습니다.
+- 공개 포트폴리오 공유를 위해 실제 데이터와 조직 식별 정보를 제거하고 합성 fixture로 재구성했습니다.
+- 로컬 운영 콘솔과 실행 스크립트를 만들어 데모 실행, 서버 복구, 로그 확인, 계정 관리, DB 점검을 한 곳에서 수행하도록 했습니다.
+
+답변 구성 예시:
+1. 문제 인식:
+   제조 운영 업무는 생산량, 유틸리티 사용량, 점검 기록, 작업 이력이 분리되면 현황 파악과 증빙 관리가 어렵다.
+2. 설계:
+   업무 흐름을 팀 캘린더, 유틸리티 입력, 생산량 추출, 오디트, 설비 이력 카드로 나누고 공통 대시보드 셸과 섹션 런타임으로 연결했다.
+3. 구현:
+   JavaScript 기반 정적 데모와 Node/PostgreSQL 선택형 런타임을 구성하고 입력/분석/저장/문서/운영 콘솔을 모듈화했다.
+4. 검증:
+   targeted smoke test, Playwright, lint, format check, 브라우저 확인, 민감 문자열 스캔으로 공개 안전성과 동작을 점검했다.
+5. 배운 점:
+   업무 도구는 화면을 만드는 것뿐 아니라 데이터 흐름, 예외 처리, 저장 책임, 검증 가능성을 함께 설계해야 오래 유지된다.
+
+붙여넣기용 최종 명령:
+위 프로젝트 정보를 바탕으로 내가 지원하는 직무에 맞는 자기소개서 답변을 작성해줘. 실제 회사/개인정보처럼 보이는 표현은 쓰지 말고, KPI Demo는 공개 포트폴리오용 합성 데이터 프로젝트로 설명해줘. 내가 맡은 범위가 불명확하면 먼저 질문하고, 수치 성과는 내가 제공하지 않으면 만들지 마. 답변은 문제 인식, 설계/구현, 검증, 배운 점이 드러나게 한국어로 작성해줘.
