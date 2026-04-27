@@ -10,7 +10,7 @@ $pgCtlPath = Join-Path $postgresBinDir 'pg_ctl.exe'
 $pgIsReadyPath = Join-Path $postgresBinDir 'pg_isready.exe'
 $postgresDataDir = Join-Path $serverDir 'var\central-runtime\postgres\data'
 $postgresLogFile = Join-Path $serverDir 'var\central-runtime\postgres\logs\postgres.log'
-$postgresPort = 5434
+$postgresPort = 5400
 
 function Test-PostgresReady {
   & $pgIsReadyPath -h 127.0.0.1 -p $postgresPort 2>$null | Out-Null

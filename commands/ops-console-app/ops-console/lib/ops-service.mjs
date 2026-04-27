@@ -21,7 +21,7 @@ const scheduledStartTaskName = 'KPI Demo Runtime Scheduled Start';
 const serverActionLogFile = path.join(appLogsDir, 'server-actions.log');
 const postgresDataDir = path.join(internalServerDir, 'var', 'central-runtime', 'postgres', 'data');
 const postmasterPidPath = path.join(postgresDataDir, 'postmaster.pid');
-const postgresPort = 5434;
+const postgresPort = 5400;
 const serverActionStaleTimeoutMs = 10 * 60 * 1000;
 let pendingServerAction = null;
 
@@ -52,7 +52,7 @@ function parseEnvFile(filePath) {
 function getServerPort() {
   const env = parseEnvFile(envFilePath);
   const parsed = Number.parseInt(String(env.KPI_SERVER_PORT || ''), 10);
-  return Number.isInteger(parsed) && parsed > 0 ? parsed : 3100;
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : 3104;
 }
 
 function getServerUrls() {

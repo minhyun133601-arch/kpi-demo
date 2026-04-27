@@ -1,4 +1,6 @@
-param()
+param(
+  [switch]$NoOpen
+)
 
 $ErrorActionPreference = 'Stop'
 
@@ -85,13 +87,15 @@ foreach ($candidatePort in $candidatePorts) {
   if (Test-AppHealth -Port $candidatePort) {
     $url = "http://127.0.0.1:$candidatePort"
     Set-Content -Path $portFilePath -Value $candidatePort -Encoding ascii
-    Start-Process $url
+    if (-not $NoOpen) {
+      Start-Process $url
+    }
     Write-Host "KPI Demo command console is already running."
     Write-Host "URL: $url"
     Write-Host "Console port: $candidatePort"
     Write-Host "Static demo port: 5500"
-    Write-Host "Optional runtime port: 3100"
-    Write-Host "Optional DB port: 5434"
+    Write-Host "Optional runtime port: 3104"
+    Write-Host "Optional DB port: 5400"
     exit 0
   }
 }
@@ -123,15 +127,17 @@ try {
 Wait-ForAppHealth -Port $selectedPort
 Set-Content -Path $portFilePath -Value $selectedPort -Encoding ascii
 $url = "http://127.0.0.1:$selectedPort"
-Start-Process $url
+if (-not $NoOpen) {
+  Start-Process $url
+}
 
 Write-Host "Started KPI Demo command console."
 Write-Host "URL: $url"
 Write-Host "Console port: $selectedPort"
 Write-Host "Static demo: http://127.0.0.1:5500/KPI.html"
-Write-Host "Optional runtime login: http://127.0.0.1:3100/login"
+Write-Host "Optional runtime login: http://127.0.0.1:3104/login"
 Write-Host "Optional runtime demo account: 1234 / 1234"
-Write-Host "Optional DB port: 5434"
+Write-Host "Optional DB port: 5400"
 Write-Host "PID: $($process.Id)"
 Write-Host "Stdout: $stdoutLog"
 Write-Host "Stderr: $stderrLog"

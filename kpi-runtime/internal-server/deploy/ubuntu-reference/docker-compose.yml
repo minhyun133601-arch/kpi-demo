@@ -32,7 +32,7 @@ services:
         npm start
     environment:
       KPI_SERVER_HOST: 0.0.0.0
-      KPI_SERVER_PORT: ${KPI_SERVER_PORT:-3100}
+      KPI_SERVER_PORT: ${KPI_SERVER_PORT:-3104}
       KPI_DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       KPI_AUTH_ENABLED: "true"
       KPI_LOGIN_ENABLED: "true"
@@ -52,7 +52,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "node -e \"fetch('http://127.0.0.1:' + (process.env.KPI_SERVER_PORT || '3100') + '/api/health').then((res)=>process.exit(res.ok?0:1)).catch(()=>process.exit(1))\""
+          "node -e \"fetch('http://127.0.0.1:' + (process.env.KPI_SERVER_PORT || '3104') + '/api/health').then((res)=>process.exit(res.ok?0:1)).catch(()=>process.exit(1))\""
         ]
       interval: 15s
       timeout: 5s

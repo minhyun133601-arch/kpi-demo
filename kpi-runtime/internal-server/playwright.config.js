@@ -5,7 +5,7 @@ import { defineConfig } from '@playwright/test';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const baseURL = String(process.env.KPI_BASE_URL || 'http://127.0.0.1:3100').replace(/\/+$/, '');
+const baseURL = String(process.env.KPI_BASE_URL || 'http://127.0.0.1:3104').replace(/\/+$/, '');
 
 export default defineConfig({
   testDir: './e2e',

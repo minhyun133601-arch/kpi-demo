@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Date: `2026-04-24`
+Date: `2026-04-26`
 Status: authority document
 Scope: AI work rules for the KPI demo repository
 
@@ -9,16 +9,15 @@ This file is the only standing authority document for this repository. It define
 ## Authority Boundary
 
 - `AGENTS.md` is the only authority document for AI behavior, repository rules, privacy rules, architecture boundaries, and verification gates.
-- `patch.md` is supporting material only. It records what changed, which architecture area was touched, and how the change was verified.
-- `plain-english-companion.md` is supporting material only. It explains the patch history in simple Korean for non-technical portfolio readers.
-- Old document names such as `agent.md` or `비전공자용.md` are historical references only. Current rules must be absorbed into `AGENTS.md`, `patch.md`, and `plain-english-companion.md`.
+- The owner-console Repository Map is the single portfolio-facing place for the folder map, change history, plain-language explanation, privacy notes, and verification context.
+- Old standalone rule, patch-log, and companion-document names are historical references only. Current rules must be absorbed into `AGENTS.md`; portfolio-facing structure and history must be absorbed into the Repository Map.
 - Do not create parallel authority documents. If a new rule is needed, add it to `AGENTS.md`.
 
 ## Repository Purpose
 
 This repository is a public-safe KPI demo dashboard for a manufacturing operations portfolio.
 
-The repository must not contain private employer data, client data, personal names, real plant/site names, real equipment names, internal screenshots with unredacted values, original logos, private research notes, or job-application research for a specific target company.
+The repository must not contain private organization data, client data, personal names, real plant/site names, real equipment names, internal screenshots with unredacted values, original logos, private research notes, non-demo planning notes, or material tied to a real organization outside the public demo.
 
 Use synthetic labels and dummy values only.
 
@@ -28,28 +27,36 @@ Public naming should use `KPI Demo` for the project and `KPI Demo Runtime` for t
 
 - Repository-owned documentation must be written in English by default.
 - User-facing explanations in chat may be Korean, but committed markdown should be English unless the user explicitly asks otherwise.
-- `patch.md` is the technical change log.
-- `plain-english-companion.md` is the non-technical companion document for portfolio readers. Its language may follow the user's requested audience.
+- The Repository Map must support English and Korean viewing modes for portfolio-facing structure, change history, plain-language notes, privacy notes, and verification context.
 - Do not create additional long-lived rules, checklist, prompt, or handoff markdown files unless the user explicitly asks.
+
+## Local Port Rules
+
+- Keep the public static portfolio demo on port `5500`.
+- Keep the optional KPI Demo Runtime Node server on port `3104`.
+- Keep the local PostgreSQL database used by the runtime on port `5400`.
+- Keep the local operations console default and owner-console embed target on port `3215`.
+- Do not reintroduce old active defaults such as runtime port `3100` or PostgreSQL port `5434` in commands, runtime configuration, examples, smoke checks, or active documentation. Historical change-history references may remain when clearly marked as history.
+- If the user explicitly asks for a future port change, update the affected commands, runtime config, deploy examples, smoke checks, README, and Repository Map in the same patch.
 
 ## Privacy Rules
 
 The agent must remove or generalize:
 
-- real company names
+- real organization names
 - real client names
 - real employee names
 - real plant, branch, factory, or site labels
 - real equipment names
 - real production, utility, inspection, billing, or maintenance values
-- recruitment-platform links and single-company application material
+- non-demo platform links, private planning notes, or source material unrelated to the demo
 - internal logos, screenshots, attachments, and evidence files
 
 Preferred replacements:
 
-- `Target Company`
-- `Previous Employer`
-- `Client A`
+- `Demo Organization`
+- `Demo Partner`
+- `Demo Client A`
 - `Plant A`
 - `Plant B`
 - `Line Alpha`
@@ -60,7 +67,7 @@ Preferred replacements:
 - `Sample Equipment`
 - `Synthetic KPI value`
 
-If a term is needed to explain the application domain, keep it generic. Example: use `manufacturing AX provider`, not the name of a real vendor.
+If a term is needed to explain the application domain, keep it generic. Example: use `manufacturing operations software provider`, not the name of a real vendor.
 
 ## Working Rules
 
@@ -88,7 +95,7 @@ For documentation-only cleanup:
 
 - Run a sensitive-string scan across markdown files.
 - Confirm the changed markdown files can be read normally.
-- Confirm old private labels, old folder labels, and removed document names are not reintroduced as active rules.
+- Confirm old private labels, old folder labels, and retired standalone document names are not reintroduced as active rules.
 
 For code changes under `kpi-runtime/internal-server/`:
 
@@ -104,9 +111,9 @@ For browser-visible changes:
 - For the public static demo, `python -m http.server 5500` from `KPI-Demo/` is the expected simple verification server unless the user asks for another port.
 - Report any verification gap clearly.
 
-## Patch Log Rules
+## Repository Map History Rules
 
-Every repository-owned documentation or code change should update `patch.md` with:
+Every repository-owned documentation or code change should update the owner-console Repository Map with:
 
 - architecture impact or touched-path summary
 - date
@@ -115,11 +122,9 @@ Every repository-owned documentation or code change should update `patch.md` wit
 - privacy impact
 - verification result
 
-`plain-english-companion.md` should mirror the same entry in simple language so a non-technical reader can understand what changed and why.
+The Repository Map should keep the repository tree near the top. New history entries should start with the touched area when practical, then explain the summary, changed files, privacy impact, and verification.
 
-`patch.md` should keep a repository tree near the top. New entries should start with the touched area when practical, then explain the summary, changed files, privacy impact, and verification.
-
-`plain-english-companion.md` should keep the same repository tree in simple Korean. New entries should begin with "이번에 건드린 위치" or an equivalent plain-language location summary.
+The Korean view should mirror the same entry in plain language so a non-technical portfolio reader can understand what changed and why.
 
 ## Final Handoff
 

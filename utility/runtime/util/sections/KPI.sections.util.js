@@ -82,7 +82,7 @@
                     title: '분석',
                     icon: 'fa-chart-column',
                     color: '#0ea5e9',
-                    desc: '총괄 비율과 가스/전기 검침표·분석표',
+                    desc: '총괄 비율과 가스·전기 검침표 및 분석표',
                     content: `
                         <div class="util-sheet-stack">
                             <div class="util-sheet-panel is-overview" data-role="util-report-panel">

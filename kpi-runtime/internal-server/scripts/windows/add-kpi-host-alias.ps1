@@ -36,4 +36,4 @@ Set-Content -Path $hostsPath -Value $next -Encoding ASCII
 
 Write-Host "Added hosts alias:"
 Write-Host "  $Alias -> $ServerIp"
-Write-Host "Share URL: http://$Alias`:3100/"
+Write-Host "Share URL: http://$Alias`:3104/"

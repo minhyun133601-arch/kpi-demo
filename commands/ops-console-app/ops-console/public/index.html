@@ -8,7 +8,7 @@
     rel="icon"
     href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231f2723'/%3E%3Cpath d='M8 24V8h3v6.5L17.5 8H22l-7 7.5 7.3 8.5h-4.6L12 17.2V24H8Z' fill='%23f5f7f5'/%3E%3C/svg%3E"
   />
-  <link rel="stylesheet" href="/styles.css?v=20260414r" />
+  <link rel="stylesheet" href="/styles.css?v=20260425b" />
 </head>
 <body>
   <div class="page-shell">
@@ -19,8 +19,8 @@
         <p class="hero-summary">정적 데모와 선택형 서버 런타임을 현재 포트 기준으로 관리합니다.</p>
         <div class="hero-meta">
           <span class="meta-chip">정적 데모 5500</span>
-          <span class="meta-chip">런타임 3100</span>
-          <span class="meta-chip">DB 5434</span>
+          <span class="meta-chip">런타임 3104</span>
+          <span class="meta-chip">DB 5400</span>
           <span class="meta-chip"><span>명령 콘솔</span><strong id="opsHeaderUrl">-</strong></span>
           <span class="meta-chip meta-chip-wide"><span>commands</span><strong id="opsHeaderRoot">-</strong></span>
         </div>
@@ -53,7 +53,7 @@
           <div class="status-headline">
             <span class="status-light" aria-hidden="true"></span>
             <span class="ui-icon status-icon" data-icon="server" aria-hidden="true"></span>
-            <span class="status-label">KPI 런타임 3100</span>
+            <span class="status-label">KPI 런타임 3104</span>
           </div>
           <strong id="kpiStatus">확인 중</strong>
           <span id="kpiSummary" class="status-meta">-</span>
@@ -63,7 +63,7 @@
           <div class="status-headline">
             <span class="status-light" aria-hidden="true"></span>
             <span class="ui-icon status-icon" data-icon="database" aria-hidden="true"></span>
-            <span class="status-label">PostgreSQL 5434</span>
+            <span class="status-label">PostgreSQL 5400</span>
           </div>
           <strong id="postgresStatus">확인 중</strong>
           <span id="postgresSummary" class="status-meta">-</span>
@@ -98,6 +98,10 @@
           <button class="tab-button" data-tab="data" type="button">
             <span class="ui-icon tab-icon" data-icon="database" aria-hidden="true"></span>
             <span>계정 관리</span>
+          </button>
+          <button class="tab-button" data-tab="preview" type="button">
+            <span class="ui-icon tab-icon" data-icon="table" aria-hidden="true"></span>
+            <span>Repository Map</span>
           </button>
         </nav>
 
@@ -204,6 +208,29 @@
             </section>
           </div>
         </section>
+
+        <section class="tab-panel tab-panel-preview" data-tab-panel="preview">
+          <section class="section section-compact preview-intro">
+            <div class="section-head preview-intro-head">
+              <div class="section-title-group">
+                <span class="ui-icon section-icon" data-icon="table" aria-hidden="true"></span>
+                <div>
+                  <h2>Repository Map</h2>
+                  <p>Review the live KPI Demo folder map, change badges, and local port boundaries inside this console.</p>
+                </div>
+              </div>
+              <a class="secondary-button preview-open-link" href="/repository-map.html?v=console-20260425" target="_blank" rel="noopener">
+                <span>새 창</span>
+              </a>
+            </div>
+          </section>
+          <iframe
+            class="preview-frame"
+            src="/repository-map.html?v=console-20260425"
+            title="KPI Demo repository map"
+            loading="lazy"
+          ></iframe>
+        </section>
       </section>
     </main>
   </div>
@@ -223,6 +250,6 @@
     </div>
   </div>
 
-  <script src="/app.js?v=20260414r" type="module"></script>
+  <script src="/app.js?v=20260425b" type="module"></script>
 </body>
 </html>

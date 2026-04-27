@@ -24,6 +24,8 @@ node_modules/
 .codex/
 .codex-run/
 commands/var/*
+commands/internal/var/*
+var/
 **/internal-server/.codex-run/
 .playwright-mcp/
 test-results/

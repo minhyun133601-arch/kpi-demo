@@ -1,7 +1,7 @@
 export const commandRegistry = [
-  { key: 'server.start', category: 'server', title: '데모 런타임 열기', description: 'Node 런타임은 3100번, PostgreSQL은 5434번 포트로 올립니다. 예시 로그인은 1234 / 1234입니다.', kind: 'action' },
-  { key: 'server.stop', category: 'server', title: '데모 런타임 닫기', description: '3100번 Node 런타임과 5434번 PostgreSQL을 순서대로 종료합니다.', kind: 'action', confirmMessage: 'KPI 데모 런타임과 로컬 PostgreSQL을 종료합니다.' },
-  { key: 'server.recover', category: 'server', title: '복구 재시작', description: '3100번 런타임을 정리한 뒤 stale postmaster.pid를 안전 조건에서만 정리하고 다시 올립니다.', kind: 'action', confirmMessage: '현재 데모 런타임을 복구 재시작합니다.' },
+  { key: 'server.start', category: 'server', title: '데모 런타임 열기', description: 'Node 런타임은 3104번, PostgreSQL은 5400번 포트로 올립니다. 예시 로그인은 1234 / 1234입니다.', kind: 'action' },
+  { key: 'server.stop', category: 'server', title: '데모 런타임 닫기', description: '3104번 Node 런타임과 5400번 PostgreSQL을 순서대로 종료합니다.', kind: 'action', confirmMessage: 'KPI 데모 런타임과 로컬 PostgreSQL을 종료합니다.' },
+  { key: 'server.recover', category: 'server', title: '복구 재시작', description: '3104번 런타임을 정리한 뒤 stale postmaster.pid를 안전 조건에서만 정리하고 다시 올립니다.', kind: 'action', confirmMessage: '현재 데모 런타임을 복구 재시작합니다.' },
   { key: 'startup.register', category: 'startup', title: '부팅 자동실행 등록', description: '현재 사용자 로그인 시 KPI 서버를 자동으로 올리는 시작프로그램을 등록합니다.', kind: 'action' },
   { key: 'startup.unregister', category: 'startup', title: '부팅 자동실행 해제', description: '현재 사용자 시작프로그램 자동실행을 제거합니다.', kind: 'action' },
   {

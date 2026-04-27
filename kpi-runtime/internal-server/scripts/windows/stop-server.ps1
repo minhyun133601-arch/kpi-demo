@@ -72,7 +72,7 @@ $resolvedPort = if ($PSBoundParameters.ContainsKey('Port') -and $Port -gt 0) {
 } else {
   $resolvedEnvFile = Resolve-EnvFilePath -ServerDir $serverDir -Environment $Environment -EnvFile $EnvFile
   $envPort = Read-PortFromEnvFile -FilePath $resolvedEnvFile
-  if ($envPort) { $envPort } else { 3100 }
+  if ($envPort) { $envPort } else { 3104 }
 }
 
 $listener = Get-NetTCPConnection -State Listen -LocalPort $resolvedPort -ErrorAction SilentlyContinue

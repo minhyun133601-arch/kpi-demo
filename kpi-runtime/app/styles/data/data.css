@@ -1,0 +1,532 @@
+        /* Data management */
+        .data-equipment-launcher {
+            width: min(1180px, calc(100% - 24px));
+            margin: 18px auto;
+            display: grid;
+            gap: 14px;
+            color: #243d68;
+        }
+        .data-equipment-launcher-head {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: end;
+            gap: 18px;
+            border: 1px solid #dbe7f5;
+            border-radius: 8px;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+            padding: 18px 20px;
+            box-shadow: 0 12px 32px rgba(27, 53, 89, 0.07);
+        }
+        .data-equipment-launcher-eyebrow {
+            margin: 0 0 5px;
+            color: #0d67d6;
+            font-size: 0.74rem;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+        .data-equipment-launcher-head h2 {
+            margin: 0;
+            font-size: 1.55rem;
+            line-height: 1.18;
+            font-weight: 900;
+            color: #172b4d;
+        }
+        .data-equipment-launcher-head p:not(.data-equipment-launcher-eyebrow) {
+            margin: 7px 0 0;
+            color: #64748b;
+            font-size: 0.92rem;
+            font-weight: 700;
+        }
+        .data-equipment-launcher-button {
+            min-height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 1px solid #0d67d6;
+            border-radius: 8px;
+            background: #0d67d6;
+            color: #ffffff;
+            padding: 0 16px;
+            font-weight: 900;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .data-equipment-launcher-button:hover {
+            background: #0b55b4;
+            border-color: #0b55b4;
+        }
+        .data-equipment-launcher-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+        }
+        .data-equipment-launcher-metric {
+            min-height: 88px;
+            display: grid;
+            align-content: center;
+            gap: 5px;
+            border: 1px solid #dbe7f5;
+            border-radius: 8px;
+            background: #ffffff;
+            padding: 12px 14px;
+            box-shadow: 0 8px 20px rgba(27, 53, 89, 0.05);
+        }
+        .data-equipment-launcher-metric span {
+            color: #64748b;
+            font-size: 0.75rem;
+            font-weight: 900;
+        }
+        .data-equipment-launcher-metric strong {
+            color: #172b4d;
+            font-size: 1.05rem;
+            font-weight: 900;
+        }
+        .data-equipment-popup {
+            position: fixed;
+            inset: 0;
+            z-index: 1450;
+            display: none;
+            place-items: center;
+            padding: 16px;
+        }
+        .data-equipment-popup.is-open {
+            display: grid;
+        }
+        .data-equipment-popup-backdrop {
+            position: absolute;
+            inset: 0;
+            border: 0;
+            border-radius: 0;
+            background: rgba(15, 23, 42, 0.58);
+            cursor: pointer;
+        }
+        .data-equipment-popup-dialog {
+            position: relative;
+            z-index: 1;
+            width: min(1560px, calc(100vw - 32px));
+            height: min(940px, calc(100vh - 32px));
+            display: grid;
+            grid-template-rows: auto minmax(0, 1fr);
+            overflow: hidden;
+            border: 1px solid #dbe7f5;
+            border-radius: 8px;
+            background: #f8fbff;
+            box-shadow: 0 30px 80px rgba(15, 23, 42, 0.32);
+        }
+        .data-equipment-popup-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            border-bottom: 1px solid #dbe7f5;
+            background: #ffffff;
+            padding: 12px 16px;
+        }
+        .data-equipment-popup-header strong {
+            display: block;
+            color: #172b4d;
+            font-size: 1rem;
+            font-weight: 900;
+        }
+        .data-equipment-popup-kicker {
+            display: block;
+            margin-bottom: 2px;
+            color: #64748b;
+            font-size: 0.68rem;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+        .data-equipment-popup-close {
+            width: 38px;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #dbe7f5;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #415c86;
+            cursor: pointer;
+        }
+        .data-equipment-popup-close:hover {
+            border-color: #bfd5ed;
+            color: #0d67d6;
+        }
+        .data-equipment-popup-body {
+            min-height: 0;
+            overflow: auto;
+            padding: 12px 0 16px;
+        }
+        .data-equipment-page {
+            width: min(1520px, calc(100% - 18px));
+            margin: 0 auto;
+            padding: 14px 0 22px;
+            color: #314465;
+        }
+        .data-equipment-topbar {
+            display: grid;
+            grid-template-columns: minmax(210px, 280px) minmax(0, 1fr) minmax(160px, 220px);
+            gap: 16px;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+        .data-equipment-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            color: #0e72da;
+            font-weight: 900;
+        }
+        .data-equipment-brand-mark {
+            width: 42px;
+            height: 42px;
+            flex: 0 0 auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: #eaf4ff;
+            border: 1px solid #cfe4ff;
+            color: #0e72da;
+            font-size: 1rem;
+        }
+        .data-equipment-brand strong {
+            display: block;
+            font-size: 1.35rem;
+            line-height: 1;
+            color: #0f63c8;
+        }
+        .data-equipment-brand small {
+            display: block;
+            margin-top: 3px;
+            color: #64748b;
+            font-size: 0.68rem;
+            font-weight: 800;
+        }
+        .data-equipment-title-block {
+            text-align: center;
+        }
+        .data-equipment-title-block h2 {
+            margin: 0;
+            color: #243d68;
+            font-size: clamp(1.55rem, 2.1vw, 2.05rem);
+            font-weight: 900;
+            line-height: 1.1;
+        }
+        .data-equipment-title-block p {
+            margin: 4px 0 0;
+            color: #445d84;
+            font-size: 0.95rem;
+            font-weight: 900;
+            letter-spacing: 0.04em;
+        }
+        .data-equipment-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .data-equipment-print-btn {
+            min-height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 1px solid #dbe7f5;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #415c86;
+            padding: 0 14px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 10px 28px rgba(27, 53, 89, 0.06);
+        }
+        .data-equipment-print-btn:hover {
+            border-color: #bfd5ed;
+            color: #0d67d6;
+        }
+        .data-equipment-layout {
+            display: grid;
+            gap: 12px;
+        }
+        .data-equipment-top-grid {
+            display: grid;
+            grid-template-columns: minmax(320px, 1.28fr) minmax(300px, 1fr);
+            gap: 12px;
+        }
+        .data-equipment-bottom-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.03fr) minmax(360px, 0.87fr);
+            gap: 12px;
+        }
+        .data-equipment-card,
+        .data-equipment-photo-card {
+            overflow: hidden;
+            background: #ffffff;
+            border: 1px solid #dbe7f5;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(27, 53, 89, 0.04), 0 10px 30px rgba(27, 53, 89, 0.05);
+        }
+        .data-equipment-card-pad,
+        .data-equipment-detail-card,
+        .data-equipment-history-card,
+        .data-equipment-doc-card {
+            padding: 14px 16px;
+        }
+        .data-equipment-photo-card {
+            min-height: 226px;
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(248, 251, 255, 0.92)),
+                repeating-linear-gradient(45deg, transparent 0, transparent 14px, rgba(32, 110, 205, 0.03) 14px, rgba(32, 110, 205, 0.03) 28px);
+        }
+        .data-equipment-photo-placeholder {
+            display: grid;
+            gap: 7px;
+            justify-items: center;
+            color: #63748e;
+            text-align: center;
+            font-weight: 800;
+        }
+        .data-equipment-photo-placeholder i {
+            font-size: 2.2rem;
+            color: #8d99aa;
+        }
+        .data-equipment-photo-placeholder small {
+            max-width: 320px;
+            color: #94a3b8;
+            font-size: 0.76rem;
+            line-height: 1.35;
+        }
+        .data-equipment-photo-preview {
+            width: 100%;
+            height: 100%;
+            min-height: 226px;
+            object-fit: cover;
+        }
+        .data-equipment-section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 8px;
+            color: #1268d8;
+            font-size: 1.05rem;
+            font-weight: 900;
+            line-height: 1.25;
+        }
+        .data-equipment-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 24px;
+            padding: 0 12px;
+            border-radius: 999px;
+            background: #1c9563;
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 900;
+        }
+        .data-equipment-info-table,
+        .data-equipment-detail-table,
+        .data-equipment-history-table,
+        .data-equipment-doc-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        .data-equipment-info-table th,
+        .data-equipment-info-table td,
+        .data-equipment-detail-table th,
+        .data-equipment-detail-table td,
+        .data-equipment-history-table th,
+        .data-equipment-history-table td,
+        .data-equipment-doc-table th,
+        .data-equipment-doc-table td {
+            border: 1px solid #edf3fa;
+            padding: 7px 9px;
+            vertical-align: middle;
+            color: #405377;
+            font-size: 0.8rem;
+            line-height: 1.35;
+            word-break: keep-all;
+        }
+        .data-equipment-info-table th,
+        .data-equipment-detail-table th,
+        .data-equipment-history-table th,
+        .data-equipment-doc-table th {
+            background: #f7faff;
+            color: #34476c;
+            font-weight: 900;
+        }
+        .data-equipment-info-table th {
+            width: 18%;
+            text-align: left;
+        }
+        .data-equipment-info-table td {
+            width: 32%;
+            font-weight: 700;
+        }
+        .data-equipment-detail-table th {
+            width: 10.5%;
+            text-align: left;
+        }
+        .data-equipment-detail-table td {
+            width: 22.8%;
+            font-weight: 700;
+        }
+        .data-equipment-history-table th,
+        .data-equipment-doc-table th {
+            text-align: center;
+        }
+        .data-equipment-history-table td,
+        .data-equipment-doc-table td {
+            font-weight: 700;
+        }
+        .data-equipment-history-table td:first-child,
+        .data-equipment-history-table td:nth-child(2),
+        .data-equipment-history-table td:nth-child(4),
+        .data-equipment-history-table td:nth-child(5),
+        .data-equipment-doc-table td:nth-child(1),
+        .data-equipment-doc-table td:nth-child(3) {
+            text-align: center;
+        }
+        .data-equipment-file {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+        .data-equipment-file-icon {
+            width: 30px;
+            height: 24px;
+            flex: 0 0 auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            color: #ffffff;
+            background: #64748b;
+            font-size: 0.58rem;
+            font-weight: 900;
+        }
+        .data-equipment-file-icon.pdf { background: #ef4444; }
+        .data-equipment-file-icon.xlsx { background: #16a34a; }
+        .data-equipment-file-icon.docx { background: #2563eb; }
+        .data-equipment-empty {
+            color: #94a3b8;
+            text-align: center;
+            font-weight: 700;
+        }
+        .data-equipment-footer {
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            margin-top: 12px;
+            padding: 0 10px;
+            color: #647795;
+            font-size: 0.78rem;
+            font-weight: 800;
+        }
+        .data-equipment-footer span:last-child {
+            display: inline-flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        .data-equipment-footer strong {
+            color: #4e6385;
+            font-weight: 900;
+        }
+        @media (max-width: 1180px) {
+            .data-equipment-topbar {
+                grid-template-columns: 210px minmax(0, 1fr) 170px;
+            }
+            .data-equipment-top-grid,
+            .data-equipment-bottom-grid {
+                grid-template-columns: 1fr;
+            }
+            .data-equipment-photo-card {
+                min-height: 260px;
+            }
+        }
+        @media (max-width: 780px) {
+            .data-equipment-launcher {
+                width: min(100% - 16px, 1180px);
+            }
+            .data-equipment-launcher-head {
+                grid-template-columns: 1fr;
+                align-items: stretch;
+                padding: 15px;
+            }
+            .data-equipment-launcher-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .data-equipment-launcher-metric.is-wide {
+                grid-column: 1 / -1;
+            }
+            .data-equipment-popup {
+                padding: 10px;
+            }
+            .data-equipment-popup-dialog {
+                width: calc(100vw - 20px);
+                height: calc(100vh - 20px);
+            }
+            .data-equipment-page {
+                width: min(100% - 16px, 1520px);
+                padding-top: 10px;
+            }
+            .data-equipment-topbar {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            .data-equipment-title-block {
+                order: -1;
+            }
+            .data-equipment-brand {
+                justify-content: center;
+            }
+            .data-equipment-actions {
+                justify-content: stretch;
+            }
+            .data-equipment-print-btn {
+                width: 100%;
+            }
+            .data-equipment-card-pad,
+            .data-equipment-detail-card,
+            .data-equipment-history-card,
+            .data-equipment-doc-card {
+                padding: 12px;
+            }
+            .data-equipment-table-scroll {
+                overflow-x: auto;
+            }
+            .data-equipment-info-table,
+            .data-equipment-detail-table,
+            .data-equipment-history-table,
+            .data-equipment-doc-table {
+                min-width: 720px;
+            }
+            .data-equipment-detail-table {
+                min-width: 980px;
+            }
+            .data-equipment-footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .data-equipment-footer span:last-child {
+                justify-content: flex-start;
+            }
+        }
+        @media print {
+            .data-equipment-print-btn {
+                display: none;
+            }
+            .data-equipment-card,
+            .data-equipment-photo-card {
+                box-shadow: none;
+            }
+        }

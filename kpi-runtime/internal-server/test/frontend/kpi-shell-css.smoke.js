@@ -41,8 +41,14 @@ const styleEntries = [
     relativeSegments: ['metering', 'metering.css'],
   },
   {
-    href: `${runtimeDirName}/app/styles/audit/audit.css?v=057`,
-    manifestHref: './styles/audit/audit.css?v=057',
+    href: `${runtimeDirName}/app/styles/data/data.css?v=002`,
+    manifestHref: './styles/data/data.css?v=002',
+    fileName: 'data.css',
+    relativeSegments: ['data', 'data.css'],
+  },
+  {
+    href: `${runtimeDirName}/app/styles/audit/audit.css?v=058`,
+    manifestHref: './styles/audit/audit.css?v=058',
     fileName: 'audit.css',
     relativeSegments: ['audit', 'audit.css'],
   },
@@ -101,6 +107,9 @@ test('split shell css keeps key selectors in the expected files', () => {
 
   assert.match(styleContents['metering.css'], /\.util-tabs-wrap\s*\{/);
   assert.match(styleContents['metering.css'], /\.month-panel\s*\{/);
+
+  assert.match(styleContents['data.css'], /\.data-equipment-launcher\s*\{/);
+  assert.match(styleContents['data.css'], /\.data-equipment-popup\s*\{/);
 
   assert.match(styleContents['audit.css'], /\.audit-panel\s*\{/);
   assert.match(styleContents['audit.css'], /\.print-sheet\s*\{/);

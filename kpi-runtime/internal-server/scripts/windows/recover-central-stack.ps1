@@ -9,7 +9,7 @@ $serverDir = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 
 $postgresBinDir = Resolve-KpiPostgresBinDir -ServerDir $serverDir -RequiredExecutable 'pg_isready.exe' -InstallIfMissing
 $pgIsReadyPath = Join-Path $postgresBinDir 'pg_isready.exe'
-$postgresPort = 5434
+$postgresPort = 5400
 $envFilePath = Join-Path $serverDir '.env.production.local'
 $postgresDataDir = Join-Path $serverDir 'var\central-runtime\postgres\data'
 $postmasterPidPath = Join-Path $postgresDataDir 'postmaster.pid'
@@ -22,7 +22,7 @@ function Read-ServerPort {
   param([string]$FilePath)
 
   if (-not (Test-Path $FilePath)) {
-    return 3100
+    return 3104
   }
 
   foreach ($line in Get-Content -Path $FilePath -Encoding utf8) {
@@ -41,7 +41,7 @@ function Read-ServerPort {
     }
   }
 
-  return 3100
+  return 3104
 }
 
 function Test-PostgresReady {

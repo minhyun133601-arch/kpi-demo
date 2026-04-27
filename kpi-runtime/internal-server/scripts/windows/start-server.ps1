@@ -125,7 +125,7 @@ New-Item -ItemType Directory -Force -Path $logDir | Out-Null
 $nodeExecutablePath = Resolve-NodeExecutablePath
 $resolvedEnvFile = Resolve-EnvFilePath -ServerDir $serverDir -Environment $Environment -EnvFile $EnvFile
 $envMap = Read-EnvMap -FilePath $resolvedEnvFile
-$port = 3100
+$port = 3104
 if ($envMap.ContainsKey('KPI_SERVER_PORT')) {
   $parsedPort = 0
   if ([int]::TryParse($envMap['KPI_SERVER_PORT'], [ref]$parsedPort) -and $parsedPort -gt 0) {

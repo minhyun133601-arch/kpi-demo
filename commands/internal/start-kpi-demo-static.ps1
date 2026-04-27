@@ -1,12 +1,14 @@
 param(
-  [int]$Port = 5500
+  [int]$Port = 5500,
+  [switch]$NoOpen
 )
 
 $ErrorActionPreference = 'Stop'
 
-$commandsDir = $PSScriptRoot
+$internalDir = $PSScriptRoot
+$commandsDir = (Resolve-Path (Join-Path $internalDir '..')).Path
 $demoRoot = (Resolve-Path (Join-Path $commandsDir '..')).Path
-$varDir = Join-Path $commandsDir 'var'
+$varDir = Join-Path $internalDir 'var'
 $pidFilePath = Join-Path $varDir 'kpi-demo-static.pid'
 $url = "http://127.0.0.1:$Port/KPI.html"
 
@@ -58,7 +60,9 @@ $listener = Get-NetTCPConnection -State Listen -LocalPort $Port -ErrorAction Sil
 if ($listener) {
   if (Test-KpiDemoStaticServer -TargetPort $Port) {
     Set-Content -Path $pidFilePath -Value $listener.OwningProcess -Encoding ascii
-    Start-Process $url
+    if (-not $NoOpen) {
+      Start-Process $url
+    }
     Write-Host "KPI Demo static server is already running."
     Write-Host "Static demo: $url"
     Write-Host "Port: $Port"
@@ -83,11 +87,13 @@ $process = Start-Process `
 
 Wait-ForKpiDemoStaticServer -TargetPort $Port
 Set-Content -Path $pidFilePath -Value $process.Id -Encoding ascii
-Start-Process $url
+if (-not $NoOpen) {
+  Start-Process $url
+}
 
 Write-Host "Started KPI Demo static server."
 Write-Host "Static demo: $url"
 Write-Host "Port: $Port"
 Write-Host "PID: $($process.Id)"
-Write-Host "Optional runtime login: http://127.0.0.1:3100/login"
+Write-Host "Optional runtime login: http://127.0.0.1:3104/login"
 Write-Host "Optional runtime demo account: 1234 / 1234"

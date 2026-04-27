@@ -26,7 +26,7 @@ $pgCtlPath = Join-Path $postgresBinDir 'pg_ctl.exe'
 $pgIsReadyPath = Join-Path $postgresBinDir 'pg_isready.exe'
 $psqlPath = Join-Path $postgresBinDir 'psql.exe'
 
-$postgresPort = 5434
+$postgresPort = 5400
 $postgresSuperuser = 'postgres'
 $appDatabase = 'kpi_internal'
 $appUser = 'kpi_app'
@@ -210,7 +210,7 @@ if ($dbExists -ne '1') {
 $envContent = @"
 # Current-PC central runtime
 KPI_SERVER_HOST=0.0.0.0
-KPI_SERVER_PORT=3100
+KPI_SERVER_PORT=3104
 KPI_DATABASE_URL=postgresql://${appUser}:${appPassword}@127.0.0.1:${postgresPort}/${appDatabase}
 KPI_AUTH_ENABLED=true
 KPI_LOGIN_ENABLED=true
@@ -227,12 +227,12 @@ if ($ForceRewriteEnv -or -not (Test-Path $envFilePath)) {
 
 if ($StartServer) {
   & (Join-Path $PSScriptRoot 'start-server.ps1') -Environment Production
-  Wait-ForHttpEndpoint -Uri 'http://127.0.0.1:3100/api/health'
+  Wait-ForHttpEndpoint -Uri 'http://127.0.0.1:3104/api/health'
 }
 
 if ($BootstrapOwner) {
-  Wait-ForHttpEndpoint -Uri 'http://127.0.0.1:3100/api/bootstrap/status'
-  $status = Invoke-RestMethod -Uri 'http://127.0.0.1:3100/api/bootstrap/status' -Method Get
+  Wait-ForHttpEndpoint -Uri 'http://127.0.0.1:3104/api/bootstrap/status'
+  $status = Invoke-RestMethod -Uri 'http://127.0.0.1:3104/api/bootstrap/status' -Method Get
   $ownerPassword = '1234'
   Set-Content -Path (Join-Path $secretsDir 'initial-owner.password') -Value $ownerPassword -Encoding ascii -NoNewline
   if (-not $status.ownerExists) {
@@ -243,7 +243,7 @@ if ($BootstrapOwner) {
     } | ConvertTo-Json
 
     Invoke-RestMethod `
-      -Uri 'http://127.0.0.1:3100/api/bootstrap/owner' `
+      -Uri 'http://127.0.0.1:3104/api/bootstrap/owner' `
       -Method Post `
       -ContentType 'application/json' `
       -Body $body | Out-Null
@@ -253,7 +253,7 @@ if ($BootstrapOwner) {
   $ownerInfoPath = Join-Path $secretsDir 'initial-owner.txt'
   try {
     @(
-      "login_url=http://127.0.0.1:3100/login"
+      "login_url=http://127.0.0.1:3104/login"
       "username=$ownerUsername"
       "password=$ownerPassword"
     ) | Set-Content -Path $ownerInfoPath -Encoding ascii

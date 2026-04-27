@@ -352,6 +352,34 @@ button:disabled {
 .tab-panel-single {
   grid-template-columns: minmax(0, 1fr);
 }
+.tab-panel-preview {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(560px, 1fr);
+  align-items: stretch;
+}
+.preview-intro {
+  padding: 16px 18px;
+}
+.preview-intro-head {
+  margin-bottom: 0;
+}
+.preview-open-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+}
+.preview-frame {
+  display: block;
+  width: 100%;
+  height: min(900px, calc(100vh - 290px));
+  min-height: 620px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
 .section-stack {
   display: grid;
   gap: 18px;
@@ -683,6 +711,9 @@ th {
   .tab-panel-single {
     grid-template-columns: 1fr;
   }
+  .tab-panel-preview {
+    grid-template-rows: auto minmax(520px, 1fr);
+  }
   .activity-column {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -714,6 +745,10 @@ th {
   .tab-button {
     flex: 1 1 0;
     min-width: 0;
+  }
+  .preview-frame {
+    height: calc(100dvh - 310px);
+    min-height: 500px;
   }
   .section-head,
   .section-head-inline,

@@ -2,7 +2,7 @@
     window.KpiSectionFactories = window.KpiSectionFactories || {};
     window.KpiSectionFactories.data = function buildDataSection() {
         const AppData = {};
-        AppData['data'] = {
+        AppData.data = {
             id: 'data',
             name: '데이터 관리',
             icon: 'fa-database',
@@ -23,13 +23,13 @@
                     }
                 },
                 {
-                    title: '작업 내역 기입',
+                    title: '작업 이력 기입',
                     icon: 'fa-clipboard-list',
                     color: '#2563eb',
-                    desc: '팀별내역서 작업내역 입력 및 문서 첨부 화면 바로가기',
+                    desc: '팀별 작업 이력 입력 및 문서 첨부 화면 바로가기',
                     shortcutTarget: {
                         sectionId: 'work',
-                        title: '작업내역',
+                        dataKey: 'work_history_records',
                         options: {
                             keepSidebarCollapsed: true
                         }
@@ -39,15 +39,19 @@
                     title: '설비 이력 카드',
                     icon: 'fa-screwdriver-wrench',
                     color: '#475569',
-                    desc: '설비 이력 카드 연결 준비',
+                    viewerMode: 'full-bleed',
+                    desc: '설비 기본 정보, 정비 이력, 관련 문서를 팝업 카드로 확인하는 포트폴리오 프리뷰',
+                    dataKey: 'data_equipment_history_card',
+                    fileName: 'Central Server DB / Equipment History Card',
+                    readOnly: true,
                     content: `
                         <div class="rounded-lg border border-slate-200 bg-slate-50 px-5 py-5 text-sm text-slate-600">
-                            설비 이력 카드 연결은 준비 중입니다.
+                            설비 이력 카드 양식은 데모 데이터에서 렌더링됩니다.
                         </div>
                     `
                 }
             ]
         };
-        return AppData['data'];
+        return AppData.data;
     };
 })();

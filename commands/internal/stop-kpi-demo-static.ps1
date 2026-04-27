@@ -4,8 +4,8 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-$commandsDir = $PSScriptRoot
-$varDir = Join-Path $commandsDir 'var'
+$internalDir = $PSScriptRoot
+$varDir = Join-Path $internalDir 'var'
 $pidFilePath = Join-Path $varDir 'kpi-demo-static.pid'
 
 function Test-KpiDemoStaticServer {
@@ -34,10 +34,10 @@ if ($listener -and (Test-KpiDemoStaticServer -TargetPort $Port)) {
 }
 
 $candidatePids = $candidatePids | Select-Object -Unique
-foreach ($pid in $candidatePids) {
-  $process = Get-Process -Id $pid -ErrorAction SilentlyContinue
+foreach ($candidatePid in $candidatePids) {
+  $process = Get-Process -Id $candidatePid -ErrorAction SilentlyContinue
   if ($process) {
-    Stop-Process -Id $pid -Force
+    Stop-Process -Id $candidatePid -Force
     Remove-Item -Path $pidFilePath -ErrorAction SilentlyContinue
     Write-Host "Stopped KPI Demo static server on port $Port."
     exit 0

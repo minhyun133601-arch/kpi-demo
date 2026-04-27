@@ -9,7 +9,7 @@ $postgresBinDir = Resolve-KpiPostgresBinDir -ServerDir $serverDir -RequiredExecu
 $pgCtlPath = Join-Path $postgresBinDir 'pg_ctl.exe'
 $pgIsReadyPath = Join-Path $postgresBinDir 'pg_isready.exe'
 $postgresDataDir = Join-Path $serverDir 'var\central-runtime\postgres\data'
-$postgresPort = 5434
+$postgresPort = 5400
 
 function Assert-CommandPath {
   param([string]$PathToCheck)

@@ -18,7 +18,7 @@ $body = @{
 } | ConvertTo-Json
 
 $response = Invoke-RestMethod `
-  -Uri 'http://127.0.0.1:3100/api/bootstrap/owner' `
+  -Uri 'http://127.0.0.1:3104/api/bootstrap/owner' `
   -Method Post `
   -ContentType 'application/json' `
   -Body $body

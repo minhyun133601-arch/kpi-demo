@@ -280,7 +280,8 @@ test.describe('KPI browser smoke', () => {
 
       await clickSidebarButton(page, '법정 설비');
       await expect(page.locator('#content-container')).toContainText('법정 설비');
-      await expect(page.locator('#content-container')).toContainText('추후 추가예정');
+      await expect(page.locator('#content-container')).toContainText('법정 설비 점검 프리뷰');
+      await expect(page.locator('.audit-legal-dashboard')).toBeVisible();
 
       await clickSidebarButton(page, '안전 관리');
       await expect(page.locator('#content-container')).toContainText('안전 관리');
@@ -296,7 +297,9 @@ test.describe('KPI browser smoke', () => {
       await page.waitForTimeout(1000);
 
       await clickSidebarButton(page, '설비 이력 카드');
-      await expect(page.locator('#content-container')).toContainText('설비 이력 카드 연결은 준비 중입니다.');
+      await expect(page.locator('#content-container')).toContainText('설비이력카드');
+      await expect(page.locator('#content-container')).toContainText('Sample Mixer A');
+      await expect(page.locator('.data-equipment-history-table tbody tr')).toHaveCount(5);
       await clickSidebarButton(page, '목차 초기화');
       await expect(page.locator('.viewer-home-shell')).toBeVisible();
 

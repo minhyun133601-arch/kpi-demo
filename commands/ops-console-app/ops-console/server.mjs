@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
 import { appPidFile, appRoot, publicDir } from './lib/paths.mjs';
+import { getRepositoryMap } from './lib/repository-map.mjs';
 import {
   getDbTableList,
   getLogContent,
@@ -21,14 +22,37 @@ const mimeTypes = {
   '.svg': 'image/svg+xml'
 };
 
-function sendJson(res, statusCode, payload) {
+function getLocalCorsHeaders(req) {
+  const origin = String(req.headers.origin || '').trim();
+  if (/^http:\/\/(127\.0\.0\.1|localhost):\d+$/i.test(origin)) {
+    return {
+      'Access-Control-Allow-Origin': origin,
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      Vary: 'Origin'
+    };
+  }
+  return {};
+}
+
+function sendJson(res, statusCode, payload, headers = {}) {
   const body = Buffer.from(JSON.stringify(payload), 'utf8');
   res.writeHead(statusCode, {
     'Content-Type': 'application/json; charset=utf-8',
     'Content-Length': body.length,
-    'Cache-Control': 'no-store'
+    'Cache-Control': 'no-store',
+    ...headers
   });
   res.end(body);
+}
+
+function sendEmpty(res, statusCode, headers = {}) {
+  res.writeHead(statusCode, {
+    'Content-Length': 0,
+    'Cache-Control': 'no-store',
+    ...headers
+  });
+  res.end();
 }
 
 function readBody(req) {
@@ -82,18 +106,31 @@ const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url || '/', `http://${req.headers.host || `${host}:${port}`}`);
 
+    if (
+      req.method === 'OPTIONS'
+      && (url.pathname === '/api/app/health' || url.pathname === '/api/repository-map')
+    ) {
+      sendEmpty(res, 204, getLocalCorsHeaders(req));
+      return;
+    }
+
     if (req.method === 'GET' && url.pathname === '/api/app/health') {
       sendJson(res, 200, {
         ok: true,
         app: 'kpi-ops-console',
         port,
         appRoot
-      });
+      }, getLocalCorsHeaders(req));
       return;
     }
 
     if (req.method === 'GET' && url.pathname === '/api/overview') {
       sendJson(res, 200, await getOverview());
+      return;
+    }
+
+    if (req.method === 'GET' && url.pathname === '/api/repository-map') {
+      sendJson(res, 200, getRepositoryMap(), getLocalCorsHeaders(req));
       return;
     }
 

@@ -43,7 +43,7 @@
     runtime.registerSaveProvider('audit-record-save', (context = {}) => {
         if (context.sectionId !== 'audit') return null;
         const dataKey = String(context.category?.dataKey || '').trim();
-        if (context.category?.isPlaceholder === true) return null;
+        if (context.category?.isPlaceholder === true || context.category?.readOnly === true) return null;
         if (!dataKey || typeof getAuditData !== 'function' || typeof saveAuditData !== 'function') {
             return null;
         }

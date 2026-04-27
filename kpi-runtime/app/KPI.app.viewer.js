@@ -62,10 +62,11 @@
                     ${sections.map(sectionEntry => {
                         const isExpanded = SidebarTreeState.expandedSections[sectionEntry.id] === true;
                         const isActiveSection = selectedSectionId === sectionEntry.id;
-                        const actionIcon = sectionEntry.section?.directLaunch === true
+                        const opensDefaultCategory = sectionEntry.section?.openDefaultCategory === true;
+                        const actionIcon = sectionEntry.section?.directLaunch === true || opensDefaultCategory
                             ? 'fa-arrow-up-right-from-square'
                             : 'fa-chevron-right';
-                        const sectionAction = sectionEntry.section?.directLaunch === true
+                        const sectionAction = sectionEntry.section?.directLaunch === true || opensDefaultCategory
                             ? `openSection('${sectionEntry.id}')`
                             : `toggleSidebarSection('${sectionEntry.id}')`;
                         return `
@@ -209,6 +210,11 @@
                     buildCategoryPopupFeatures(category)
                 );
                 if (popupWindow) {
+                    try {
+                        popupWindow.opener = null;
+                    } catch (error) {
+                        // Ignore opener cleanup failures; the popup still remains independent when the KPI window closes.
+                    }
                     try {
                         popupWindow.focus();
                     } catch (error) {

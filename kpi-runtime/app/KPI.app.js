@@ -408,69 +408,15 @@
                             </div>
                         </div>
                         <div class="viewer-home-copy-panel">
-                            <h1 class="viewer-home-policy-title">2026년 운영방침</h1>
+                            <h1 class="viewer-home-policy-title">KD 데모</h1>
                             <div class="viewer-home-policy-rule"></div>
                             <div class="viewer-home-policy-points">
-                                <p class="viewer-home-policy-line">
-                                    <span class="viewer-home-policy-line-icon" aria-hidden="true"><i class="fas fa-arrow-trend-up"></i></span>
-                                    <span>데이터 기반 운영으로 안정 성장의 기반을 다진다</span>
-                                </p>
                                 <p class="viewer-home-policy-line viewer-home-policy-line-strong">
-                                    <span class="viewer-home-policy-line-icon" aria-hidden="true"><i class="fas fa-brain"></i></span>
-                                    <span>AI와 자동화 역량으로 현장 업무 효율을 높인다</span>
+                                    <span>26년 방침</span>
                                 </p>
                             </div>
                         </div>
                     </div>
-                    <section class="viewer-home-guideline-section" aria-label="행동 강령">
-                        <div class="viewer-home-guideline-header">
-                            <h2 class="viewer-home-guideline-title">Aster Demo Manufacturing 행동강령</h2>
-                        </div>
-                        <div class="viewer-home-guideline-grid">
-                            <article class="viewer-home-guideline-card viewer-home-guideline-card-trust">
-                                <div class="viewer-home-guideline-icon"><i class="fas fa-handshake"></i></div>
-                                <div class="viewer-home-guideline-copy">
-                                    <div class="viewer-home-guideline-name">신뢰(Trust)</div>
-                                    <div class="viewer-home-guideline-quote">“투명하게 공유하고, 약속을 지키며, 함께 책임진다”</div>
-                                    <div class="viewer-home-guideline-tag">Trust First</div>
-                                    <ul class="viewer-home-guideline-list">
-                                        <li>정보와 기준을 숨기지 않고 같은 화면에서 확인하는 자세</li>
-                                        <li>고객, 동료, 협력사를 존중하며 약속한 일정을 지키는 태도</li>
-                                        <li>이슈를 발견하면 원인과 조치 계획을 끝까지 공유하는 자세</li>
-                                        <li>결과보다 먼저 안전과 품질 기준을 지키는 행동</li>
-                                    </ul>
-                                </div>
-                            </article>
-                            <article class="viewer-home-guideline-card viewer-home-guideline-card-communication">
-                                <div class="viewer-home-guideline-icon"><i class="fas fa-comments"></i></div>
-                                <div class="viewer-home-guideline-copy">
-                                    <div class="viewer-home-guideline-name">협업(Collaboration)</div>
-                                    <div class="viewer-home-guideline-quote">“먼저 묻고, 함께 듣고, 빠르게 조율한다”</div>
-                                    <div class="viewer-home-guideline-tag">One Team</div>
-                                    <ul class="viewer-home-guideline-list">
-                                        <li>현장, 사무, 협력 부서가 같은 목표와 지표를 보는 방식</li>
-                                        <li>문제가 커지기 전에 담당자를 찾아가 함께 해결하는 태도</li>
-                                        <li>다른 의견을 기록하고 결정 근거를 남기는 습관</li>
-                                        <li>반복 업무는 자동화하고 판단이 필요한 일에 집중하는 자세</li>
-                                    </ul>
-                                </div>
-                            </article>
-                            <article class="viewer-home-guideline-card viewer-home-guideline-card-value">
-                                <div class="viewer-home-guideline-icon"><i class="fas fa-lightbulb"></i></div>
-                                <div class="viewer-home-guideline-copy">
-                                    <div class="viewer-home-guideline-name">개선(Improvement)</div>
-                                    <div class="viewer-home-guideline-quote">“측정하고, 배우고, 바꾸고, 표준화한다”</div>
-                                    <div class="viewer-home-guideline-tag">Better Every Day</div>
-                                    <ul class="viewer-home-guideline-list">
-                                        <li>데이터로 현상을 확인하고 작은 개선부터 실행하는 자세</li>
-                                        <li>개선 결과를 기록해 다음 사람이 바로 이어받게 하는 방식</li>
-                                        <li>새로운 기술을 실제 업무 흐름에 맞게 검증하는 태도</li>
-                                        <li>성과가 확인된 방법은 표준 업무로 정착시키는 습관</li>
-                                    </ul>
-                                </div>
-                            </article>
-                        </div>
-                    </section>
                 </div>
             `;
             mainScroll.scrollTop = 0;
@@ -551,10 +497,11 @@
             sideNav.innerHTML = entries.map(entry => {
                 const isActive = entry.id === activeEntry?.id;
                 const navCategories = getSectionNavigationCategories(entry.section);
-                const actionIcon = entry.section?.directLaunch === true
+                const opensDefaultCategory = entry.section?.openDefaultCategory === true;
+                const actionIcon = entry.section?.directLaunch === true || opensDefaultCategory
                     ? 'fa-arrow-up-right-from-square'
                     : 'fa-chevron-right';
-                const sectionAction = entry.section?.directLaunch === true
+                const sectionAction = entry.section?.directLaunch === true || opensDefaultCategory
                     ? `openSection('${entry.id}')`
                     : `setDashboardSection('${entry.id}')`;
                 return `
@@ -609,6 +556,10 @@
             const section = AppData[normalizedSectionId];
             if (section?.directLaunch === true) {
                 openCategoryLaunch(section);
+                return;
+            }
+            if (section?.openDefaultCategory === true) {
+                openSection(normalizedSectionId);
                 return;
             }
             DashboardHomeState.sectionId = normalizedSectionId;
@@ -678,7 +629,11 @@
             document.getElementById('dashboard')?.classList.add('hidden-view');
             if (data.categories && data.categories.length > 0) {
                 const defaultOptions = KpiRuntime?.getDefaultOpenOptions?.(id, { section: data }) || {};
-                selectCategory(data.id, 0, defaultOptions);
+                const defaultIndex = Number.isFinite(Number(data.defaultCategoryIndex))
+                    ? Number(data.defaultCategoryIndex)
+                    : 0;
+                const normalizedDefaultIndex = data.categories[defaultIndex] ? defaultIndex : 0;
+                selectCategory(data.id, normalizedDefaultIndex, defaultOptions);
                 return;
             }
             activeSectionId = id;
@@ -1118,10 +1073,11 @@
                         }
                         const isExpanded = isUtilityTeamSelectorSection || SidebarTreeState.expandedSections[sectionEntry.id] === true;
                         const isActiveSection = selectedSectionId === sectionEntry.id;
-                        const actionIcon = sectionEntry.section?.directLaunch === true
+                        const opensDefaultCategory = sectionEntry.section?.openDefaultCategory === true;
+                        const actionIcon = sectionEntry.section?.directLaunch === true || opensDefaultCategory
                             ? 'fa-arrow-up-right-from-square'
                             : 'fa-chevron-right';
-                        const sectionAction = sectionEntry.section?.directLaunch === true
+                        const sectionAction = sectionEntry.section?.directLaunch === true || opensDefaultCategory
                             ? `openSection('${sectionEntry.id}')`
                             : `toggleSidebarSection('${sectionEntry.id}')`;
                         return `
@@ -1283,6 +1239,11 @@
                     buildCategoryPopupFeatures(category)
                 );
                 if (popupWindow) {
+                    try {
+                        popupWindow.opener = null;
+                    } catch (error) {
+                        // Ignore opener cleanup failures; the popup still remains independent when the KPI window closes.
+                    }
                     try {
                         popupWindow.focus();
                     } catch (error) {

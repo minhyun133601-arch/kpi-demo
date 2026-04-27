@@ -41,7 +41,7 @@
                 </main>
 
                 <footer class="main-footer no-print">
-                    <p>짤 2026 KPI 작업내역</p>
+                    <p>KPI Demo · 2026 KPI 작업내역</p>
                 </footer>
             </div>
 
