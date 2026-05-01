@@ -409,20 +409,6 @@
                                 <img class="viewer-home-brand-logo" src="${companyLogoSrc}" alt="회사 로고" />
                             </div>
                         </div>
-                        <div class="viewer-home-copy-panel">
-                            <h1 class="viewer-home-policy-title">2026년 경영방침</h1>
-                            <div class="viewer-home-policy-rule"></div>
-                            <div class="viewer-home-policy-points">
-                                <p class="viewer-home-policy-line">
-                                    <span class="viewer-home-policy-line-icon" aria-hidden="true"><i class="fas fa-arrow-trend-up"></i></span>
-                                    <span>새로운 기준으로 지속 성장의 기반을 구축한다</span>
-                                </p>
-                                <p class="viewer-home-policy-line viewer-home-policy-line-strong">
-                                    <span class="viewer-home-policy-line-icon" aria-hidden="true"><i class="fas fa-brain"></i></span>
-                                    <span>AI 역량을 확보하여 업무효율을 극대화한다.</span>
-                                </p>
-                            </div>
-                        </div>
                     </div>
                     <section class="viewer-home-guideline-section" aria-label="KPI Demo 보안 운영 원칙">
                         <div class="viewer-home-guideline-header">

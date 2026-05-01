@@ -926,8 +926,9 @@
         }
         .viewer-home-hero {
             display: grid;
-            grid-template-columns: minmax(340px, 500px) minmax(0, 1fr);
+            grid-template-columns: minmax(280px, 560px);
             align-items: center;
+            justify-content: center;
             gap: clamp(28px, 3.5vw, 54px);
             min-height: 0;
         }
@@ -936,6 +937,7 @@
             align-content: center;
             justify-items: stretch;
             max-width: min(100%, 500px);
+            width: 100%;
         }
         .viewer-home-brand-frame {
             position: relative;
