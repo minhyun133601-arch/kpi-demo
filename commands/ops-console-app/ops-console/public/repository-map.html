@@ -840,19 +840,12 @@
       <article class="panel violet">
         <div class="panel-head">
           <h2 class="panel-title">commands/ <span class="tag">local operations</span></h2>
-          <div class="panel-kicker">Root shortcuts expose only the static portfolio demo; owner-console scripts stay inside ops-console-app for local maintainer checks.</div>
+          <div class="panel-kicker">Root shortcuts match KPI-Server: open the local server management console, then use the console controls to start or stop the runtime.</div>
         </div>
         <div class="body">
           <ul class="tree">
-            <li><span class="name">open-kpi-demo.cmd</span><span class="desc">starts only the static demo</span></li>
-            <li><span class="name">close-kpi-demo.cmd</span><span class="desc">stops only the static demo</span></li>
-            <li>
-              <span class="name">commands/internal/</span><span class="desc">support scripts hidden from the root command-file list</span>
-              <ul>
-                <li><span class="name">start-kpi-demo-static.ps1</span><span class="desc">static server launcher for port 5500</span></li>
-                <li><span class="name">stop-kpi-demo-static.ps1</span><span class="desc">static server shutdown helper</span></li>
-              </ul>
-            </li>
+            <li><span class="name">open-ops-console.cmd</span><span class="desc">opens the server management console</span></li>
+            <li><span class="name">close-ops-console.cmd</span><span class="desc">closes the server management console</span></li>
             <li>
               <span class="name">commands/ops-console-app/</span><span class="desc">owner-side local control surface</span>
               <ul>
@@ -862,7 +855,6 @@
                 <li><span class="name">commands/ops-console-app/scripts/</span><span class="desc">internal owner-console start and stop scripts</span></li>
               </ul>
             </li>
-            <li><span class="name">commands/internal/var/</span><span class="desc">ignored static-demo runtime state</span></li>
           </ul>
         </div>
       </article>
@@ -959,12 +951,12 @@
           <article class="history-entry">
             <div class="history-meta">
               <span class="status-badge recent">2026-05-02</span>
-              <span class="status-badge modified">명령 정리</span>
+              <span class="status-badge modified">서버 툴 정리</span>
             </div>
-            <h3 data-i18n-key="historyDemoCommandSplitTitle">루트 명령은 데모만 노출하도록 정리</h3>
-            <p data-i18n-key="historyDemoCommandSplitBody">루트 명령 파일은 정적 포트폴리오 데모를 열고 닫는 경로만 남겼습니다. 오너 콘솔 확인은 포트폴리오용 바로가기 대신 내부 스크립트로 유지합니다.</p>
+            <h3 data-i18n-key="historyDemoCommandSplitTitle">루트 명령을 서버 관리 콘솔로 복원</h3>
+            <p data-i18n-key="historyDemoCommandSplitBody">루트 command 파일은 KPI-Server처럼 서버 관리 콘솔을 여닫는 두 파일만 남겼습니다. 이전 데모 전용 바로가기는 루트 명령 표면에서 제거했습니다.</p>
             <ul class="history-detail">
-              <li data-i18n-key="historyDemoCommandSplitDetail">이번에 건드린 위치: 루트 command wrapper, 정적 helper 출력, README 실행 안내, Repository Map 명령 설명. 변경 파일: commands/open-kpi-demo.cmd, commands/close-kpi-demo.cmd, commands/open-ops-console.cmd, commands/close-ops-console.cmd, commands/internal/start-kpi-demo-static.ps1, README.md, commands/ops-console-app/ops-console/public/repository-map.html. 개인정보 영향: 고정 데모 계정 문구를 제거했고 데이터나 자격 증명 변경 없음; 오너 콘솔 스크립트는 로컬 내부 도구로 유지. 검증: 명령 문구 스캔, markdown 읽기 확인, 민감 문자열 스캔, 정적 명령 시작/종료 스모크, 내부 오너 콘솔 스크립트 스모크, Repository Map HTTP 확인.</li>
+              <li data-i18n-key="historyDemoCommandSplitDetail">이번에 건드린 위치: 루트 command wrapper, README 실행 안내, Repository Map 명령 설명. 변경 파일: 서버 관리 콘솔 wrapper 2개, 이전 데모 전용 command/helper 제거, README.md, commands/ops-console-app/ops-console/public/repository-map.html. 개인정보 영향: 데이터나 자격 증명 변경 없음; 서버 실행은 콘솔의 서버 열기 버튼을 통해서만 안내합니다. 검증: 명령 문구 스캔, markdown 읽기 확인, 민감 문자열 스캔, 서버 관리 콘솔 시작/종료 스모크, Repository Map HTTP 확인.</li>
             </ul>
           </article>
           <article class="history-entry">
@@ -1193,9 +1185,9 @@
               <span class="status-badge added">commands</span>
             </div>
             <h3 data-i18n-key="historyCommandsTitle">The command folder keeps demo and console wrappers separate</h3>
-            <p data-i18n-key="historyCommandsBody">The static demo wrappers start or stop both KPI.html and the owner console. The ops-console wrappers handle only the local console when the reviewer wants Repository Map or Data Reference Map.</p>
+            <p data-i18n-key="historyCommandsBody">Root command files keep only the server management console open/close path. KPI Runtime start and stop are handled by the console's Server Open and Server Close actions.</p>
             <ul class="history-detail">
-              <li data-i18n-key="historyCommandsDetail">Touched area: command wrapper files, commands/internal support scripts, ops-console start/stop scripts, .gitignore, and console command registry. Privacy: generated local runtime state stays ignored. Verification: command scan and start/stop smoke.</li>
+              <li data-i18n-key="historyCommandsDetail">Touched area: command wrapper files, ops-console start/stop scripts, .gitignore, and console command registry. Privacy: generated local runtime state stays ignored. Verification: command scan and start/stop smoke.</li>
             </ul>
           </article>
           <article class="history-entry">
@@ -1251,9 +1243,9 @@
         staticNote: 'Static fallback map below mirrors the public-facing structure summary when the owner-console API is not running.',
         historyTitle: 'Patch History',
         historyKicker: 'Portfolio-facing record of structure, privacy impact, and verification results.',
-        historyDemoCommandSplitTitle: 'Root commands now expose only the demo',
-        historyDemoCommandSplitBody: 'The root command files now keep only the static portfolio demo open/close path. Owner-console checks remain available through internal scripts, not separate portfolio-facing shortcuts.',
-        historyDemoCommandSplitDetail: 'Touched area: root command wrappers, static helper output, README run guidance, and Repository Map command descriptions. Changed files: commands/open-kpi-demo.cmd, commands/close-kpi-demo.cmd, commands/open-ops-console.cmd, commands/close-ops-console.cmd, commands/internal/start-kpi-demo-static.ps1, README.md, commands/ops-console-app/ops-console/public/repository-map.html. Privacy: fixed demo credential wording was removed; no data or credentials changed; owner-console scripts remain local internal tooling. Verification: command text scan, markdown readback, sensitive-string scan, static command start/stop smoke, internal owner-console script smoke, and Repository Map HTTP check.',
+        historyDemoCommandSplitTitle: 'Root commands now open the server console',
+        historyDemoCommandSplitBody: 'The root command files now match KPI-Server: only the server management console open/close wrappers remain. The old demo-only shortcuts were removed from the root command surface.',
+        historyDemoCommandSplitDetail: 'Touched area: root command wrappers, README run guidance, and Repository Map command descriptions. Changed files: two server-management console wrappers, removed old demo-only command/helper files, README.md, and commands/ops-console-app/ops-console/public/repository-map.html. Privacy: no data or credentials changed; server startup is documented through the console Server Open button only. Verification: command text scan, markdown readback, sensitive-string scan, server management console start/stop smoke, and Repository Map HTTP check.',
         historyReferenceBoundaryTitle: 'AGENTS.md now follows the reference directive format',
         historyReferenceBoundaryBody: 'The demo authority document now uses the same Boundary Header and Directive A-xx structure as KPI-Server and KPI-local, while keeping KPI Demo as the public-safe portfolio surface with its own ports, privacy rules, and verification gates.',
         historyReferenceBoundaryDetail: 'Touched area: AGENTS.md directive-format rewrite and Repository Map history. Changed files: AGENTS.md and commands/ops-console-app/ops-console/public/repository-map.html. Privacy: reference rules were absorbed, not copied verbatim; live-operation wording, private data, screenshots, credentials, runtime artifacts, and reference-only ports were not introduced as active demo rules. Verification: reference AGENTS readback, markdown readback, sensitive-string scan, stale-port scan, directive-key check, and Repository Map key check.',
@@ -1315,8 +1307,8 @@
         historyOwnerBody: 'The KPI dashboard no longer embeds owner-only console tabs. Selecting Owner Only launches the local operations console as a detached popup that can stay open after the KPI window closes.',
         historyOwnerDetail: 'Touched area: owner section script, KPI app popup launcher, shell CSS, and KPI.html cache keys. Privacy: localhost-only behavior. Verification: popup launch browser smoke and syntax checks.',
         historyCommandsTitle: 'The command folder keeps demo and console wrappers separate',
-        historyCommandsBody: 'The static demo wrappers start or stop only KPI.html. The ops-console wrappers handle only the local console when the reviewer wants Repository Map or Data Reference Map.',
-        historyCommandsDetail: 'Touched area: command wrapper files, commands/internal support scripts, ops-console start/stop scripts, .gitignore, and console command registry. Privacy: generated local runtime state stays ignored. Verification: command scan and start/stop smoke.',
+        historyCommandsBody: "Root command files keep only the server management console open/close path. KPI Runtime start and stop are handled by the console's Server Open and Server Close actions.",
+        historyCommandsDetail: 'Touched area: command wrapper files, ops-console start/stop scripts, .gitignore, and console command registry. Privacy: generated local runtime state stays ignored. Verification: command scan and start/stop smoke.',
         historyPortsTitle: 'Local ports were standardized',
         historyPortsBody: 'The public static demo stays on 5500, the optional Node runtime uses 3104, PostgreSQL uses 5400, and the operations console starts from 3215.',
         historyPortsDetail: 'Touched area: runtime config, deploy examples, Windows scripts, README, and smoke checks. Privacy: port-only configuration change. Verification: config scan plus targeted runtime checks.',
@@ -1366,9 +1358,9 @@
         staticNote: '오너 콘솔 API가 꺼져 있으면 아래 정적 지도가 공개용 구조 요약을 대신 보여줍니다.',
         historyTitle: '패치 이력',
         historyKicker: '구조, 개인정보 영향, 검증 결과를 공개 포트폴리오 기준으로 기록합니다.',
-        historyDemoCommandSplitTitle: '루트 명령은 데모만 노출하도록 정리',
-        historyDemoCommandSplitBody: '루트 명령 파일은 정적 포트폴리오 데모를 열고 닫는 경로만 남겼습니다. 오너 콘솔 확인은 포트폴리오용 바로가기 대신 내부 스크립트로 유지합니다.',
-        historyDemoCommandSplitDetail: '이번에 건드린 위치: 루트 command wrapper, 정적 helper 출력, README 실행 안내, Repository Map 명령 설명. 변경 파일: commands/open-kpi-demo.cmd, commands/close-kpi-demo.cmd, commands/open-ops-console.cmd, commands/close-ops-console.cmd, commands/internal/start-kpi-demo-static.ps1, README.md, commands/ops-console-app/ops-console/public/repository-map.html. 개인정보 영향: 고정 데모 계정 문구를 제거했고 데이터나 자격 증명 변경 없음; 오너 콘솔 스크립트는 로컬 내부 도구로 유지. 검증: 명령 문구 스캔, markdown 읽기 확인, 민감 문자열 스캔, 정적 명령 시작/종료 스모크, 내부 오너 콘솔 스크립트 스모크, Repository Map HTTP 확인.',
+        historyDemoCommandSplitTitle: '루트 명령을 서버 관리 콘솔로 복원',
+        historyDemoCommandSplitBody: '루트 command 파일은 KPI-Server처럼 서버 관리 콘솔을 여닫는 두 파일만 남겼습니다. 이전 데모 전용 바로가기는 루트 명령 표면에서 제거했습니다.',
+        historyDemoCommandSplitDetail: '이번에 건드린 위치: 루트 command wrapper, README 실행 안내, Repository Map 명령 설명. 변경 파일: 서버 관리 콘솔 wrapper 2개, 이전 데모 전용 command/helper 제거, README.md, commands/ops-console-app/ops-console/public/repository-map.html. 개인정보 영향: 데이터나 자격 증명 변경 없음; 서버 실행은 콘솔의 서버 열기 버튼을 통해서만 안내합니다. 검증: 명령 문구 스캔, markdown 읽기 확인, 민감 문자열 스캔, 서버 관리 콘솔 시작/종료 스모크, Repository Map HTTP 확인.',
         historyReferenceBoundaryTitle: 'AGENTS.md를 참조본 directive 규격으로 정리',
         historyReferenceBoundaryBody: 'KPI-Server와 KPI-local처럼 Boundary Header와 Directive A-xx 구조를 쓰도록 AGENTS.md를 다시 정리하되, KPI Demo는 자체 포트, 개인정보 보호 규칙, 검증 기준을 가진 공개-safe 포트폴리오 화면으로 유지했습니다.',
         historyReferenceBoundaryDetail: '이번에 건드린 위치: AGENTS.md directive 규격 재작성과 Repository Map 이력. 변경 파일: AGENTS.md, commands/ops-console-app/ops-console/public/repository-map.html. 개인정보 영향: 참조 규칙은 그대로 복사하지 않고 데모 기준으로 흡수했으며, 실제 운영처럼 보이는 문구, 비공개 데이터, 스크린샷, 자격 증명, 런타임 산출물, 참조본 전용 포트는 active demo rule로 들여오지 않았습니다. 검증: 참조 AGENTS 읽기 확인, markdown 읽기 확인, 민감 문자열 스캔, 오래된 포트 스캔, directive key 확인, Repository Map 키 확인.',
@@ -1430,8 +1422,8 @@
         historyOwnerBody: 'KPI 대시보드 안에 오너용 콘솔 탭을 더 이상 넣지 않습니다. 오너 전용을 누르면 KPI 창과 분리된 팝업으로 로컬 운영 콘솔이 열리고, KPI 창을 닫아도 그 창은 유지됩니다.',
         historyOwnerDetail: '이번에 건드린 위치: 오너 섹션 스크립트, KPI 앱 팝업 실행부, shell CSS, KPI.html 캐시 키. 개인정보 영향: localhost 동작만 변경. 검증: 팝업 실행 브라우저 스모크와 문법 확인.',
         historyCommandsTitle: 'commands 폴더의 데모/콘솔 실행 파일 분리',
-        historyCommandsBody: '정적 데모 실행 파일은 KPI.html만 켜고 끕니다. 운영 콘솔 실행 파일은 검토자가 Repository Map이나 Data Reference Map만 확인할 때 로컬 콘솔만 다룹니다.',
-        historyCommandsDetail: '이번에 건드린 위치: command wrapper 파일, commands/internal 보조 스크립트, ops-console 시작/종료 스크립트, .gitignore, 콘솔 명령 레지스트리. 개인정보 영향: 생성되는 로컬 실행 상태는 계속 Git에서 제외. 검증: 명령 파일 스캔과 시작/종료 스모크.',
+        historyCommandsBody: '루트 실행 파일은 서버 관리 콘솔을 열고 닫는 두 파일만 남깁니다. 실제 KPI Runtime 시작과 종료는 콘솔의 서버 열기/서버 닫기 명령이 담당합니다.',
+        historyCommandsDetail: '이번에 건드린 위치: command wrapper 파일, ops-console 시작/종료 스크립트, .gitignore, 콘솔 명령 레지스트리. 개인정보 영향: 생성되는 로컬 실행 상태는 계속 Git에서 제외. 검증: 명령 파일 스캔과 시작/종료 스모크.',
         historyPortsTitle: '로컬 포트 기준을 통일',
         historyPortsBody: '정적 데모는 5500, 선택형 Node 런타임은 3104, PostgreSQL은 5400, 운영 콘솔은 3215부터 사용합니다.',
         historyPortsDetail: '이번에 건드린 위치: 런타임 설정, 배포 예시, Windows 스크립트, README, 스모크 체크. 개인정보 영향: 포트 설정만 변경. 검증: 설정 스캔과 대상 런타임 확인.',
@@ -1470,7 +1462,7 @@
       'Top-level documentation and repository configuration visible in the public summary.': '공개 요약에 보이는 최상위 문서와 저장소 설정입니다.',
       'Shared front-end shell and optional server-backed runtime surface.': '공통 프런트엔드 셸과 선택형 서버 런타임 영역입니다.',
       'The server version keeps API, repository, service, migration, and test layers separate.': '서버 버전은 API, 저장소, 서비스, 마이그레이션, 테스트 계층을 분리해 둡니다.',
-      'Root shortcuts expose only the static portfolio demo; owner-console scripts stay inside ops-console-app for local maintainer checks.': '루트 실행 파일은 정적 포트폴리오 데모만 노출하고, 오너 콘솔 스크립트는 로컬 유지관리 확인용으로 ops-console-app 안에 둡니다.',
+      'Root shortcuts match KPI-Server: open the local server management console, then use the console controls to start or stop the runtime.': '루트 실행 파일은 KPI-Server처럼 로컬 서버 관리 콘솔을 열고, 런타임 시작과 종료는 콘솔 버튼으로 처리합니다.',
       'Utility screens, production extraction, reporting, and metering support code.': '유틸리티 화면, 생산 데이터 추출, 리포트, 계량 보조 코드입니다.',
       'Work-log, team calendar, and work-history reporting surfaces.': '작업 로그, 팀 캘린더, 업무 이력 리포트 화면입니다.',
       'Audit screens and manual entry pages use public-safe synthetic labels.': '점검 화면과 수기 입력 화면은 공개 가능한 합성 라벨을 사용합니다.',
@@ -1500,20 +1492,14 @@
       'business rules and state assembly': '업무 규칙과 상태 조립',
       'runtime entry point': '런타임 진입점',
       'frontend, route, service, database, and script tests': '프런트엔드, 라우트, 서비스, DB, 스크립트 테스트',
-      'starts only the static demo': '정적 데모만 켭니다',
-      'stops only the static demo': '정적 데모만 끕니다',
-      'starts only the local operations console': '로컬 운영 콘솔만 켭니다',
-      'stops only the local operations console': '로컬 운영 콘솔만 끕니다',
-      'support scripts hidden from the root command-file list': '루트 실행 파일 목록에서는 숨긴 보조 스크립트',
-      'static server launcher for port 5500': '5500 포트 정적 서버 시작 스크립트',
-      'static server shutdown helper': '정적 서버 종료 보조 스크립트',
+      'opens the server management console': '서버 관리 콘솔을 엽니다',
+      'closes the server management console': '서버 관리 콘솔을 닫습니다',
       'owner-side local control surface': '오너용 로컬 제어 화면',
       'console API, live repository map, and local tool endpoints': '콘솔 API, 실시간 저장소 지도, 로컬 도구 엔드포인트',
       'command registry, service bridge, and repository map helper': '명령 레지스트리, 서비스 브리지, 저장소 지도 보조 기능',
       'console UI assets and repository-map.html': '콘솔 UI 자산과 repository-map.html',
       'console UI assets, repository-map.html, and data-reference-map.html': '콘솔 UI 자산, repository-map.html, data-reference-map.html',
       'internal owner-console start and stop scripts': '내부 오너 콘솔 시작/종료 스크립트',
-      'ignored static-demo runtime state': '무시되는 정적 데모 실행 상태',
       'billing, calendar, equipment, save, team monthly, overview, and settlement UI': '청구, 캘린더, 설비, 저장, 팀 월간, 현황, 정산 UI',
       'synthetic production data import and export helper': '합성 생산 데이터 가져오기/내보내기 보조 도구',
       'dashboard-integrated utility runtime': '대시보드 통합 유틸리티 런타임',

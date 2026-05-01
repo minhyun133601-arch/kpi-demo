@@ -11,41 +11,35 @@
 - 생산 데이터: 생산 자료 import/export와 날짜, 팀, 제품 기준 정리
 - 작업 기록: 팀별 달력, 작업 내역, 월간 보고 흐름
 - 감사와 설비: 점검 기록, 법정 설비 관리, 설비 이력카드, 관련 문서 흐름
-- 선택형 서버 구조: Node.js, PostgreSQL, 사용자/세션/권한, 파일 저장, migration 구조
+- 서버 런타임 구조: Node.js, PostgreSQL, 사용자/세션/권한, 파일 저장, migration 구조
 
 ## 실행
 
-정적 포트폴리오 데모는 이 저장소 루트에서 바로 실행합니다.
-
-```powershell
-python -m http.server 5500
-```
-
-브라우저에서 아래 주소를 엽니다.
+Windows에서는 KPI-Server와 같은 방식으로 서버 관리 콘솔만 엽니다.
 
 ```text
-http://127.0.0.1:5500/KPI.html
+commands\open-ops-console.cmd
+commands\close-ops-console.cmd
 ```
 
-Windows에서는 다음 두 파일만 사용하면 됩니다.
+`open-ops-console.cmd`는 로컬 서버 관리 콘솔을 열고, 콘솔 안의 `서버 열기` 버튼이 KPI Demo Runtime과 PostgreSQL을 올립니다. 서버 실행 후 브라우저에서 아래 주소를 확인합니다.
 
 ```text
-commands\open-kpi-demo.cmd
-commands\close-kpi-demo.cmd
+http://127.0.0.1:3104/login
 ```
 
-`open-kpi-demo.cmd`는 정적 데모만 시작하고, `close-kpi-demo.cmd`는 정적 데모만 종료합니다. 선택형 Node.js/PostgreSQL 런타임은 서버 구조 확인용이며, 포트폴리오 화면 실행에는 필요하지 않습니다.
+서버 종료는 콘솔의 `서버 닫기`를 사용합니다. `close-ops-console.cmd`는 콘솔 창만 닫는 용도입니다.
 
 ## 주요 경로
 
-- `KPI.html`: 정적 포트폴리오 데모 시작 화면
+- `KPI.html`: 포트폴리오 데모 화면
 - `kpi-runtime/demo/KPI.demo-data.js`: 공개용 합성 데이터
 - `utility/`: 유틸리티 검침, 정산, 생산 추출, 보고서 화면
 - `team-report/`: 팀별 작업 달력, 작업 내역, 월간 보고 화면
 - `audit/`: 감사와 법정 설비 관리 화면
 - `data-entry/`: 설비 이력카드와 수기 입력 화면
-- `kpi-runtime/internal-server/`: 선택형 Node.js/PostgreSQL 런타임 구조
-- `commands/ops-console-app/`: 저장소 구조와 패치 이력을 확인하는 내부 보조 콘솔
+- `kpi-runtime/internal-server/`: Node.js/PostgreSQL 런타임 구조
+- `commands/ops-console-app/`: 서버 관리, 저장소 구조, 패치 이력을 확인하는 로컬 콘솔
 - `AGENTS.md`: 공개 데모 기준, 개인정보 보호 규칙, 검증 규칙
 
 ## 공개 데이터 기준
