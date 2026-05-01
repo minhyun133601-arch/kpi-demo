@@ -1,3 +1,8 @@
+// The inline equipment form replaces the retired fullscreen quick-entry popup.
+function isMeteringQuickEntryPopupEnabled() {
+  return false;
+}
+
 function renderResourceUI() {
   const resourceType = getCurrentResourceType();
   const isGas = isGasResourceType(resourceType);
@@ -104,8 +109,13 @@ function renderModeUI() {
   const supportsTeamMode = supportsTeamModeForCurrentResource();
   const supportsEquipmentMode = supportsEquipmentModeForResource();
   const supportsEquipmentEditing = supportsEquipmentEditingForCurrentResource();
+  const supportsQuickEntryPopup =
+    isMeteringQuickEntryPopupEnabled() &&
+    (isElectricResourceType() || isGasResourceType()) &&
+    supportsEquipmentMode &&
+    isEquipmentMode;
 
-  if (!isEquipmentMode && state.openQuickEntryMenu) {
+  if ((!isEquipmentMode || !supportsQuickEntryPopup) && state.openQuickEntryMenu) {
     state.openQuickEntryMenu = false;
     resetQuickEntryDraft();
   }
@@ -144,7 +154,7 @@ function renderModeUI() {
   elements.teamSaveBtn?.classList.toggle("is-hidden", !supportsTeamMode || !isTeamMode);
   elements.quickEntryWrap?.classList.toggle(
     "is-hidden",
-    !supportsEquipmentMode || !isEquipmentMode
+    !supportsQuickEntryPopup
   );
 
   syncEquipmentFullscreenUI();

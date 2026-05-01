@@ -13,22 +13,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="kpi-runtime/app/styles/shell/dashboard.css?v=057">
     <link rel="stylesheet" href="kpi-runtime/app/styles/shell/shell-chrome.css?v=057">
-    <link rel="stylesheet" href="kpi-runtime/app/styles/work/work.css?v=057">
+    <link rel="stylesheet" href="kpi-runtime/app/styles/work/work.css?v=058">
     <link rel="stylesheet" href="kpi-runtime/app/styles/metering/metering.css?v=060">
-    <link rel="stylesheet" href="kpi-runtime/app/styles/data/data.css?v=002">
-    <link rel="stylesheet" href="kpi-runtime/app/styles/audit/audit.css?v=058">
+    <link rel="stylesheet" href="kpi-runtime/app/styles/data/data.css?v=003">
+    <link rel="stylesheet" href="kpi-runtime/app/styles/audit/audit.css?v=057">
 </head>
 <body>
 
-    <!-- 1. 대시보드 (메인 화면) -->
+    <!-- 1. Dashboard -->
     <div id="dashboard">
         <div class="dashboard-shell">
             <aside class="dashboard-side">
                 <div class="dashboard-side-brand">
-                <span class="dashboard-version-badge">V454</span>
+                    <span class="dashboard-version-badge">V454</span>
                 </div>
                 <div id="dashboard-side-nav" class="dashboard-side-nav">
-                    <!-- JS로 홈 사이드 탭 렌더 -->
+                    <!-- Navigation is rendered by JS. -->
                 </div>
                 <div class="dashboard-side-footer">
                     <div id="dashboard-auth-bar" class="runtime-auth-bar" hidden>
@@ -52,22 +52,22 @@
             <section class="dashboard-main">
                 <div class="dashboard-stage">
                     <div class="dashboard-stage-head">
-                        <h1 id="dashboard-stage-title" class="dashboard-stage-title">유틸리티</h1>
-                        <span id="dashboard-stage-count" class="dashboard-stage-count">0개 항목</span>
+                        <h1 id="dashboard-stage-title" class="dashboard-stage-title">Utility</h1>
+                        <span id="dashboard-stage-count" class="dashboard-stage-count">0 items</span>
                     </div>
                     <div id="dashboard-subtabs" class="dashboard-subtabs">
-                        <!-- JS로 선택된 모듈 하위탭 렌더 -->
+                        <!-- Selected module subtabs are rendered by JS. -->
                     </div>
 
                     <div id="dashboard-home-panels" class="dashboard-home-panels">
-                        <!-- JS로 홈 콘텐츠 렌더 -->
+                        <!-- Dashboard panels are rendered by JS. -->
                     </div>
                 </div>
             </section>
         </div>
     </div>
 
-    <!-- 2. 상세 뷰어 (사이드바 형태) -->
+    <!-- 2. Detail viewer -->
     <div id="viewer">
         <header class="viewer-header">
             <div class="viewer-header-leading">
@@ -109,15 +109,15 @@
         </header>
 
         <div id="viewer-body" class="viewer-body">
-            <!-- 좌측 사이드바 (카테고리) -->
+            <!-- Left sidebar categories -->
             <nav id="sidebar" class="sidebar custom-scroll">
-                <!-- JS로 리스트 주입 -->
+                <!-- List is injected by JS. -->
             </nav>
 
-            <!-- 우측 본문 -->
+            <!-- Main content -->
             <main id="main-scroll" class="content-area custom-scroll">
                 <div id="content-container" class="content-card">
-                    <!-- JS로 내용 주입 -->
+                    <!-- Content is injected by JS. -->
                 </div>
             </main>
         </div>
@@ -134,15 +134,19 @@
     <script src="utility/runtime/util/sections/KPI.sections.util.js?v=241"></script>
     <script src="data-entry/runtime/data/sections/KPI.sections.data.js?v=5"></script>
     <script src="audit/runtime/audit/sections/KPI.sections.audit.js?v=3"></script>
-    <script src="kpi-runtime/sections/KPI.sections.owner.js?v=6"></script>
+    <script src="kpi-runtime/sections/KPI.sections.production-report.js?v=1"></script>
+    <script src="kpi-runtime/sections/KPI.sections.owner.js?v=5"></script>
     <script src="kpi-runtime/sections/KPI.section.registry.js?v=1"></script>
 
     <!-- 로직 스크립트 -->
     <script src="kpi-runtime/core/KPI.core.js"></script>
-    <script src="data-entry/runtime/data/KPI.data.runtime.js?v=2"></script>
+    <script src="data-entry/runtime/data/equipment-history/KPI.data.equipment-history.model.js?v=1"></script>
+    <script src="data-entry/runtime/data/equipment-history/KPI.data.equipment-history.form.js?v=1"></script>
+    <script src="data-entry/runtime/data/equipment-history/KPI.data.equipment-history.storage.js?v=1"></script>
+    <script src="data-entry/runtime/data/equipment-history/KPI.data.equipment-history.render.js?v=1"></script>
+    <script src="data-entry/runtime/data/KPI.data.runtime.js?v=3"></script>
     <script src="utility/runtime/util/KPI.util.data-sync.js?v=206"></script>
     <script src="utility/runtime/util/KPI.util.production-import.js?v=2"></script>
-    <script src="utility/runtime/util/production/KPI.util.production.archive.js"></script>
     <script src="utility/runtime/util/production/KPI.util.production.extractor.js?v=14"></script>
     <script src="utility/runtime/util/production/KPI.util.production.dataset-tools.js"></script>
     <script src="utility/runtime/util/KPI.util.production-management.js"></script>
@@ -161,20 +165,27 @@
     <script src="team-report/runtime/work/KPI.work.team-calendar.render.js?v=1"></script>
     <script src="team-report/runtime/work/history/KPI.work.history.core.js?v=217"></script>
     <script src="team-report/runtime/work/history/KPI.work.history.core.records.js?v=1"></script>
+    <script src="team-report/runtime/work/history/KPI.work.history.core.attachments.js?v=1"></script>
+    <script src="team-report/runtime/work/history/KPI.work.history.core.payload.js?v=1"></script>
+    <script src="team-report/runtime/work/history/KPI.work.history.core.storage.attachments.js?v=1"></script>
     <script src="team-report/runtime/work/history/KPI.work.history.core.storage.js?v=1"></script>
-    <script src="team-report/runtime/work/history/KPI.work.history.view.layout.js?v=248"></script>
-    <script src="team-report/runtime/work/history/layout/templates.js?v=248"></script>
-    <script src="team-report/runtime/work/history/KPI.work.history.view.render.js?v=233"></script>
-    <script src="team-report/runtime/work/history/render/card-parts.js?v=233"></script>
+    <script src="team-report/runtime/work/history/KPI.work.history.view.layout.js?v=250"></script>
+    <script src="team-report/runtime/work/history/layout/workspace-copy.js?v=1"></script>
+    <script src="team-report/runtime/work/history/layout/formatters.js?v=1"></script>
+    <script src="team-report/runtime/work/history/layout/templates.js?v=249"></script>
+    <script src="team-report/runtime/work/history/KPI.work.history.view.render.js?v=234"></script>
+    <script src="team-report/runtime/work/history/render/card-parts.js?v=234"></script>
     <script src="team-report/runtime/work/history/render/print.js?v=233"></script>
-    <script src="team-report/runtime/work/history/KPI.work.history.view.actions.js?v=232"></script>
-    <script src="team-report/runtime/work/history/KPI.work.history.view.actions.search.js?v=1"></script>
-    <script src="team-report/runtime/work/history/KPI.work.history.view.actions.record.js?v=1"></script>
-    <script src="team-report/runtime/work/history/KPI.work.history.view.actions.document.js?v=1"></script>
+    <script src="team-report/runtime/work/history/KPI.work.history.view.actions.js?v=233"></script>
+    <script src="team-report/runtime/work/history/KPI.work.history.view.actions.search.js?v=2"></script>
+    <script src="team-report/runtime/work/history/KPI.work.history.view.actions.record.js?v=2"></script>
+    <script src="team-report/runtime/work/history/KPI.work.history.view.actions.document.js?v=2"></script>
     <script src="team-report/runtime/work/history/KPI.work.history.view.js"></script>
     <script src="audit/runtime/audit/records/KPI.audit.records.data.js"></script>
     <script src="audit/runtime/audit/records/KPI.audit.records.options.js"></script>
     <script src="audit/runtime/audit/records/KPI.audit.records.lux-workspace.js?v=291"></script>
+    <script src="audit/runtime/audit/records/KPI.audit.records.legal.assets.js?v=1"></script>
+    <script src="audit/runtime/audit/records/KPI.audit.records.legal.js?v=2"></script>
     <script src="audit/runtime/audit/records/KPI.audit.records.render.js?v=2"></script>
     <script src="utility/runtime/util/energy/KPI.util.energy.dual.js"></script>
     <script src="utility/runtime/util/energy/KPI.util.energy.chart.js"></script>
@@ -226,6 +237,7 @@
     <script src="utility/runtime/util/report/sheet/analysis/render.js?v=053"></script>
     <script src="utility/runtime/util/report/sheet/analysis/popup-tables.js?v=053"></script>
     <script src="utility/runtime/util/report/sheet/summary/render.js?v=053"></script>
+    <script src="utility/runtime/util/report/sheet/metering-runtime.js?v=1"></script>
     <script src="utility/runtime/util/report/KPI.util.report.sheet.js?v=054"></script>
     <script src="utility/runtime/util/energy/KPI.util.energy.tabs.override.js?v=012"></script>
     <script src="utility/runtime/util/analytics/KPI.util.analytics.js"></script>
@@ -235,7 +247,7 @@
     <script src="team-report/runtime/work/KPI.work.renderers.js?v=1"></script>
     <script src="utility/runtime/util/KPI.util.runtime.js?v=207"></script>
     <script src="audit/runtime/audit/KPI.audit.runtime.js"></script>
-    <script src="team-report/runtime/work/KPI.work.runtime.js?v=227"></script>
-    <script src="kpi-runtime/app/KPI.app.js?v=253"></script>
+    <script src="team-report/runtime/work/KPI.work.runtime.js?v=228"></script>
+    <script src="kpi-runtime/app/KPI.app.js?v=250"></script>
 </body>
 </html>

@@ -5,9 +5,11 @@ import { sendJson } from './http.js';
 import { injectPortalDataBootstrap } from './portal-bootstrap.js';
 
 const KPI_HTML_PATH = path.join(config.repoRoot, 'KPI.html');
+const KPI_FAVICON_PATH = path.join(config.repoRoot, 'shared-assets', 'kpi-demo-logo.svg');
 const KPI_STATIC_ALLOWED_ROOT_FILES = new Set([
   'KPI.html',
-  'style.css'
+  'style.css',
+  'favicon.ico'
 ]);
 const KPI_STATIC_ALLOWED_TOP_LEVEL = new Set([
   'team-report',
@@ -24,7 +26,7 @@ const KPI_STATIC_FORBIDDEN_TOP_LEVEL = new Set([
   '.codex',
   'node_modules',
   'skills',
-  '※_개발시스템'
+  'private-workspace'
 ]);
 const CONTENT_TYPE_BY_EXTENSION = new Map([
   ['.css', 'text/css; charset=utf-8'],
@@ -133,6 +135,11 @@ export async function handleKpiRootHtml(req, res) {
 
 export async function handleKpiStaticFile(req, res, pathname) {
   void req;
+  if (pathname === '/favicon.ico') {
+    await sendFile(res, KPI_FAVICON_PATH);
+    return;
+  }
+
   const relativePath = decodePathname(pathname).replace(/^\/+/, '');
   const targetFilePath = path.resolve(config.repoRoot, relativePath);
   if (!isAllowedKpiStaticTarget(targetFilePath, pathname)) {

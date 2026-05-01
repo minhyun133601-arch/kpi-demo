@@ -33,6 +33,14 @@ test('buildPortalDataBootstrapPayload copies known records and mirrors audit reg
         updated_at: '2026-04-18T00:00:00.000Z',
         payload: { version: 2 },
       },
+      {
+        module_key: 'portal_data',
+        record_key: 'data_equipment_history_card',
+        permission_key: 'data.equipment_history',
+        version: 1,
+        updated_at: '2026-04-29T00:00:00.000Z',
+        payload: { equipmentList: [] },
+      },
     ],
     [],
     {
@@ -43,6 +51,7 @@ test('buildPortalDataBootstrapPayload copies known records and mirrors audit reg
 
   assert.deepEqual(payload.portalData.audit_regulation, { version: 2 });
   assert.deepEqual(payload.portalData.audit_legal_facility, { version: 2 });
-  assert.equal(payload.importedMeta.length, 1);
+  assert.deepEqual(payload.portalData.data_equipment_history_card, { equipmentList: [] });
+  assert.equal(payload.importedMeta.length, 2);
   assert.equal(payload.missing.length, 0);
 });

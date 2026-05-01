@@ -153,10 +153,10 @@
         const normalizedTeamName = String(teamName || '').trim();
         const normalizedLineName = String(lineName || '').trim();
         const orderMap = {
-            'Line Alpha': ['Product A', 'Product B'],
-            'Line Beta': ['Product C', 'Product D'],
-            'Line Gamma': ['Product E', 'Product F'],
-            'Line Delta': ['Product G', 'Other']
+            'Line Alpha': ['SD', 'MSD'],
+            'Line Beta': ['지대', 'ICA'],
+            'Line Gamma': ['로터리·버티컬', 'Process Beta B'],
+            'Line Delta': ['Bottle', '기타']
         };
         const rank = orderMap[normalizedTeamName]?.findIndex(label => label === normalizedLineName);
         return Number.isFinite(rank) && rank >= 0 ? rank : 99;
@@ -164,14 +164,14 @@
 
     function getUtilElectricAnalysisLineRatioColor(teamName = '', lineName = '', index = 0) {
         const lineColorMap = {
-            'Line Alpha::Product A': '#2563eb',
-            'Line Alpha::Product B': '#ec4899',
-            'Line Beta::Product C': '#f97316',
-            'Line Beta::Product D': '#14b8a6',
-            'Line Gamma::Product E': '#7c3aed',
-            'Line Gamma::Product F': '#22c55e',
-            'Line Delta::Product G': '#ef4444',
-            'Line Delta::Other': '#0ea5e9'
+            'Line Alpha::SD': '#2563eb',
+            'Line Alpha::MSD': '#ec4899',
+            'Line Beta::지대': '#f97316',
+            'Line Beta::ICA': '#14b8a6',
+            'Line Gamma::로터리·버티컬': '#7c3aed',
+            'Line Gamma::Process Beta B': '#22c55e',
+            'Line Delta::Bottle': '#ef4444',
+            'Line Delta::기타': '#0ea5e9'
         };
         const normalizedKey = `${String(teamName || '').trim()}::${String(lineName || '').trim()}`;
         if (lineColorMap[normalizedKey]) {

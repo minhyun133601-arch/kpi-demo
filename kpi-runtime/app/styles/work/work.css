@@ -46,6 +46,13 @@
         .work-textarea { width: 100%; min-height: 110px; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; resize: vertical; font-size: 0.9rem; color: #0f172a; outline: none; }
         .work-textarea::placeholder, .work-input::placeholder { color: #94a3b8; }
         .work-autosave { font-size: 0.75rem; color: #64748b; }
+        .work-save-status { display: inline-flex; align-items: center; width: max-content; max-width: 100%; min-height: 26px; padding: 4px 9px; border-radius: 999px; border: 1px solid #e2e8f0; background: #f8fafc; color: #475569; font-weight: 800; line-height: 1.2; }
+        .work-save-status::before { content: ""; width: 7px; height: 7px; margin-right: 6px; border-radius: 999px; background: currentColor; opacity: 0.72; }
+        .work-save-status.is-idle:empty { display: none; }
+        .work-save-status.is-pending { border-color: #bfdbfe; background: #eff6ff; color: #1d4ed8; }
+        .work-save-status.is-saved { border-color: #bbf7d0; background: #f0fdf4; color: #15803d; }
+        .work-save-status.is-failed { border-color: #fecaca; background: #fef2f2; color: #b91c1c; }
+        .work-save-status.is-blocked { border-color: #fed7aa; background: #fff7ed; color: #c2410c; }
         @media (max-width: 900px) {
             .work-grid { grid-template-columns: 1fr; }
         }

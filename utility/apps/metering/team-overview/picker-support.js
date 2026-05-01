@@ -1,4 +1,4 @@
-function syncOpenTeamPickerSelectionState(currentTeamGroups = getCurrentTeamGroups()) {
+﻿function syncOpenTeamPickerSelectionState(currentTeamGroups = getCurrentTeamGroups()) {
   if (
     state.openTeamPickerKey &&
     !currentTeamGroups.some((team) => team.key === state.openTeamPickerKey)

@@ -589,7 +589,9 @@
                                 <button type="button" class="work-team-calendar-arrow" data-work-team-arrow-step="1" onclick="workTeamCalendarMoveMonth(1)" ${nextDisabled} aria-label="\uB2E4\uC74C\uB2EC"><i class="fas fa-chevron-right"></i></button>
                                 ${utilitySummaryHtmlResolved}
                             </div>
-                            <div class="work-team-calendar-meta"></div>
+                            <div class="work-team-calendar-meta">
+                                ${typeof renderWorkSaveStatusBadge === 'function' ? renderWorkSaveStatusBadge(dataKey) : `<span class="work-autosave work-save-status is-idle" data-work-save-status="${escapeHtml(dataKey)}"></span>`}
+                            </div>
                         </div>
                     </div>
                     <div class="work-team-calendar-main">

@@ -5,8 +5,19 @@ import { deleteDocument, getDocumentFile, saveBase64Document } from '../services
 import { assertOpenPermission, normalizeText, parseBody, serializePermissionKey } from './route-context.js';
 
 const DOCUMENT_ATTACHMENT_OWNER_DOMAINS = new Set([
+  'audit.legal_facility',
+  'audit.lux.evidence',
+  'data.equipment_history',
   'work.history',
   'work.team_calendar'
+]);
+const DOCUMENT_IMAGE_ALLOWED_EXTENSIONS = new Set([
+  '.jpg',
+  '.jpeg',
+  '.png',
+  '.webp',
+  '.gif',
+  '.bmp'
 ]);
 const DOCUMENT_ATTACHMENT_ALLOWED_EXTENSIONS = new Set([
   '.pdf',
@@ -18,6 +29,13 @@ const DOCUMENT_ATTACHMENT_ALLOWED_EXTENSIONS = new Set([
   '.docx',
   '.hwp',
   '.hwpx'
+]);
+const DOCUMENT_IMAGE_ALLOWED_MIME_TYPES = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+  'image/bmp'
 ]);
 const DOCUMENT_ATTACHMENT_ALLOWED_MIME_TYPES = new Set([
   'application/pdf',
@@ -66,14 +84,44 @@ function getBase64ByteLength(base64Data) {
   return Math.max(0, Math.floor((normalized.length * 3) / 4) - paddingLength);
 }
 
-function validateUploadPolicy({ ownerDomain, originalName, mimeType, base64Data }) {
+function isImageUploadCategory(fileCategory) {
+  return /^(photo|image|images?)$/i.test(String(fileCategory || '').trim());
+}
+
+function isAuditLuxEvidenceUpload({ ownerDomain, fileCategory }) {
+  return ownerDomain === 'audit.lux.evidence'
+    && /^evidence$/i.test(String(fileCategory || '').trim());
+}
+
+function isPdfUploadType({ extension, mimeType }) {
+  return extension === '.pdf' || mimeType === 'application/pdf';
+}
+
+function hasAllowedUploadType({ ownerDomain, fileCategory, extension, mimeType }) {
+  if (isAuditLuxEvidenceUpload({ ownerDomain, fileCategory })) {
+    return DOCUMENT_IMAGE_ALLOWED_EXTENSIONS.has(extension)
+      || DOCUMENT_IMAGE_ALLOWED_MIME_TYPES.has(mimeType)
+      || isPdfUploadType({ extension, mimeType });
+  }
+  if (isImageUploadCategory(fileCategory)) {
+    return DOCUMENT_IMAGE_ALLOWED_EXTENSIONS.has(extension) || DOCUMENT_IMAGE_ALLOWED_MIME_TYPES.has(mimeType);
+  }
+  return DOCUMENT_ATTACHMENT_ALLOWED_EXTENSIONS.has(extension) || DOCUMENT_ATTACHMENT_ALLOWED_MIME_TYPES.has(mimeType);
+}
+
+function validateUploadPolicy({ ownerDomain, fileCategory, originalName, mimeType, base64Data }) {
   if (!DOCUMENT_ATTACHMENT_OWNER_DOMAINS.has(ownerDomain)) {
     return;
   }
 
   const normalizedExt = path.extname(String(originalName || '')).toLowerCase();
   const normalizedMimeType = String(mimeType || '').trim().toLowerCase();
-  if (!DOCUMENT_ATTACHMENT_ALLOWED_EXTENSIONS.has(normalizedExt) && !DOCUMENT_ATTACHMENT_ALLOWED_MIME_TYPES.has(normalizedMimeType)) {
+  if (!hasAllowedUploadType({
+    ownerDomain,
+    fileCategory,
+    extension: normalizedExt,
+    mimeType: normalizedMimeType
+  })) {
     throw new Error('unsupported_type');
   }
 
@@ -96,6 +144,7 @@ export async function handleUploadBase64File(context) {
   const base64Data = normalizeText(body.base64Data);
   validateUploadPolicy({
     ownerDomain,
+    fileCategory,
     originalName,
     mimeType,
     base64Data

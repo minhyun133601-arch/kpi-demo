@@ -152,6 +152,33 @@ button:disabled {
   flex-wrap: wrap;
   justify-content: flex-end;
 }
+.language-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 40px;
+  padding: 4px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+.language-button {
+  min-height: 30px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+.language-button:hover,
+.language-button.is-active {
+  transform: none;
+  background: #fff;
+  color: var(--primary);
+  box-shadow: 0 1px 0 rgba(27, 33, 29, 0.04);
+}
 .page-main {
   margin-top: 18px;
 }
@@ -711,9 +738,6 @@ th {
   .tab-panel-single {
     grid-template-columns: 1fr;
   }
-  .tab-panel-preview {
-    grid-template-rows: auto minmax(520px, 1fr);
-  }
   .activity-column {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -734,6 +758,7 @@ th {
   }
   .status-strip,
   .tab-panel-layout,
+  .tab-panel-preview,
   .activity-column,
   .section-grid,
   .field-row {
@@ -745,10 +770,6 @@ th {
   .tab-button {
     flex: 1 1 0;
     min-width: 0;
-  }
-  .preview-frame {
-    height: calc(100dvh - 310px);
-    min-height: 500px;
   }
   .section-head,
   .section-head-inline,
@@ -770,6 +791,17 @@ th {
   .status-actions button,
   .modal-close-button {
     width: 100%;
+  }
+  .language-toggle {
+    width: 100%;
+  }
+  .language-toggle .language-button {
+    flex: 1 1 0;
+    width: auto;
+  }
+  .preview-frame {
+    height: 70vh;
+    min-height: 520px;
   }
   .modal-card {
     width: calc(100vw - 24px);

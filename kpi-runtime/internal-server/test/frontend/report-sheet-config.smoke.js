@@ -44,6 +44,10 @@ test('report sheet config registers the shared registry and default state', () =
 test('kpi html loads report sheet config before sheet.js', () => {
   const configIndex = kpiHtml.indexOf('runtime/util/report/sheet/config.js?v=054');
   const optionsIndex = kpiHtml.indexOf('runtime/util/report/sheet/options.js?v=053');
+  const meteringRuntimeIndex = kpiHtml.indexOf('runtime/util/report/sheet/metering-runtime.js?v=1');
+  const sheetIndex = kpiHtml.indexOf('runtime/util/report/KPI.util.report.sheet.js?v=054');
   assert.ok(configIndex >= 0, 'report sheet config loader is missing');
   assert.ok(optionsIndex > configIndex, 'report sheet config must load before report sheet options');
+  assert.ok(meteringRuntimeIndex > optionsIndex, 'report sheet metering runtime must load after report sheet option registries');
+  assert.ok(sheetIndex > meteringRuntimeIndex, 'report sheet metering runtime must load before KPI.util.report.sheet.js');
 });

@@ -210,12 +210,12 @@
         'gas_field_06'
     ]);
     const UTIL_GAS_METER_FIELD_LABELS = Object.freeze({
-        gas_field_01: 'Line Gamma LNG Total',
+        gas_field_01: 'Line Gamma LNG 합계',
         gas_field_02: 'Demo Heater (LPG)',
         gas_field_03: 'Demo Boiler A',
         gas_field_04: 'Demo Boiler B',
         gas_field_05: 'Admin Area',
-        gas_field_06: 'Process Gamma Boiler'
+        gas_field_06: 'Process Gamma보일러'
     });
     const UTIL_GAS_METER_LPG_FACTOR = 3.35;
     const UTIL_GAS_METER_CORRECTION_TARGET_IDS = new Set(['gas_field_03', 'gas_field_04', 'gas_field_06']);

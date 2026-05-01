@@ -158,6 +158,7 @@
                                 <button class="work-btn" onclick="clearMonthlyFilter('${category.dataKey}')">초기화</button>
                             </div>
                             <div class="month-range-summary">기간: ${rangeLabel} · 총 ${totalCount}건</div>
+                            ${typeof renderWorkSaveStatusBadge === 'function' ? renderWorkSaveStatusBadge(category.dataKey) : `<div class="work-autosave work-save-status is-idle" data-work-save-status="${escapeHtml(category.dataKey)}"></div>`}
                         </div>
                         <div class="month-grid">
                             ${weekdayLabels}

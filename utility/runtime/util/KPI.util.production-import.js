@@ -199,12 +199,12 @@
         function canonicalizeUtilTeamName(name) {
             const text = normalizeUtilTeamName(name).toLowerCase();
             if (!text) return '';
-            if (text.includes('linealpha')) return 'LineAlpha';
-            if (text.includes('linebeta')) return 'LineBeta';
-            if (text.includes('linegamma')) return 'LineGamma';
-            if (text.includes('linedelta')) return 'LineDelta';
-            if (text.includes('planta')) return 'Plant A';
-            if (text.includes('plantb')) return 'Plant B';
+            if (text.includes('1팀') && text.includes('1파트')) return '1팀1파트';
+            if (text.includes('1팀') && text.includes('2파트')) return '1팀2파트';
+            if (text.includes('Line Delta')) return 'Line Delta';
+            if (text.includes('Line Gamma')) return 'Line Gamma';
+            if (text.includes('Plant A')) return 'Plant A';
+            if (text.includes('Plant B')) return 'Plant B';
             return text;
         }
 
@@ -225,21 +225,20 @@
             const lineNormalized = normalizeUtilTeamName(lineName).toLowerCase();
             const contextNormalized = normalizeUtilTeamName(contextText).toLowerCase();
             if (!raw) return true;
-            if (rawNormalized.includes('linedelta')) return true;
-            if (lineNormalized.includes('processgamma')) return true;
-            if (!lineNormalized && contextNormalized.includes('processgamma')) return true;
+            if (rawNormalized.includes('Line Delta')) return true;
+            if (lineNormalized.includes('Process Gamma')) return true;
+            if (!lineNormalized && contextNormalized.includes('Process Gamma')) return true;
             return false;
         }
 
         function resolveUtilExplicitTeamAlias(rawTeamName, contextText = '') {
             const merged = normalizeUtilTeamName(`${rawTeamName || ''}${contextText || ''}`).toLowerCase();
             if (!merged) return '';
-            const hasLineAlpha = merged.includes('linealpha');
-            const hasLineBeta = merged.includes('linebeta');
-            const hasPlantB = merged.includes('plantb');
-            const hasPlantA = merged.includes('planta');
-            if (hasLineAlpha || (hasPlantB && !hasLineBeta)) return 'LineAlpha';
-            if (hasLineBeta || (hasPlantA && !hasLineAlpha)) return 'LineBeta';
+            const hasTeam1 = merged.includes('1팀');
+            const hasPlantB = merged.includes('Plant B');
+            const hasPlantA = merged.includes('Plant A');
+            if (hasTeam1 && hasPlantB) return '1팀1파트';
+            if (hasTeam1 && hasPlantA) return '1팀2파트';
             return '';
         }
 
@@ -267,7 +266,7 @@
             const raw = sanitizeUtilUploadTeamName(rawTeamName);
             if (shouldForceTeam3ForProduction(raw, contextText, lineName)) return 'Line Delta';
             const rawNormalized = normalizeUtilTeamName(raw).toLowerCase();
-            if (rawNormalized.includes('linegamma')) return 'Line Gamma';
+            if (rawNormalized.includes('Line Gamma')) return 'Line Gamma';
             const fallback = sanitizeUtilUploadTeamName(fallbackTeamName);
             const rawCanonical = canonicalizeUtilTeamName(raw || contextText);
             const fallbackCanonical = canonicalizeUtilTeamName(fallback);
@@ -287,8 +286,8 @@
             if (aliasCanonical) {
                 const aliasTeam = pickKnownTeam(aliasCanonical);
                 if (aliasTeam) return aliasTeam;
-                if (aliasCanonical === 'LineAlpha') return 'Line Alpha';
-                if (aliasCanonical === 'LineBeta') return 'Line Beta';
+                if (aliasCanonical === '1팀1파트') return 'Line Alpha';
+                if (aliasCanonical === '1팀2파트') return 'Line Beta';
             }
             if (rawCanonical) {
                 const mappedKnown = pickKnownTeam(rawCanonical);
@@ -537,6 +536,7 @@
             });
             const nextEntries = Array.from(pendingEntryMap.values());
             const addedCount = nextEntries.length;
+            let savePromise = Promise.resolve(true);
             if (addedCount > 0) {
                 UTIL_PRODUCTION_DAILY_DATA.length = 0;
                 UTIL_PRODUCTION_ARCHIVE_META.length = 0;
@@ -546,7 +546,7 @@
                     targetTeam.entries.push(entry);
                 });
                 refreshUtilProductionDailyIndex();
-                persistUtilProductionDailyState();
+                savePromise = Promise.resolve(persistUtilProductionDailyState());
                 if (typeof refreshUtilProductionArchiveCountBadges === 'function') {
                     refreshUtilProductionArchiveCountBadges();
                 }
@@ -555,7 +555,8 @@
                 addedCount,
                 skippedCount,
                 patchedCount,
-                addedTeams: Array.from(addedTeamSet).filter(Boolean)
+                addedTeams: Array.from(addedTeamSet).filter(Boolean),
+                savePromise
             };
         }
 

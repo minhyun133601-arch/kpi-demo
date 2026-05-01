@@ -411,6 +411,127 @@
             return JSON.parse(JSON.stringify(value || {}));
         }
 
+        function getWorkSaveStatusRegistry() {
+            if (typeof WorkSaveStatusState !== 'undefined') return WorkSaveStatusState;
+            window.__KPI_WORK_SAVE_STATUS_STATE__ = window.__KPI_WORK_SAVE_STATUS_STATE__ || {};
+            return window.__KPI_WORK_SAVE_STATUS_STATE__;
+        }
+
+        function getWorkSaveStatus(dataKey) {
+            const key = String(dataKey || '').trim();
+            const registry = getWorkSaveStatusRegistry();
+            const stored = registry[key] || {};
+            const state = String(stored.state || 'idle').trim() || 'idle';
+            return {
+                state,
+                message: String(stored.message || '').trim(),
+                updatedAt: String(stored.updatedAt || '').trim(),
+                token: stored.token || ''
+            };
+        }
+
+        function formatWorkSaveStatusTime(value) {
+            const parsed = value ? new Date(value) : null;
+            if (!parsed || Number.isNaN(parsed.getTime())) return '';
+            return parsed.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function escapeWorkSaveHtml(value) {
+            if (typeof escapeHtml === 'function') return escapeHtml(value);
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function getWorkSaveStatusText(dataKey) {
+            const status = getWorkSaveStatus(dataKey);
+            if (status.message) return status.message;
+            if (status.state === 'pending') return '자동 저장 중...';
+            if (status.state === 'saved') {
+                const timeText = formatWorkSaveStatusTime(status.updatedAt);
+                return timeText ? `서버 저장됨 ${timeText}` : '서버 저장됨';
+            }
+            if (status.state === 'failed') return '서버 저장 실패 - 다음 입력 때 다시 시도됩니다.';
+            if (status.state === 'blocked') return '서버 저장 불가';
+            return '';
+        }
+
+        function setWorkSaveStatus(dataKey, state, message = '', token = null) {
+            const key = String(dataKey || '').trim();
+            if (!key) return null;
+            const registry = getWorkSaveStatusRegistry();
+            const previous = registry[key] || {};
+            if (token !== null && previous.token && previous.token !== token) {
+                return previous;
+            }
+            registry[key] = {
+                ...previous,
+                state: String(state || 'idle').trim() || 'idle',
+                message: String(message || '').trim(),
+                updatedAt: new Date().toISOString(),
+                token: token !== null ? token : (previous.token || '')
+            };
+            syncWorkSaveStatusUi(key);
+            return registry[key];
+        }
+
+        function syncWorkSaveStatusUi(dataKey) {
+            const key = String(dataKey || '').trim();
+            if (!key || typeof document === 'undefined' || !document?.querySelectorAll) return;
+            const status = getWorkSaveStatus(key);
+            const text = getWorkSaveStatusText(key);
+            document.querySelectorAll('[data-work-save-status]').forEach((element) => {
+                if (String(element.getAttribute('data-work-save-status') || '').trim() !== key) return;
+                element.textContent = text;
+                element.title = text;
+                ['idle', 'pending', 'saved', 'failed', 'blocked'].forEach(item => {
+                    element.classList.remove(`is-${item}`);
+                });
+                element.classList.add(`is-${status.state}`);
+            });
+        }
+
+        function renderWorkSaveStatusBadge(dataKey) {
+            const key = String(dataKey || '').trim();
+            const status = getWorkSaveStatus(key);
+            const text = getWorkSaveStatusText(key);
+            return `<span class="work-autosave work-save-status is-${escapeWorkSaveHtml(status.state)}" data-work-save-status="${escapeWorkSaveHtml(key)}" title="${escapeWorkSaveHtml(text)}">${escapeWorkSaveHtml(text)}</span>`;
+        }
+
+        function trackWorkSaveResult(dataKey, result, token) {
+            if (result && typeof result.then === 'function') {
+                return result.then((saved) => {
+                    if (saved === true) {
+                        setWorkSaveStatus(dataKey, 'saved', '', token);
+                    } else {
+                        setWorkSaveStatus(dataKey, 'failed', '서버 저장 실패 - 다음 입력 때 다시 시도됩니다.', token);
+                    }
+                    return saved;
+                }).catch((error) => {
+                    console.warn('[kpi] work save tracking failed', dataKey, error);
+                    setWorkSaveStatus(dataKey, 'failed', '서버 저장 실패 - 다음 입력 때 다시 시도됩니다.', token);
+                    return false;
+                });
+            }
+            if (result === true) {
+                setWorkSaveStatus(dataKey, 'saved', '', token);
+                return true;
+            }
+            setWorkSaveStatus(dataKey, 'blocked', '서버 저장 불가', token);
+            return false;
+        }
+
+        async function saveWorkDataConfirmed(dataKey, data, options = {}) {
+            const saved = await Promise.resolve(saveWorkData(dataKey, data));
+            if (saved !== true) {
+                throw new Error(String(options.message || 'work_server_write_failed'));
+            }
+            return true;
+        }
+
         function isWorkTeamCalendarDataKey(dataKey) {
             return /^work_team_calendar_/.test(String(dataKey || '').trim());
         }
@@ -544,13 +665,16 @@
         function saveWorkData(dataKey, data) {
             const serverRuntime = getWorkServerRuntimeConfig(dataKey);
             if (!(window.KpiRuntime?.canUseServerWrite?.(serverRuntime?.writeEnabled === true))) {
+                setWorkSaveStatus(dataKey, 'blocked', '서버 저장 불가');
                 return false;
             }
             data.meta = data.meta || {};
             data.meta.updatedAt = new Date().toISOString();
             WorkCache[dataKey] = data;
             syncWorkPortalDataCache(dataKey, data);
-            return queueWorkServerWrite(dataKey, data);
+            const token = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+            setWorkSaveStatus(dataKey, 'pending', '자동 저장 중...', token);
+            return trackWorkSaveResult(dataKey, queueWorkServerWrite(dataKey, data), token);
         }
 
         function normalizeWorkData(data) {

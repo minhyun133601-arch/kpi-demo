@@ -28,7 +28,6 @@
     "report:legacy-attachments": "node src/scripts/reportLegacyAttachmentStatus.js",
     "rehearse:runtime-recovery": "powershell -ExecutionPolicy Bypass -File scripts/windows/rehearse-runtime-recovery.ps1",
     "restore:runtime-snapshot": "node src/scripts/restoreRuntimeSnapshot.js",
-    "seed:portfolio-utility-demo": "node src/scripts/seedPortfolioUtilityDemoData.js",
     "seed:work-runtime": "node src/scripts/seedWorkRuntimeBootstrap.js",
     "user:reset-password": "node src/scripts/resetUserPassword.js",
     "smoke:kpi-root": "node src/scripts/verifyKpiRootStatic.js",

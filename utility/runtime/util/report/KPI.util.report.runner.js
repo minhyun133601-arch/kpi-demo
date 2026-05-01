@@ -414,7 +414,7 @@
             if (compositionKind === 'team-total-excl-waste' || key.startsWith(`${UTIL_REPORT_TEAM_TOTAL_EX_WASTE_PREFIX}::`)) {
                 const parsed = parseUtilReportTeamTotalExcludeWasteCompositionMetric(key);
                 const canonical = canonicalizeUtilTeamName(item?.teamName || parsed.teamName || item?.label);
-                if (canonical === 'Plant B' || canonical === 'LineAlpha') return 'fa-warehouse';
+                if (canonical === 'Plant B' || canonical === '1팀1파트') return 'fa-warehouse';
                 if (canonical) return 'fa-users';
                 return 'fa-coins';
             }

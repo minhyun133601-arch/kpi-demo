@@ -28,6 +28,9 @@ const historyDir = path.dirname(corePath);
 const coreSourcePaths = [
   corePath,
   path.join(historyDir, 'KPI.work.history.core.records.js'),
+  path.join(historyDir, 'KPI.work.history.core.attachments.js'),
+  path.join(historyDir, 'KPI.work.history.core.payload.js'),
+  path.join(historyDir, 'KPI.work.history.core.storage.attachments.js'),
   path.join(historyDir, 'KPI.work.history.core.storage.js'),
 ];
 
@@ -165,11 +168,17 @@ test('work history core split files expose normalized payload and storage hooks 
 test('kpi html loads work history core split files before layout bootstrap', () => {
   const coreIndex = kpiHtml.indexOf('runtime/work/history/KPI.work.history.core.js?v=217');
   const recordsIndex = kpiHtml.indexOf('runtime/work/history/KPI.work.history.core.records.js?v=1');
+  const attachmentsIndex = kpiHtml.indexOf('runtime/work/history/KPI.work.history.core.attachments.js?v=1');
+  const payloadIndex = kpiHtml.indexOf('runtime/work/history/KPI.work.history.core.payload.js?v=1');
+  const storageAttachmentsIndex = kpiHtml.indexOf('runtime/work/history/KPI.work.history.core.storage.attachments.js?v=1');
   const storageIndex = kpiHtml.indexOf('runtime/work/history/KPI.work.history.core.storage.js?v=1');
-  const layoutIndex = kpiHtml.indexOf('runtime/work/history/KPI.work.history.view.layout.js?v=248');
+  const layoutIndex = kpiHtml.indexOf('runtime/work/history/KPI.work.history.view.layout.js?v=250');
 
   assert.ok(coreIndex >= 0, 'work history core loader is missing');
   assert.ok(recordsIndex > coreIndex, 'work history core records must load after core.js');
-  assert.ok(storageIndex > recordsIndex, 'work history core storage must load after core records');
+  assert.ok(attachmentsIndex > recordsIndex, 'work history attachment normalization must load after core records');
+  assert.ok(payloadIndex > attachmentsIndex, 'work history payload runtime must load after attachment normalization');
+  assert.ok(storageAttachmentsIndex > payloadIndex, 'work history attachment persistence must load after payload runtime');
+  assert.ok(storageIndex > storageAttachmentsIndex, 'work history core storage must load after attachment persistence');
   assert.ok(layoutIndex > storageIndex, 'work history layout must load after core split files');
 });

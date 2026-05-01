@@ -387,12 +387,12 @@
         function resolveUtilExportCanonicalTeamName(teamName) {
             const normalized = normalizeUtilTeamName(teamName).toLowerCase();
             if (!normalized) return '';
-            if (normalized.includes('plantb')) return 'Line Alpha';
-            if (normalized.includes('planta')) return 'Plant A';
-            if (normalized.includes('linealpha')) return 'Line Alpha';
-            if (normalized.includes('linebeta')) return 'Line Beta';
-            if (normalized.includes('linegamma')) return 'Line Gamma';
-            if (normalized.includes('linedelta')) return 'Line Delta';
+            if (normalized.includes('Plant B')) return 'Line Alpha';
+            if (normalized.includes('Plant A')) return 'Plant A';
+            if (normalized.includes('1팀') && normalized.includes('1파트')) return 'Line Alpha';
+            if (normalized.includes('1팀') && normalized.includes('2파트')) return 'Line Beta';
+            if (normalized.includes('Line Gamma')) return 'Line Gamma';
+            if (normalized.includes('Line Delta')) return 'Line Delta';
             return '';
         }
 

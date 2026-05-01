@@ -96,8 +96,8 @@ jobs:
 
       - name: Start KPI Demo runtime (open mode)
         run: |
-          nohup npm run start >/tmp/kpi-demo-3192.stdout.log 2>/tmp/kpi-demo-3192.stderr.log &
-          echo $! >/tmp/kpi-demo-3192.pid
+          nohup npm run start >/tmp/kpi-demo-runtime-3192.stdout.log 2>/tmp/kpi-demo-runtime-3192.stderr.log &
+          echo $! >/tmp/kpi-demo-runtime-3192.pid
           for i in {1..30}; do
             if curl -fsS http://127.0.0.1:3192/api/bootstrap/status; then
               exit 0
@@ -105,8 +105,8 @@ jobs:
             sleep 2
           done
           echo "KPI Demo runtime failed to become ready on 3192"
-          cat /tmp/kpi-demo-3192.stdout.log || true
-          cat /tmp/kpi-demo-3192.stderr.log || true
+          cat /tmp/kpi-demo-runtime-3192.stdout.log || true
+          cat /tmp/kpi-demo-runtime-3192.stderr.log || true
           exit 1
 
       - name: Verify KPI root static surface (open mode)
@@ -121,13 +121,13 @@ jobs:
       - name: Dump KPI Demo runtime logs on failure
         if: failure()
         run: |
-          cat /tmp/kpi-demo-3192.stdout.log || true
-          cat /tmp/kpi-demo-3192.stderr.log || true
+          cat /tmp/kpi-demo-runtime-3192.stdout.log || true
+          cat /tmp/kpi-demo-runtime-3192.stderr.log || true
 
       - name: Stop KPI Demo runtime
         if: always()
         run: |
-          if [ -f /tmp/kpi-demo-3192.pid ]; then
-            kill "$(cat /tmp/kpi-demo-3192.pid)" || true
+          if [ -f /tmp/kpi-demo-runtime-3192.pid ]; then
+            kill "$(cat /tmp/kpi-demo-runtime-3192.pid)" || true
           fi
           pkill -f "node src/server.js" || true

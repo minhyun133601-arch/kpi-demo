@@ -38,22 +38,30 @@ async function runLocalUserScript(scriptName, args) {
   };
 }
 
-async function createTempAdminUser() {
+async function createTempManagedUser(roles, displayName = 'Codex E2E') {
   const credentials = createTempCredentialSet();
   const { parsed } = await runLocalUserScript('createManagedUserLocal.js', [
     `--username=${credentials.username}`,
-    '--displayName=Codex E2E',
+    `--displayName=${displayName}`,
     `--password=${credentials.password}`,
-    '--roles=admin',
+    `--roles=${roles.join(',')}`,
   ]);
   if (!parsed?.ok) {
-    throw new Error(parsed?.error || 'temp_admin_create_failed');
+    throw new Error(parsed?.error || 'temp_user_create_failed');
   }
   return credentials;
 }
 
-async function deleteTempUser(username) {
-  const { parsed } = await runLocalUserScript('deleteUser.js', [`--username=${username}`]);
+async function createTempAdminUser() {
+  return createTempManagedUser(['admin']);
+}
+
+async function deleteTempUser(username, options = {}) {
+  const args = [`--username=${username}`];
+  if (options.allowOwner === true) {
+    args.push('--allowOwner=true');
+  }
+  const { parsed } = await runLocalUserScript('deleteUser.js', args);
   if (!parsed?.ok && parsed?.error !== 'user_not_found') {
     throw new Error(parsed?.error || 'temp_user_delete_failed');
   }
@@ -69,6 +77,15 @@ async function resolveBootstrapStatus(page, baseURL) {
 
 function isLoginRequired(bootstrapStatus) {
   return Boolean(bootstrapStatus?.authEnabled && bootstrapStatus?.loginEnabled);
+}
+
+async function loginIfRequired(page, loginRequired, credentials) {
+  await page.goto('/');
+  if (!loginRequired) return;
+  await expect(page.getByRole('heading', { name: 'KPI Login' })).toBeVisible();
+  await page.getByLabel('Username').fill(credentials.username);
+  await page.getByLabel('Password').fill(credentials.password);
+  await page.getByRole('button', { name: 'Login' }).click();
 }
 
 async function clickSidebarButton(page, label) {
@@ -100,6 +117,16 @@ async function expectIntegratedMeteringTitle(page, titlePattern) {
       });
     })
     .toMatch(titlePattern);
+}
+
+async function expectWorkHistoryShadowText(page, elementId, pattern) {
+  await expect
+    .poll(async () => {
+      return await page.locator('.kpi-work-history-host').evaluate((host, targetId) => {
+        return host?.shadowRoot?.getElementById(targetId)?.textContent?.trim() || '';
+      }, elementId);
+    })
+    .toMatch(pattern);
 }
 
 async function openWorkTeamCalendar(page, dataKey, titlePattern) {
@@ -199,13 +226,7 @@ test.describe('KPI browser smoke', () => {
     });
 
     try {
-      await page.goto('/');
-      if (loginRequired) {
-        await expect(page.getByRole('heading', { name: 'KPI Login' })).toBeVisible();
-        await page.getByLabel('Username').fill(credentials.username);
-        await page.getByLabel('Password').fill(credentials.password);
-        await page.getByRole('button', { name: 'Login' }).click();
-      }
+      await loginIfRequired(page, loginRequired, credentials);
 
       await expect(page.locator('#sidebar')).toBeVisible();
       if (loginRequired) {
@@ -278,28 +299,107 @@ test.describe('KPI browser smoke', () => {
       await clickSidebarButton(page, '조도 (Lux)');
       await expect(page.locator('#content-container')).toContainText('조도 입력');
 
-      await clickSidebarButton(page, '법정 설비');
+      await clickSidebarButton(page, '법정 설비 관리');
       await expect(page.locator('#content-container')).toContainText('법정 설비');
       await expect(page.locator('#content-container')).toContainText('법정 설비 점검 프리뷰');
       await expect(page.locator('.audit-legal-dashboard')).toBeVisible();
+      await expect(page.locator('.audit-legal-entry-form')).toBeVisible();
+      await expect(page.locator('#content-container')).toContainText('법정설비 등록');
+      await expect(page.locator('.audit-legal-popup')).toHaveCount(0);
+      await expect(page.locator('.audit-legal-popup-launch')).toHaveCount(0);
 
       await clickSidebarButton(page, '안전 관리');
       await expect(page.locator('#content-container')).toContainText('안전 관리');
-      await expect(page.locator('#content-container')).toContainText('추후 추가예정');
+      await expect(page.locator('#content-container')).toContainText('추후 추가 예정');
 
       await clickSidebarButton(page, '유틸리티 기입');
-      await expectIntegratedMeteringTitle(page, /월간 (전기|가스 검침|폐수|생산량) .* 시트/);
+      await expectIntegratedMeteringTitle(page, /월간 (전기 기입|가스 검침|폐수 기입|생산량 기입) 시트/);
       await page.waitForTimeout(1000);
 
-      await clickSidebarButton(page, '작업 내역 기입');
-      await expect(page.locator('#content-container')).toContainText('2026 KPI 작업내역');
+      await clickSidebarButton(page, '작업 이력 기입');
       await expect(page.locator('.kpi-work-history-host')).toBeVisible();
+      await expectWorkHistoryShadowText(page, 'history-title', /팀별내역서 작업내역/);
+      await expectWorkHistoryShadowText(
+        page,
+        'history-subtitle',
+        /기간별 작업자, 구분, 비용과 문서 첨부까지 기록하는 통합 작업내역 도구/
+      );
       await page.waitForTimeout(1000);
+
+      const monthlyPopupPromise = page.waitForEvent('popup');
+      await clickSidebarButton(page, '월간 실적보고');
+      const monthlyPopup = await monthlyPopupPromise;
+      await monthlyPopup.waitForLoadState('domcontentloaded');
+      await expect(monthlyPopup.locator('body')).toContainText('월간 실적보고');
+      await expect(monthlyPopup.locator('[data-team-tab="team1part1"]')).toBeVisible();
+      await monthlyPopup.locator('[data-team-tab="team3"]').click();
+      await expect(monthlyPopup.locator('[data-team-panel="team3"]')).toHaveClass(/is-active/);
+      await expect(monthlyPopup.locator('[data-team-panel="team3"]')).toContainText('생산량');
+      await expect(monthlyPopup.locator('[data-team-panel="team3"]')).toContainText('수율');
+      await expect(monthlyPopup.locator('[data-team-panel="team3"]')).toContainText('노무비');
+      await monthlyPopup.close();
 
       await clickSidebarButton(page, '설비 이력 카드');
-      await expect(page.locator('#content-container')).toContainText('설비이력카드');
-      await expect(page.locator('#content-container')).toContainText('Sample Mixer A');
-      await expect(page.locator('.data-equipment-history-table tbody tr')).toHaveCount(5);
+      await expect(page.locator('#content-container')).toContainText('설비 현황');
+      await expect(page.locator('.data-equipment-page')).toBeVisible();
+      await expect(page.locator('#content-container')).toContainText('등록된 설비 카드가 없습니다.');
+      await page.getByRole('button', { name: '설비 이력 카드 작성' }).click();
+      await expect(page.locator('[data-equipment-form]')).toBeVisible();
+      await page.locator('[data-equipment-field="equipmentCode"]').fill('EQ-MIX-001');
+      await page.locator('[data-equipment-field="team"]').fill('생산1팀');
+      await page.locator('[data-equipment-field="group"]').fill('혼합 공정');
+      await page.locator('[data-equipment-field="owner"]').fill('작업자 A');
+      await page.locator('[data-equipment-field="name"]').fill('샘플 혼합기 A');
+      await page.locator('[data-equipment-field="line"]').fill('라인 알파');
+      await page.locator('[data-equipment-field="process"]').fill('혼합');
+      await page.locator('[data-equipment-field="production"]').fill('2,680 kg');
+      await page.locator('[data-equipment-field="plan"]').fill('3,000 kg / 일');
+      await page.locator('[data-equipment-field="rate"]').fill('88');
+      await page.locator('[data-equipment-field="lastCheck"]').fill('2026.04.29');
+      await page.locator('[data-equipment-field="nextCheck"]').fill('2026.05.29');
+      await page.locator('[data-equipment-add-row="detailInfo"]').click();
+      await page
+        .locator('[data-equipment-row-section="detailInfo"][data-equipment-field="label"]')
+        .first()
+        .fill('제조사');
+      await page
+        .locator('[data-equipment-row-section="detailInfo"][data-equipment-field="value"]')
+        .first()
+        .fill('샘플 제조사');
+      await page
+        .locator('[data-equipment-row-section="maintenanceHistory"][data-equipment-field="date"]')
+        .first()
+        .fill('2026.04.29');
+      await page
+        .locator('[data-equipment-row-section="maintenanceHistory"][data-equipment-field="type"]')
+        .first()
+        .fill('정기점검');
+      await page
+        .locator('[data-equipment-row-section="maintenanceHistory"][data-equipment-field="content"]')
+        .first()
+        .fill('구동부 점검');
+      await page
+        .locator('[data-equipment-row-section="maintenanceHistory"][data-equipment-field="worker"]')
+        .first()
+        .fill('작업자 A');
+      await page
+        .locator('[data-equipment-row-section="maintenanceHistory"][data-equipment-field="note"]')
+        .first()
+        .fill('정상');
+      await page
+        .locator('[data-equipment-row-section="documents"][data-equipment-field="title"]')
+        .first()
+        .fill('점검 보고서');
+      await page
+        .locator('[data-equipment-row-section="documents"][data-equipment-field="attachmentKey"]')
+        .first()
+        .fill('eq-mix-001-report');
+      await page.getByRole('button', { name: '설비 카드 저장' }).click();
+      await expect(page.locator('#content-container')).toContainText('작성 내용이 설비 현황 보드에 반영되었습니다.');
+      await page.getByRole('button', { name: '설비 현황' }).click();
+      await expect(page.locator('.data-equipment-board-card')).toHaveCount(1);
+      await expect(page.locator('.data-equipment-board-card')).toContainText('샘플 혼합기 A');
+      await expect(page.locator('.data-equipment-board-card')).toContainText('ON');
       await clickSidebarButton(page, '목차 초기화');
       await expect(page.locator('.viewer-home-shell')).toBeVisible();
 

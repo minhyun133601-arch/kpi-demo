@@ -412,7 +412,7 @@
             }).filter(item => item.value > 0);
             const total = items.reduce((acc, item) => acc + (Number(item?.value) || 0), 0);
             const title = contextFilter === 'all'
-                ? '공정별 생산량 구성비 (Process Alpha / Process Beta / Process Gamma)'
+                ? '공정별 생산량 구성비 (Process Alpha / Process Beta B,Process Beta A / Process Gamma)'
                 : `${contextLabel} 공정 생산량 구성비`;
             return {
                 title,
@@ -630,10 +630,10 @@
 
         function normalizeUtilReportProductionSourceTeamName(teamName) {
             const canonical = canonicalizeUtilTeamName(teamName);
-            if (canonical === 'LineAlpha') return 'Line Alpha';
-            if (canonical === 'LineBeta') return 'Line Beta';
-            if (canonical === 'LineGamma') return 'Line Gamma';
-            if (canonical === 'LineDelta') return 'Line Delta';
+            if (canonical === '1팀1파트') return 'Line Alpha';
+            if (canonical === '1팀2파트') return 'Line Beta';
+            if (canonical === 'Line Gamma') return 'Line Gamma';
+            if (canonical === 'Line Delta') return 'Line Delta';
             return String(teamName || '').trim();
         }
 
@@ -706,29 +706,28 @@
             const mergedTokenLower = mergedToken.toLowerCase();
 
             if (sourceTeam === 'Line Alpha') {
-                if (mergedTokenLower.includes('msd')) return 'Product B';
-                if (mergedTokenLower.includes('sd')) return 'Product A';
+                if (mergedTokenLower.includes('msd')) return 'MSD';
+                if (mergedTokenLower.includes('sd')) return 'SD';
             }
 
             if (sourceTeam === 'Line Beta') {
                 if (/(?:ica|이카)(?:1|2|3)(?:호기)?/i.test(mergedToken)) {
-                    return 'Product D';
+                    return 'ICA';
                 }
-                return 'Product C';
             }
 
             if (sourceTeam === 'Line Gamma') {
-                if (mergedTokenLower.includes('processbeta') || mergedTokenLower.includes('stick')) {
-                    return 'Product F';
+                if (mergedText.includes('Process Beta B') || mergedText.includes('stick')) {
+                    return 'Process Beta B';
                 }
-                return 'Product E';
+                return '로터리·버티컬';
             }
 
             if (sourceTeam === 'Line Delta') {
                 if (mergedText.includes('bottle') || mergedText.includes('보틀')) {
-                    return 'Product G';
+                    return 'Bottle';
                 }
-                return 'Other';
+                return '기타';
             }
 
             return lineName || productName || '라인 미지정';

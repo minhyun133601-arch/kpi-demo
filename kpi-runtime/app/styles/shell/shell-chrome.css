@@ -1,10 +1,10 @@
-        /* === ???ㅳ늾??????節낆젂?(?????筌먦끇?????源낇꼧??ш끽維?? === */
+        /* Viewer shell */
         #viewer {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #f8fafc; display: flex; flex-direction: column; z-index: 40;
         }
 
-        /* ????밸쭬 */
+        /* Header */
         .viewer-header {
             height: 60px; background: white; border-bottom: 1px solid #e2e8f0;
             display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; flex-shrink: 0; position: relative;
@@ -646,7 +646,7 @@
             box-shadow: 0 10px 22px -16px rgba(185, 28, 28, 0.85);
         }
 
-        /* 癲ル슢?????袁⑸즴????(?????筌먦끇??+ ?熬곣뫕?????? */
+        /* Viewer body */
         .viewer-body { flex: 1; display: flex; overflow: hidden; }
         .viewer-body.is-sidebar-collapsed .sidebar {
             width: 96px;
@@ -660,7 +660,7 @@
             padding-left: 1rem;
         }
 
-        /* ?????筌먦끇??(?怨멸텭??沃섅뀙??關履?? */
+        /* Sidebar */
         .sidebar {
             width: 260px; background: white; border-right: 1px solid #e2e8f0;
             display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0;
@@ -857,7 +857,7 @@
             font-size: var(--sidebar-nav-item-size);
             font-weight: var(--sidebar-nav-item-weight);
         }
-        /* ?熬곣뫕?????????ㅼ굡??*/
+        /* Main content */
         .content-area { flex: 1; padding: 1.35rem; overflow-y: auto; background: #f5f7fb; }
         .content-area.content-area-full-bleed { padding: 0; overflow-x: hidden; overflow-y: auto; background: #ffffff; }
         .content-card {
@@ -1321,7 +1321,7 @@
             background: linear-gradient(180deg, #fff7f7 0%, #ffffff 100%);
         }
 
-        /* ???袁⑹뵫?棺堉??벬???節뗪콬??? */
+        /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
@@ -1329,7 +1329,7 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ?熬곣뫕?????????? ????????ャ뀖??域밸Ŧ肉ュ젆?*/
+        /* Data table */
         .table-custom th { background-color: #f8fafc; color: #475569; font-weight: 600; text-align: left; padding: 12px; border-bottom: 2px solid #e2e8f0; }
         .table-custom td { padding: 12px; border-bottom: 1px solid #e2e8f0; color: #334155; }
         .badge { display: inline-block; padding: 2px 8px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }

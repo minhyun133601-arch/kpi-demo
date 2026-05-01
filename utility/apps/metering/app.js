@@ -7,7 +7,7 @@ const HISTORICAL_ENTRY_VALUE_FIX_VERSION = 4;
 const STICK_METER_SPLIT_VERSION = 3;
 const CLEARED_ENTRY_MONTH_PREFIXES = [];
 const STICK_FIELD_ID = "field_13";
-const STICK_FIELD_LABEL = "Process Beta";
+const STICK_FIELD_LABEL = "Process Beta B";
 const STICK_READING_WRAP_BASE = 10000;
 const LEGACY_STICK_FIELD_IDS = [
   STICK_FIELD_ID,
@@ -21,7 +21,6 @@ const LOCAL_FILE_HANDLE_DB_NAME = "monthly-electric-local-file";
 const LOCAL_FILE_HANDLE_STORE_NAME = "handles";
 const LOCAL_BILLING_DOCUMENT_DIRECTORY_HANDLE_KEY = "billing-document-directory";
 const ENABLE_SHARED_SERVER_WRITE = true;
-const SHARED_APP_CONFIG = resolveSharedAppConfig();
 const LEGACY_BILLING_DOCUMENT_DIRECTORY_NAME = "청구서";
 const BILLING_DOCUMENT_DIRECTORY_NAMES = Object.freeze({
   electric: "전기 청구서",
@@ -439,7 +438,7 @@ const TEAM_AMOUNT_ADJUSTMENTS = Object.freeze({});
 
 const SHARED_COMPRESSOR_SETTLEMENT_START_MONTH = "9999-12";
 const SHARED_COMPRESSOR_VIRTUAL_ID = "shared_compressor_total";
-const SHARED_COMPRESSOR_VIRTUAL_LABEL = "???? ??";
+const SHARED_COMPRESSOR_VIRTUAL_LABEL = "Shared Compressor";
 const SHARED_COMPRESSOR_SETTLEMENT_RATIOS = Object.freeze({});
 const SHARED_COMPRESSOR_SETTLEMENT_SOURCE_IDS_BY_TEAM = Object.freeze({});
 const SHARED_COMPRESSOR_SETTLEMENT_SOURCE_ID_SET = new Set();
@@ -563,10 +562,10 @@ const FIELD_LABELS = [
   "Auto Loader",
   "Demo Boiler A",
   "Demo Boiler B",
-  "Cleanroom 220V",
-  "Cleanroom 380V",
-  "Compressor 220V",
-  "Compressor 380V",
+  "Cleanroom(220v)",
+  "Cleanroom(380v)",
+  "Compressor(220v)",
+  "Compressor(380v)",
   "Process Beta A",
   "Process Beta B",
   "Compressor",
@@ -594,14 +593,14 @@ const EQUIPMENT_USAGE_FACTORS = {
   processdelta: 207.27,
   autoloader: 40,
   demoboilera: 20,
-  "demoboilerb": 12,
-  "cleanroom220v": 30,
-  "cleanroom380v": 30,
-  "compressor220v": 40,
-  "compressor380v": 60,
+  demoboilerb: 12,
+  cleanroom220v: 30,
+  cleanroom380v: 30,
+  compressor220v: 40,
+  compressor380v: 60,
   processbetaa: 120,
   processbetab: 80,
-  Compressor: 30,
+  compressor: 30,
   linegammacompressor: 30,
   processgamma: 1,
   processgamma1: 1,
@@ -638,9 +637,10 @@ const OTHER_EQUIPMENT_LABEL_KEY = normalizeEquipmentFactorLabel("기타");
 const OTHER_EQUIPMENT_DEFAULT_ID = "field_28";
 const EQUIPMENT_DISPLAY_LABEL_OVERRIDES = Object.freeze({
   linegammalngtotal: "LNG 합계",
+  "linegammalng합계": "LNG 합계",
   "lng합계": "LNG 합계",
   demoboilera: "Demo Boiler A",
-  "demoboilerb": "Demo Boiler B",
+  demoboilerb: "Demo Boiler B",
 });
 const DEFAULT_TEAM_ASSIGNMENT_LABEL_KEYS = {
   [TOTAL_POWER_TEAM_KEY]: new Set(
@@ -657,10 +657,10 @@ const DEFAULT_TEAM_ASSIGNMENT_LABEL_KEYS = {
       "Demo Boiler A",
       "Demo Boiler A",
       "Demo Boiler B",
-      "Cleanroom 220V",
-      "Cleanroom 380V",
-      "Compressor 220V",
-      "Compressor 380V",
+      "Cleanroom(220v)",
+      "Cleanroom(380v)",
+      "Compressor(220v)",
+      "Compressor(380v)",
     ].map(normalizeEquipmentFactorLabel)
   ),
   team_02: new Set(
@@ -822,139 +822,6 @@ let equipmentLocalAutosaveTimer = 0;
 const QUICK_ENTRY_RESULT_LIMIT = 6;
 const QUICK_ENTRY_HIGHLIGHT_DURATION = 1400;
 
-function renderSummary() {
-  const summaryInfo = getCurrentMonthlySummaryInfo();
-  const usageCard = elements.totalPowerMonthUsageTotal?.parentElement;
-  usageCard?.classList.remove("is-focus-highlight");
-  usageCard?.classList.add("is-focus-highlight");
-  const selectedEquipmentIds = getSelectedEquipmentIds();
-  const isGas = isGasResourceType();
-  const isWaste = isWasteResourceType();
-  const isProduction = isProductionResourceType();
-  const isElectricTeamMode = !isProduction && !isGas && !isWaste && getCurrentMode() === MODES.TEAM;
-
-  if (isGas) {
-    const isGasTeamMode = getCurrentMode() === MODES.TEAM;
-    const focusedGasSummaryInfo =
-      getCurrentMode() === MODES.EQUIPMENT && selectedEquipmentIds.length
-        ? getMonthlyFocusedSummaryInfo()
-        : null;
-    const gasPrimarySummaryInfo = isGasTeamMode ? getGasTeamModeSummaryInfo() : summaryInfo;
-    const gasSecondarySummaryInfo = isGasTeamMode
-      ? getGasTeamModeFocusedSummaryInfo()
-      : focusedGasSummaryInfo || getDefaultGasFocusedSummaryInfo();
-    const gasStandaloneSummaryInfo = isGasTeamMode
-      ? getGasTeamModeStandaloneSummaryInfo()
-      : getGasStandaloneSummaryInfo();
-
-    if (elements.totalPowerMonthUsageTotal) {
-      elements.totalPowerMonthUsageTotal.textContent = formatDailyUsage(gasPrimarySummaryInfo.value);
-    }
-    if (elements.summaryFocusLabel) {
-      let gasSummaryLabel = gasPrimarySummaryInfo.label;
-      if (hasGasMonthlyBoundaryReadingOverrideForMonth()) {
-        gasSummaryLabel = `${gasSummaryLabel} · 경계보정 포함`;
-      }
-      elements.summaryFocusLabel.textContent = gasSummaryLabel;
-    }
-    if (elements.equipmentMonthUsageTotal) {
-      elements.equipmentMonthUsageTotal.textContent = formatDailyUsage(gasSecondarySummaryInfo.value);
-    }
-    if (elements.equipmentMonthUsageLabel) {
-      elements.equipmentMonthUsageLabel.textContent = gasSecondarySummaryInfo.label;
-    }
-    if (elements.otherMonthUsageTotal) {
-      elements.otherMonthUsageTotal.textContent = formatDailyUsage(gasStandaloneSummaryInfo.value);
-    }
-    if (elements.otherMonthUsageLabel) {
-      elements.otherMonthUsageLabel.textContent = gasStandaloneSummaryInfo.label;
-    }
-    syncCalendarDisplayModeToggleButton();
-    syncClearCardSelectionButton();
-    syncCalendarPopupWindow();
-    return;
-  }
-
-  if (isWaste) {
-    const overallUsage = calculateWasteOverallMonthlyUsage();
-    const plantAUsage = getTeamBoardMonthlyUsage(WASTE_PLANT_A_TEAM_KEY, {
-      monthValue: state.currentMonth,
-      selectionOnly: true,
-    });
-    const plantBUsage = getTeamBoardMonthlyUsage(WASTE_PLANT_B_TEAM_KEY, {
-      monthValue: state.currentMonth,
-      selectionOnly: true,
-    });
-
-    if (elements.totalPowerMonthUsageTotal) {
-      elements.totalPowerMonthUsageTotal.textContent = formatDailyUsage(overallUsage);
-    }
-    if (elements.summaryFocusLabel) {
-      elements.summaryFocusLabel.textContent = "폐수 총사용량";
-    }
-    if (elements.equipmentMonthUsageTotal) {
-      elements.equipmentMonthUsageTotal.textContent = formatDailyUsage(plantAUsage);
-    }
-    if (elements.equipmentMonthUsageLabel) {
-      elements.equipmentMonthUsageLabel.textContent = "Plant A";
-    }
-    if (elements.otherMonthUsageTotal) {
-      elements.otherMonthUsageTotal.textContent = formatDailyUsage(plantBUsage);
-    }
-    if (elements.otherMonthUsageLabel) {
-      elements.otherMonthUsageLabel.textContent = "Plant B";
-    }
-    syncCalendarDisplayModeToggleButton();
-    syncClearCardSelectionButton();
-    syncCalendarPopupWindow();
-    return;
-  }
-
-  const focusedSummaryInfo =
-    getCurrentMode() === MODES.EQUIPMENT && selectedEquipmentIds.length
-      ? getMonthlyFocusedSummaryInfo()
-      : null;
-  const equipmentSummaryInfo = focusedSummaryInfo || {
-    value: isElectricTeamMode
-      ? getElectricTeamModeEquipmentSummaryUsage()
-      : calculateEquipmentGroupMonthlyUsage(
-          isProduction ? getAllEquipmentIds() : getEquipmentSummaryIds()
-        ),
-    label:
-      getCurrentMode() === MODES.TEAM
-        ? getTeamModeSummaryLabel()
-        : isProduction
-          ? "입력 항목"
-          : "설비 전력",
-  };
-  const otherUsage = isProduction ? null : calculateOtherMonthlyUsage();
-  const summaryValue = isElectricTeamMode
-    ? getElectricTeamModeOverallMonthlyUsage()
-    : summaryInfo.value;
-
-  if (elements.totalPowerMonthUsageTotal) {
-    elements.totalPowerMonthUsageTotal.textContent = formatDailyUsage(summaryValue);
-  }
-  if (elements.summaryFocusLabel) {
-    elements.summaryFocusLabel.textContent = summaryInfo.label;
-  }
-  if (elements.equipmentMonthUsageTotal) {
-    elements.equipmentMonthUsageTotal.textContent = formatDailyUsage(equipmentSummaryInfo.value);
-  }
-  if (elements.equipmentMonthUsageLabel) {
-    elements.equipmentMonthUsageLabel.textContent = equipmentSummaryInfo.label;
-  }
-  if (elements.otherMonthUsageTotal) {
-    elements.otherMonthUsageTotal.textContent = formatDailyUsage(otherUsage);
-  }
-  if (elements.otherMonthUsageLabel) {
-    elements.otherMonthUsageLabel.textContent = "기타";
-  }
-  syncCalendarDisplayModeToggleButton();
-  syncClearCardSelectionButton();
-  syncCalendarPopupWindow();
-}
-
 function getEquipmentFieldCardDisplayPriority(card) {
   const equipment = getEquipmentItem(card?.dataset.fieldKey || "");
   if (!equipment) {
@@ -1002,38 +869,6 @@ function syncEquipmentFieldCardDisplayOrder() {
     .forEach((card) => {
       elements.fieldsGrid.appendChild(card);
     });
-}
-
-function readFileAsArrayBuffer(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.addEventListener("load", () => {
-      resolve(reader.result instanceof ArrayBuffer ? reader.result : new ArrayBuffer(0));
-    });
-
-    reader.addEventListener("error", () => {
-      reject(reader.error || new Error("billing_document_read_failed"));
-    });
-
-    reader.readAsArrayBuffer(file);
-  });
-}
-
-function readFileAsDataUrl(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.addEventListener("load", () => {
-      resolve(String(reader.result || ""));
-    });
-
-    reader.addEventListener("error", () => {
-      reject(reader.error || new Error("billing_document_read_failed"));
-    });
-
-    reader.readAsDataURL(file);
-  });
 }
 
 function removeEquipmentFieldFromEntries(fieldKey, options = {}) {
@@ -1088,38 +923,4 @@ function renderTeamMode() {
     syncSelectedDatePresentation();
   }
   syncClearCardSelectionButton();
-}
-
-async function deleteBillingDocumentFromSharedServer(billingDocument) {
-  const documentId = normalizeText(billingDocument?.documentId);
-  if (!supportsSharedServerPersistence() || !documentId) {
-    return false;
-  }
-
-  const response = await window.fetch(
-    `${SHARED_APP_CONFIG.apiBase.replace(/\/+$/, "")}/files/${encodeURIComponent(documentId)}`,
-    {
-      method: "DELETE",
-      cache: "no-store",
-      credentials: "same-origin",
-    }
-  );
-
-  if (!response.ok && response.status !== 404) {
-    throw new Error(`billing_document_delete_failed:${response.status}`);
-  }
-
-  return true;
-}
-
-async function deleteBillingDocumentStorage(
-  billingDocument,
-  resourceType = getCurrentResourceType()
-) {
-  const documentId = normalizeText(billingDocument?.documentId);
-  if (documentId) {
-    return deleteBillingDocumentFromSharedServer(billingDocument);
-  }
-
-  return deleteBillingDocumentFromLocalDirectory(billingDocument, resourceType);
 }

@@ -7,7 +7,7 @@ import { handleBootstrapStatus, handleHealth, handlePortalDataBootstrap } from '
 import { handleDocumentDelete, handleDocumentDownload, handleDocumentMeta, handleDocumentView, handleUploadBase64File } from './routes/file-routes.js';
 import { handleKpiRoute } from './routes/kpi-routes.js';
 import { handleGetModuleRecord, handleUpsertModuleRecord } from './routes/module-routes.js';
-import { handleOwnerAccessOverview } from './routes/owner-routes.js';
+import { handleOwnerAccessOverview, handleOwnerRepositoryMap, handleOwnerRepositoryMapPage, handleOwnerRepositoryMapScript } from './routes/owner-routes.js';
 import { getRouteErrorStatusCode } from './routes/route-errors.js';
 import { handleBillingDocumentUpload, handleSharedStoreGet, handleSharedStorePut } from './routes/shared-store-routes.js';
 import { handleUtilProductionDailyGet, handleUtilProductionDailyPut } from './routes/util-production-routes.js';
@@ -38,6 +38,10 @@ const EXACT_ROUTE_HANDLERS = new Map([
   ['POST /api/auth/logout', handleLogout],
   ['GET /api/auth/me', handleCurrentUser],
   ['GET /api/owner/access-overview', handleOwnerAccessOverview],
+  ['GET /api/owner/repository-map', handleOwnerRepositoryMap],
+  ['GET /owner/repository-map', handleOwnerRepositoryMapPage],
+  ['GET /owner/repository-map/', handleOwnerRepositoryMapPage],
+  ['GET /owner/repository-map.js', handleOwnerRepositoryMapScript],
   ['GET /api/admin/users', handleListUsers],
   ['POST /api/admin/users', handleCreateUser],
   [`GET ${PORTAL_DATA_BOOTSTRAP_PATH}`, handlePortalDataBootstrap],

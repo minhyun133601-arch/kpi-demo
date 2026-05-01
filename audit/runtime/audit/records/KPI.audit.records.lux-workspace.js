@@ -1160,6 +1160,7 @@
                 if (errorKey === 'unsupported_type') message = '이미지 또는 PDF 파일만 첨부할 수 있습니다.';
                 else if (errorKey === 'file_too_large') message = '첨부 파일은 25MB 이하만 업로드할 수 있습니다.';
                 else if (errorKey === 'server_write_unavailable') message = '현재는 서버 저장이 가능한 환경에서만 첨부를 교체할 수 있습니다.';
+                else if (errorKey === 'audit_lux_evidence_record_save_failed') message = '첨부 파일은 올라갔지만 조도 기록 저장이 실패해 교체를 취소했습니다.';
                 alert(message);
             } finally {
                 if (input) input.value = '';

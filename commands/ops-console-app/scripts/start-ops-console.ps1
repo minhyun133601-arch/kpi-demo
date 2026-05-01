@@ -38,21 +38,7 @@ function Test-AppHealth {
 
   try {
     $response = Invoke-RestMethod -Uri ("http://127.0.0.1:{0}/api/app/health" -f $Port) -Method Get -TimeoutSec 3
-    if ($response.ok -ne $true -or $response.app -ne 'kpi-ops-console') {
-      return $false
-    }
-
-    $responseAppRoot = ''
-    if ($response.PSObject.Properties.Name -contains 'appRoot') {
-      $responseAppRoot = [string]$response.appRoot
-    }
-    if (-not $responseAppRoot) {
-      return $false
-    }
-
-    $expectedAppRoot = (Resolve-Path $appDir).Path
-    $actualAppRoot = [System.IO.Path]::GetFullPath($responseAppRoot)
-    return $actualAppRoot.Equals($expectedAppRoot, [System.StringComparison]::OrdinalIgnoreCase)
+    return ($response.ok -eq $true)
   } catch {
     return $false
   }
@@ -90,18 +76,14 @@ foreach ($candidatePort in $candidatePorts) {
     if (-not $NoOpen) {
       Start-Process $url
     }
-    Write-Host "KPI Demo command console is already running."
+    Write-Host "KPI ops console is already running."
     Write-Host "URL: $url"
-    Write-Host "Console port: $candidatePort"
-    Write-Host "Static demo port: 5500"
-    Write-Host "Optional runtime port: 3104"
-    Write-Host "Optional DB port: 5400"
     exit 0
   }
 }
 
 if (-not $selectedPort) {
-  throw 'No available local port was found for the KPI Demo command console.'
+  throw 'No available local port was found for the KPI ops console.'
 }
 
 $nodeExecutablePath = Resolve-NodeExecutablePath
@@ -131,13 +113,8 @@ if (-not $NoOpen) {
   Start-Process $url
 }
 
-Write-Host "Started KPI Demo command console."
+Write-Host "Started KPI ops console."
 Write-Host "URL: $url"
-Write-Host "Console port: $selectedPort"
-Write-Host "Static demo: http://127.0.0.1:5500/KPI.html"
-Write-Host "Optional runtime login: http://127.0.0.1:3104/login"
-Write-Host "Optional runtime demo account: 1234 / 1234"
-Write-Host "Optional DB port: 5400"
 Write-Host "PID: $($process.Id)"
 Write-Host "Stdout: $stdoutLog"
 Write-Host "Stderr: $stderrLog"

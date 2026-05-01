@@ -1,6 +1,6 @@
 body { font-family: 'Noto Sans KR', sans-serif; background-color: #f8fafc; margin: 0; padding: 0; overflow: hidden; color: #0f172a; }
 
-        /* === ????筌먲퐡???(???) === */
+        /* Dashboard landing */
         #dashboard {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -846,7 +846,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background-color: #f8fafc; margi
             }
         }
 
-        /* === ????筌먲퐡?????좊즲????????곷츉??繹먮끏???=== */
+        /* Dashboard shell layout */
         .dashboard-shell {
             width: min(1360px, 96%);
             min-height: calc(100vh - 40px);
@@ -1167,7 +1167,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background-color: #f8fafc; margi
             }
         }
 
-        /* === ????筌먲퐡????嶺뚮ㅎ遊뉔걡??????곷츉??繹먮끏???=== */
+        /* Dashboard shell responsive layout */
         .dashboard-shell {
             width: min(1360px, 95%);
             min-height: calc(100vh - 34px);
@@ -1254,7 +1254,8 @@ body { font-family: 'Noto Sans KR', sans-serif; background-color: #f8fafc; margi
             padding-left: 0.9rem;
             border-left: 1px solid #e2e8f0;
         }
-        .dashboard-tree-group.active .dashboard-tree-submenu {
+        .dashboard-tree-group.active .dashboard-tree-submenu,
+        .dashboard-tree-group.is-expanded .dashboard-tree-submenu {
             display: grid;
         }
         .dashboard-tree-subitem {

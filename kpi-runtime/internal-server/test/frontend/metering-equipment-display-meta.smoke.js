@@ -68,6 +68,7 @@ function createDisplayMetaContext() {
       GAS: 'gas',
     },
     EQUIPMENT_DISPLAY_LABEL_OVERRIDES: Object.freeze({
+      'linegammalng합계': 'LNG 합계',
       linegammalngtotal: 'LNG 합계',
       'lng합계': 'LNG 합계',
       demoboilera: 'Demo Boiler A',
@@ -131,7 +132,7 @@ test('equipment display meta prefers team icon and falls back to inferred icon k
 test('equipment display meta normalizes display label overrides', () => {
   const context = createDisplayMetaContext();
 
-  assert.equal(context.getEquipmentDisplayLabel('Line Gamma LNG Total'), 'LNG 합계');
+  assert.equal(context.getEquipmentDisplayLabel('Line Gamma LNG 합계'), 'LNG 합계');
   assert.equal(context.getEquipmentDisplayLabel({ label: 'Demo Boiler A' }), 'Demo Boiler A');
   assert.equal(context.getEquipmentDisplayLabel('일반 설비'), '일반 설비');
   assert.equal(context.getEquipmentDisplayLabel(''), '');

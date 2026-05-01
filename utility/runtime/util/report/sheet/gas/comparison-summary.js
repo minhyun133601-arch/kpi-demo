@@ -301,8 +301,8 @@
                 </div>
                 <div class="util-sheet-gas-guidance-copy">
                     <div class="util-sheet-gas-guidance-line">Demo Heater (LPG): 사용량 x 3.35 = 실사용량</div>
-                    <div class="util-sheet-gas-guidance-line">Demo Boiler A, Demo Boiler B, Process Gamma Boiler는 전자식 기준 보정 후 실사용량으로 배분합니다.</div>
-                    <div class="util-sheet-gas-guidance-line">사용량 x (Line Gamma LNG Total 사용량 ÷ (Demo Boiler A + Demo Boiler B + Process Gamma Boiler 사용량)) = 실사용량</div>
+                    <div class="util-sheet-gas-guidance-line">Demo Boiler A, Demo Boiler B, Process Gamma보일러는 전자식 기준 보정 후 실사용량으로 배분합니다.</div>
+                    <div class="util-sheet-gas-guidance-line">사용량 x (Line Gamma LNG 합계 사용량 ÷ (Demo Boiler A + Demo Boiler B + Process Gamma보일러 사용량)) = 실사용량</div>
                 </div>
             </section>
         `;

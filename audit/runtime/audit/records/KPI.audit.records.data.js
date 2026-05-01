@@ -7,7 +7,9 @@
         const AUDIT_LUX_EVIDENCE_OWNER_DOMAIN = 'audit.lux.evidence';
         const AUDIT_LUX_EVIDENCE_STORAGE_FOLDER = ['Audit', '조도 스캔본'];
         const AuditServerWriteQueue = {};
-        const AUDIT_PORTAL_DATA_ALIAS = Object.freeze({});
+        const AUDIT_PORTAL_DATA_FALLBACK = Object.freeze({
+            audit_legal_facility: 'audit_regulation'
+        });
 
         function cloneAuditDataPayload(value) {
             return JSON.parse(JSON.stringify(value || {}));
@@ -33,9 +35,9 @@
             if (Object.prototype.hasOwnProperty.call(window.PortalData, dataKey)) {
                 return window.PortalData[dataKey];
             }
-            const aliasKey = AUDIT_PORTAL_DATA_ALIAS[dataKey];
-            if (aliasKey && Object.prototype.hasOwnProperty.call(window.PortalData, aliasKey)) {
-                return window.PortalData[aliasKey];
+            const fallbackKey = AUDIT_PORTAL_DATA_FALLBACK[dataKey];
+            if (fallbackKey && Object.prototype.hasOwnProperty.call(window.PortalData, fallbackKey)) {
+                return window.PortalData[fallbackKey];
             }
             return null;
         }
@@ -44,10 +46,6 @@
             window.PortalData = window.PortalData || {};
             const snapshot = cloneAuditDataPayload(data);
             window.PortalData[dataKey] = snapshot;
-            const aliasKey = AUDIT_PORTAL_DATA_ALIAS[dataKey];
-            if (aliasKey) {
-                window.PortalData[aliasKey] = cloneAuditDataPayload(snapshot);
-            }
         }
 
         function queueAuditServerWrite(dataKey, data) {
@@ -598,6 +596,7 @@
                 throw new Error('invalid_target');
             }
             const data = getAuditData(dataKey, dataKey);
+            const previousData = cloneAuditDataPayload(data);
             const currentEvidence = getAuditLuxYearEvidenceItem(dataKey, targetYear, normalizedTeam);
             const uploaded = await uploadAuditLuxEvidenceToServer(dataKey, targetYear, normalizedTeam, file);
             const nextEvidence = (Array.isArray(data.evidence) ? data.evidence : [])
@@ -608,7 +607,28 @@
                 if (yearDiff !== 0) return yearDiff;
                 return String(a?.team || '').localeCompare(String(b?.team || ''), 'ko');
             });
-            await saveAuditData(dataKey, data);
+            let saved = false;
+            try {
+                saved = await Promise.resolve(saveAuditData(dataKey, data));
+            } catch (error) {
+                console.warn('[kpi] audit evidence record save failed', dataKey, error);
+                saved = false;
+            }
+            if (saved !== true) {
+                Object.keys(data || {}).forEach((key) => delete data[key]);
+                Object.assign(data, previousData);
+                if (typeof syncAuditPortalDataCache === 'function') {
+                    syncAuditPortalDataCache(dataKey, previousData);
+                } else if (window.PortalData) {
+                    window.PortalData[dataKey] = cloneAuditDataPayload(previousData);
+                }
+                try {
+                    await deleteAuditEvidenceFromServer(uploaded);
+                } catch (cleanupError) {
+                    console.warn('[kpi] audit evidence cleanup failed', uploaded.documentId, cleanupError);
+                }
+                throw new Error('audit_lux_evidence_record_save_failed');
+            }
             if (currentEvidence?.documentId && currentEvidence.documentId !== uploaded.documentId) {
                 try {
                     await deleteAuditEvidenceFromServer(currentEvidence);

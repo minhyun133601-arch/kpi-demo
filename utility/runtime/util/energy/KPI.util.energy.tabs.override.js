@@ -219,7 +219,7 @@
             const raw = String(teamName || '').trim();
             if (!raw) return '';
             if (raw === UTIL_SIDEBAR_SELECTOR_KEYS.processDry || /Process Alpha/i.test(raw)) return UTIL_SIDEBAR_SELECTOR_KEYS.processDry;
-            if (raw === UTIL_SIDEBAR_SELECTOR_KEYS.processStick || /Process Beta/i.test(raw) || /Process Beta/i.test(raw)) return UTIL_SIDEBAR_SELECTOR_KEYS.processStick;
+            if (raw === UTIL_SIDEBAR_SELECTOR_KEYS.processStick || /Process Beta B/i.test(raw) || /Process Beta A/i.test(raw)) return UTIL_SIDEBAR_SELECTOR_KEYS.processStick;
             if (raw === UTIL_SIDEBAR_SELECTOR_KEYS.processLiquid || /Process Gamma/i.test(raw)) return UTIL_SIDEBAR_SELECTOR_KEYS.processLiquid;
             return '';
         }
@@ -237,7 +237,7 @@
             if (!normalizedWorkKey) return null;
             if (normalizedItemKey === 'electric') {
                 if (normalizedWorkKey === UTIL_SIDEBAR_SELECTOR_KEYS.processDry) return { teamName: 'Process Alpha', syntheticSources: ['Line Alpha', 'Line Beta'], title: 'Process Alpha', reportTeam: 'Process Alpha', allowMutation: false };
-                if (normalizedWorkKey === UTIL_SIDEBAR_SELECTOR_KEYS.processStick) return { teamName: 'Process Beta', syntheticSources: ['Line Gamma'], title: 'Process Beta', reportTeam: 'Process Beta', allowMutation: false };
+                if (normalizedWorkKey === UTIL_SIDEBAR_SELECTOR_KEYS.processStick) return { teamName: 'Process Beta B,Process Beta A', syntheticSources: ['Line Gamma'], title: 'Process Beta B,Process Beta A', reportTeam: 'Process Beta B,Process Beta A', allowMutation: false };
                 if (normalizedWorkKey === UTIL_SIDEBAR_SELECTOR_KEYS.processLiquid) return { teamName: 'Process Gamma', syntheticSources: ['Line Delta'], title: 'Process Gamma', reportTeam: 'Process Gamma', allowMutation: false };
                 if (normalizedWorkKey === UTIL_SIDEBAR_SELECTOR_KEYS.team1Part1) return { teamName: 'Line Alpha', title: 'Line Alpha', reportTeam: 'Line Alpha', allowMutation: true };
                 if (normalizedWorkKey === UTIL_SIDEBAR_SELECTOR_KEYS.team1Part2) return { teamName: 'Line Beta', title: 'Line Beta', reportTeam: 'Line Beta', allowMutation: true };
@@ -359,12 +359,12 @@
                             : UTIL_SIDEBAR_SELECTOR_KEYS.groupPlantA
                     );
                 }
-                if (canonical === 'LineAlpha') {
+                if (canonical === '1팀1파트') {
                     utilSidebarSelectionState.gasTeamView = 'lng';
                     if (section) section.dataset.utilGasTeamView = 'lng';
                     return applyUtilSidebarSelectionToCurrentView('gas', UTIL_SIDEBAR_SELECTOR_KEYS.team1Part1);
                 }
-                if (canonical === 'LineBeta') {
+                if (canonical === '1팀2파트') {
                     const fuelKey = inferUtilFuelType(rawTeam);
                     utilSidebarSelectionState.gasTeamView = /합산|lng\+lpg/i.test(rawTeam)
                         ? 'total'
@@ -372,8 +372,8 @@
                     if (section) section.dataset.utilGasTeamView = utilSidebarSelectionState.gasTeamView;
                     return applyUtilSidebarSelectionToCurrentView('gas', UTIL_SIDEBAR_SELECTOR_KEYS.team1Part2);
                 }
-                if (canonical === 'LineGamma') return applyUtilSidebarSelectionToCurrentView('gas', UTIL_SIDEBAR_SELECTOR_KEYS.team2);
-                if (canonical === 'LineDelta') return applyUtilSidebarSelectionToCurrentView('gas', UTIL_SIDEBAR_SELECTOR_KEYS.team3);
+                if (canonical === 'Line Gamma') return applyUtilSidebarSelectionToCurrentView('gas', UTIL_SIDEBAR_SELECTOR_KEYS.team2);
+                if (canonical === 'Line Delta') return applyUtilSidebarSelectionToCurrentView('gas', UTIL_SIDEBAR_SELECTOR_KEYS.team3);
                 const gasSiteKey = normalizeUtilReportSiteKey(rawTeam);
                 if (gasSiteKey === 'Plant B') return applyUtilSidebarSelectionToCurrentView(normalizedItemKey, UTIL_SIDEBAR_SELECTOR_KEYS.groupPlantB);
                 if (gasSiteKey === 'Plant A') return applyUtilSidebarSelectionToCurrentView(normalizedItemKey, UTIL_SIDEBAR_SELECTOR_KEYS.groupPlantA);
@@ -382,10 +382,10 @@
             const siteKey = normalizeUtilReportSiteKey(rawTeam);
             if (siteKey === 'Plant B') return applyUtilSidebarSelectionToCurrentView(normalizedItemKey, UTIL_SIDEBAR_SELECTOR_KEYS.groupPlantB);
             if (siteKey === 'Plant A') return applyUtilSidebarSelectionToCurrentView(normalizedItemKey, UTIL_SIDEBAR_SELECTOR_KEYS.groupPlantA);
-            if (canonical === 'LineAlpha') return applyUtilSidebarSelectionToCurrentView(normalizedItemKey, UTIL_SIDEBAR_SELECTOR_KEYS.team1Part1);
-            if (canonical === 'LineBeta') return applyUtilSidebarSelectionToCurrentView(normalizedItemKey, UTIL_SIDEBAR_SELECTOR_KEYS.team1Part2);
-            if (canonical === 'LineGamma') return applyUtilSidebarSelectionToCurrentView(normalizedItemKey, UTIL_SIDEBAR_SELECTOR_KEYS.team2);
-            if (canonical === 'LineDelta') return applyUtilSidebarSelectionToCurrentView(normalizedItemKey, UTIL_SIDEBAR_SELECTOR_KEYS.team3);
+            if (canonical === '1팀1파트') return applyUtilSidebarSelectionToCurrentView(normalizedItemKey, UTIL_SIDEBAR_SELECTOR_KEYS.team1Part1);
+            if (canonical === '1팀2파트') return applyUtilSidebarSelectionToCurrentView(normalizedItemKey, UTIL_SIDEBAR_SELECTOR_KEYS.team1Part2);
+            if (canonical === 'Line Gamma') return applyUtilSidebarSelectionToCurrentView(normalizedItemKey, UTIL_SIDEBAR_SELECTOR_KEYS.team2);
+            if (canonical === 'Line Delta') return applyUtilSidebarSelectionToCurrentView(normalizedItemKey, UTIL_SIDEBAR_SELECTOR_KEYS.team3);
             return false;
         }
 

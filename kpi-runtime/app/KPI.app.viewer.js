@@ -60,13 +60,15 @@
                         </span>
                     </button>
                     ${sections.map(sectionEntry => {
-                        const isExpanded = SidebarTreeState.expandedSections[sectionEntry.id] === true;
+                        const renderableCategories = getSidebarRenderableCategories(sectionEntry);
+                        const shouldKeepDirectLaunchSubmenuVisible = sectionEntry.section?.directLaunch === true && renderableCategories.length > 0;
+                        const isExpanded = SidebarTreeState.expandedSections[sectionEntry.id] === true
+                            || shouldKeepDirectLaunchSubmenuVisible;
                         const isActiveSection = selectedSectionId === sectionEntry.id;
-                        const opensDefaultCategory = sectionEntry.section?.openDefaultCategory === true;
-                        const actionIcon = sectionEntry.section?.directLaunch === true || opensDefaultCategory
+                        const actionIcon = sectionEntry.section?.directLaunch === true
                             ? 'fa-arrow-up-right-from-square'
                             : 'fa-chevron-right';
-                        const sectionAction = sectionEntry.section?.directLaunch === true || opensDefaultCategory
+                        const sectionAction = sectionEntry.section?.directLaunch === true
                             ? `openSection('${sectionEntry.id}')`
                             : `toggleSidebarSection('${sectionEntry.id}')`;
                         return `
@@ -79,7 +81,7 @@
                                     <span class="sidebar-group-chevron"><i class="fas ${actionIcon}"></i></span>
                                 </button>
                                 <div class="sidebar-group-items">
-                                    ${getSidebarRenderableCategories(sectionEntry).map(({ category, index }) => {
+                                    ${renderableCategories.map(({ category, index }) => {
                                         const categoryColor = category.color || sectionEntry.accent;
                                         const isActiveCategory = isActiveSection && getNavigationSelectionCategoryIndex(sectionEntry.id) === index;
                                         const teamCategories = getSidebarTeamCategories(sectionEntry, category);
@@ -210,11 +212,6 @@
                     buildCategoryPopupFeatures(category)
                 );
                 if (popupWindow) {
-                    try {
-                        popupWindow.opener = null;
-                    } catch (error) {
-                        // Ignore opener cleanup failures; the popup still remains independent when the KPI window closes.
-                    }
                     try {
                         popupWindow.focus();
                     } catch (error) {

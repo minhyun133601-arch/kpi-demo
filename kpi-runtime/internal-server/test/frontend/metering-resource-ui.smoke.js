@@ -180,6 +180,9 @@ function createResourceUiContext(options = {}) {
     getCurrentResourceType() {
       return context.normalizeResourceType(context.state.store.resourceType);
     },
+    isElectricResourceType(resourceType = context.getCurrentResourceType()) {
+      return context.normalizeResourceType(resourceType) === 'electric';
+    },
     isGasResourceType(resourceType = context.getCurrentResourceType()) {
       return context.normalizeResourceType(resourceType) === 'gas';
     },
@@ -392,6 +395,18 @@ test('resource ui applies team mode and refreshes visible sections', async () =>
   assert.equal(context.__calls.renderSummary, 1);
   assert.equal(context.elements.equipmentFieldsSection.classList.contains('is-hidden'), true);
   assert.equal(context.elements.teamModeSection.classList.contains('is-hidden'), false);
+  assert.equal(context.elements.quickEntryWrap.classList.contains('is-hidden'), true);
+});
+
+test('resource ui keeps the retired quick-entry launcher hidden in equipment mode', () => {
+  const context = createResourceUiContext({
+    resourceType: 'electric',
+    mode: 'equipment',
+  });
+
+  context.renderModeUI();
+
+  assert.equal(context.isMeteringQuickEntryPopupEnabled(), false);
   assert.equal(context.elements.quickEntryWrap.classList.contains('is-hidden'), true);
 });
 

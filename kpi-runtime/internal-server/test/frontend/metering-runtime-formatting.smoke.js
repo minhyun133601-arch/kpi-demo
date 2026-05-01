@@ -89,5 +89,5 @@ test('runtime formatting detects broken Korean mojibake candidates conservativel
   const context = createFormattingContext();
 
   assert.equal(context.looksLikeBrokenKoreanText('정상 한글'), false);
-  assert.equal(context.looksLikeBrokenKoreanText('???'), true);
+  assert.equal(context.looksLikeBrokenKoreanText('\uFFFD\uFFFD'), true);
 });

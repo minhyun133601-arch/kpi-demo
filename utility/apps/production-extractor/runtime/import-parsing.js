@@ -38,7 +38,7 @@
     const teamNormalized = normalizeCompactText(teamText);
     const lineNormalized = normalizeCompactText(normalizeValue(lineValue));
 
-    if (isEmptyTeamText(teamText) || teamNormalized.includes("linedelta") || lineNormalized.includes("processgamma")) {
+    if (isEmptyTeamText(teamText) || teamNormalized.includes("Line Delta") || lineNormalized.includes("Process Gamma")) {
       return "Line Delta";
     }
     return teamText;

@@ -25,6 +25,7 @@ export function requireAuth(auth) {
 }
 
 export function requireAdmin(auth) {
+  if (!config.authEnabled) return true;
   requireAuth(auth);
   if (!isAdminRole(auth.user)) {
     throw new Error('forbidden');
@@ -33,6 +34,7 @@ export function requireAdmin(auth) {
 }
 
 export function requireOwner(auth) {
+  if (!config.authEnabled) return true;
   requireAuth(auth);
   if (!isOwnerRole(auth.user)) {
     throw new Error('forbidden');

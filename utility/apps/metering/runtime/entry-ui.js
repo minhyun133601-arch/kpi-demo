@@ -64,6 +64,9 @@ function syncSelectedDatePresentation() {
 }
 
 function loadEntryToForm(entry) {
+  clearEquipmentFieldValidationSuppression?.();
+  clearQuickEntryFieldValidationSuppression?.();
+
   const mode = getCurrentMode();
 
   if (mode === MODES.TEAM) {
@@ -136,12 +139,45 @@ function getEquipmentInputPlaceholder(fieldKey, dateString = state.selectedDate)
     return isGasResourceType() ? "가스값" : "전력값";
   }
 
-  const previousReading = getAdjacentStoredEquipmentReadingDetail(fieldKey, dateString, -1);
-  if (!previousReading) {
-    return isGasResourceType() ? "가스값" : "전력값";
+  const previousMeta = getEquipmentPreviousReadingMeta(fieldKey, dateString);
+  if (previousMeta.valueText) {
+    return `이전 ${previousMeta.valueText}`;
   }
 
-  return `이전 ${formatEquipmentInputDisplay(previousReading.rawValue)}`;
+  return isGasResourceType() ? "가스값" : "전력값";
+}
+
+function getEquipmentPreviousReadingMeta(fieldKey, dateString = state.selectedDate) {
+  const emptyMeta = {
+    text: "",
+    valueText: "",
+    dateText: "",
+  };
+  const equipment = getEquipmentItem(fieldKey);
+  if (!equipment || isAutoCalculatedEquipment(equipment) || !dateString) {
+    return emptyMeta;
+  }
+
+  const previousReading = getAdjacentStoredEquipmentReadingDetail(fieldKey, dateString, -1);
+  if (!previousReading) {
+    return emptyMeta;
+  }
+
+  const valueText = formatEquipmentInputDisplay(previousReading.rawValue);
+  if (!valueText) {
+    return emptyMeta;
+  }
+
+  const dateText = previousReading.dateString
+    ? typeof formatShortDate === "function"
+      ? formatShortDate(previousReading.dateString)
+      : previousReading.dateString
+    : "";
+  return {
+    text: dateText ? `이전값 ${valueText} (${dateText})` : `이전값 ${valueText}`,
+    valueText,
+    dateText,
+  };
 }
 
 function hasSameReadingAsPrevious(fieldKey, rawValue, dateString = state.selectedDate) {

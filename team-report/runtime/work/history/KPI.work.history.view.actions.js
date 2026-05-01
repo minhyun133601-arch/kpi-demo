@@ -191,7 +191,9 @@
         if (!target) return;
 
         if (target.matches?.('[data-role="category-filter"]')) {
-            state.currentCategoryFilter = String(target.value || '').trim();
+            state.currentCategoryFilter = typeof history.getFixedCategoryFilter === 'function'
+                ? (history.getFixedCategoryFilter() || String(target.value || '').trim())
+                : String(target.value || '').trim();
             view.syncCategoryFilterInputs?.(state.currentCategoryFilter, target);
             view.renderCurrentView?.();
             return;

@@ -336,6 +336,8 @@ function syncEquipmentUsageLabels() {
     charge.textContent = usageChargeText;
     charge.classList.toggle("is-hidden", !usageChargeText);
 
+    meta.querySelector(`[data-field-previous-key="${fieldKey}"]`)?.remove();
+
     let correction = meta.querySelector(`[data-field-correction-key="${fieldKey}"]`);
     const correctionText = getGasMonthlyBoundaryOverrideBadgeText(fieldKey);
     const correctionDetailText = getGasMonthlyBoundaryOverrideDetailText(fieldKey);

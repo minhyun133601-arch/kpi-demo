@@ -13,9 +13,9 @@
     const TeamInfo = Object.freeze({
         team1part1: { name: 'Line Alpha', desc: 'Process Alpha', class: 'team1part1' },
         team1part2: { name: 'Line Beta', desc: 'Process Alpha', class: 'team1part2' },
-        team2: { name: 'Line Gamma', desc: 'Process Beta', class: 'team2' },
+        team2: { name: 'Line Gamma', desc: 'Process Beta B·Process Beta A', class: 'team2' },
         team3: { name: 'Line Delta', desc: 'Process Gamma', class: 'team3' },
-        team4: { name: '시설팀', desc: '폐수 · 전체 · 기타', class: 'team4' }
+        team4: { name: '공무환경팀', desc: '폐수 · 전체 · 기타', class: 'team4' }
     });
     const LOCAL_BACKUP_KEY = `workhistory:${DATA_KEY}`;
     const ATTACHMENT_SLOT_KEYS = ['billing', 'report'];
@@ -59,13 +59,13 @@
             team: 'team2',
             startDate: '2026-02-22',
             endDate: '2026-02-22',
-            workIncludes: Object.freeze(['Process Epsilon실 무중력혼합기 핀밀 축 점검'])
+            workIncludes: Object.freeze(['배합실 무중력혼합기 핀밀 축 점검'])
         }),
         Object.freeze({
             team: 'team1part2',
             startDate: '2026-03-31',
             endDate: '2026-03-31',
-            workIncludes: Object.freeze(['Demo Heater V/F 안전발판 개선'])
+            workIncludes: Object.freeze(['Process Alpha기 V/F 안전발판 개선'])
         })
     ]);
     const RECORD_CATEGORY_GROUP_ORDER = Object.freeze(['kpi', 'focus', 'report']);
@@ -76,7 +76,7 @@
                 '설비 가동률 증대',
                 '자체 정비',
                 '계획 이행률',
-                'Demo Heater 설치',
+                'Process Alpha기 설치',
                 '법규 준수'
             ])
         }),
@@ -100,6 +100,8 @@
     const RECORD_CATEGORY_OPTIONS = Object.freeze(
         RECORD_CATEGORY_GROUP_ORDER.flatMap(groupKey => RECORD_CATEGORY_GROUPS[groupKey]?.categories || [])
     );
+    const DEFAULT_WORKSPACE_MODE = 'default';
+    const PRODUCTION_REPORT_WORKSPACE_MODE = 'production-report';
 
     const state = history.state || {
         loaded: false,
@@ -122,9 +124,15 @@
             },
             removedAttachments: []
         },
-        toastTimer: null
+        toastTimer: null,
+        workspaceMode: DEFAULT_WORKSPACE_MODE,
+        workspaceTitle: '',
+        workspaceSubtitle: ''
     };
     if (typeof state.currentCategoryFilter !== 'string') state.currentCategoryFilter = '';
+    if (typeof state.workspaceMode !== 'string') state.workspaceMode = DEFAULT_WORKSPACE_MODE;
+    if (typeof state.workspaceTitle !== 'string') state.workspaceTitle = '';
+    if (typeof state.workspaceSubtitle !== 'string') state.workspaceSubtitle = '';
 
     const writeState = history.writeState || {
         timer: null,
@@ -140,18 +148,6 @@
     function getTimeValue(value) {
         const timeValue = Date.parse(String(value || ''));
         return Number.isFinite(timeValue) ? timeValue : 0;
-    }
-
-    function createFallbackPayload() {
-        return {
-            meta: {
-                moduleKey: DATA_KEY,
-                moduleName: '팀별내역서 - 작업내역',
-                version: 1,
-                updatedAt: new Date().toISOString()
-            },
-            teams: Object.fromEntries(TEAM_KEYS.map(team => [team, []]))
-        };
     }
 
     function getShadowRoot() {
@@ -171,74 +167,48 @@
         state.shadowRoot = host?.shadowRoot || null;
     }
 
-    function getSeedPayload() {
-        const portalData = window.PortalData && typeof window.PortalData === 'object'
-            ? window.PortalData
-            : null;
-        if (portalData && Object.prototype.hasOwnProperty.call(portalData, DATA_KEY)) {
-            return portalData[DATA_KEY];
-        }
-        return createFallbackPayload();
+    function getWorkspaceMode() {
+        return state.workspaceMode === PRODUCTION_REPORT_WORKSPACE_MODE
+            ? PRODUCTION_REPORT_WORKSPACE_MODE
+            : DEFAULT_WORKSPACE_MODE;
     }
 
-    function syncPortalDataCache(payload) {
-        window.PortalData = window.PortalData || {};
-        window.PortalData[DATA_KEY] = cloneJson(payload);
+    function isProductionReportWorkspace() {
+        return getWorkspaceMode() === PRODUCTION_REPORT_WORKSPACE_MODE;
     }
 
-    function normalizePayloadWithRegistry(payload) {
-        const normalizePayload = typeof history.normalizePayload === 'function'
-            ? history.normalizePayload
-            : null;
-        if (normalizePayload) {
-            return normalizePayload(payload);
-        }
-        return payload && typeof payload === 'object'
-            ? cloneJson(payload)
-            : createFallbackPayload();
+    function getFixedCategoryFilter() {
+        return isProductionReportWorkspace() ? '보고' : '';
     }
 
-    // Record normalization and storage helpers are split into sibling runtime files.
-    function loadData() {
-        if (state.loaded && state.payload) return state.payload;
-        let seedPayload = null;
-        let localPayload = null;
-        try {
-            seedPayload = getSeedPayload();
-        } catch (_error) {
-            seedPayload = null;
-        }
-        const stored = localStorage.getItem(LOCAL_BACKUP_KEY);
-        if (stored) {
-            try {
-                localPayload = JSON.parse(stored);
-            } catch (_error) {
-                localPayload = null;
+    function applyWorkspaceOptions(options = {}) {
+        const requestedMode = String(options.workspaceMode || '').trim();
+        const nextMode = requestedMode === PRODUCTION_REPORT_WORKSPACE_MODE
+            ? PRODUCTION_REPORT_WORKSPACE_MODE
+            : DEFAULT_WORKSPACE_MODE;
+        const modeChanged = getWorkspaceMode() !== nextMode;
+        state.workspaceMode = nextMode;
+        state.workspaceTitle = String(options.workspaceTitle || '').trim();
+        state.workspaceSubtitle = String(options.workspaceSubtitle || '').trim();
+
+        if (modeChanged) {
+            state.currentKeyword = '';
+            state.currentTeam = 'overview';
+            if (nextMode === DEFAULT_WORKSPACE_MODE) {
+                state.currentCategoryFilter = '';
             }
         }
-        let payload = seedPayload;
-        if (!payload || (localPayload && getTimeValue(localPayload?.meta?.updatedAt) > getTimeValue(seedPayload?.meta?.updatedAt))) {
-            payload = localPayload;
+
+        const fixedCategoryFilter = getFixedCategoryFilter();
+        if (fixedCategoryFilter) {
+            state.currentCategoryFilter = fixedCategoryFilter;
         }
-        state.payload = normalizePayloadWithRegistry(payload);
-        syncPortalDataCache(state.payload);
-        state.loaded = true;
-        return state.payload;
-    }
 
-    function getPayload() {
-        return loadData();
-    }
-
-    function replacePayload(payload) {
-        state.payload = normalizePayloadWithRegistry(payload);
-        state.loaded = true;
-        syncPortalDataCache(state.payload);
-        return state.payload;
+        return nextMode;
     }
 
     function getTeamRecords(team) {
-        const payload = getPayload();
+        const payload = history.getPayload();
         return payload.teams[team] || [];
     }
 
@@ -265,15 +235,16 @@
         ATTACHMENT_SLOT_META,
         WORK_HISTORY_ATTACHMENT_MAX_BYTES,
         WORK_HISTORY_ATTACHMENT_ACCEPT,
+        DEFAULT_WORKSPACE_MODE,
+        PRODUCTION_REPORT_WORKSPACE_MODE,
         getElement,
         queryAll,
         setShadowHost,
-        getSeedPayload,
-        syncPortalDataCache,
-        loadData,
-        getPayload,
-        replacePayload,
-        getTeamRecords
+        getTeamRecords,
+        getWorkspaceMode,
+        isProductionReportWorkspace,
+        getFixedCategoryFilter,
+        applyWorkspaceOptions
     });
 
     window.KpiWorkHistory = history;

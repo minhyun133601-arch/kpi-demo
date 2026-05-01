@@ -154,7 +154,7 @@ function createContext() {
           totalCount: 1,
           filters: { team: '', owner: '', room: '', keyword: '' },
           entries: [
-            { dateKey: '2026-04-15', team: 'Plant A', room: 'A', owner: 'Operator A', task: '월간 점검' },
+            { dateKey: '2026-04-15', team: 'Plant A', room: 'A', owner: '홍길동', task: '월간 점검' },
           ],
         },
       },
@@ -271,7 +271,7 @@ function createContext() {
     collectEntriesByDateRange() {
       return {
         '2026-04-15': [
-          { team: 'Plant A', room: 'A', owner: 'Operator A', task: '월간 점검' },
+          { team: 'Plant A', room: 'A', owner: '홍길동', task: '월간 점검' },
         ],
       };
     },
@@ -282,7 +282,7 @@ function createContext() {
       return true;
     },
     getWorkOwners() {
-      return ['Operator A'];
+      return ['홍길동'];
     },
     buildSelectOptions(list, selectedValue, placeholder) {
       const options = [`<option value="">${placeholder}</option>`];
@@ -377,10 +377,12 @@ test('work renderers split files render weekly and monthly content after loading
   context.renderWorkContent(context.weeklyCategory);
   assert.match(contentContainer.innerHTML, /work-week-meta/);
   assert.match(contentContainer.innerHTML, /workExport\('work_demo'\)/);
+  assert.match(contentContainer.innerHTML, /data-work-save-status="work_demo"/);
 
   context.renderWorkContent(context.monthlyCategory);
   assert.match(contentContainer.innerHTML, /month-panel/);
   assert.match(contentContainer.innerHTML, /printMonthlyReport\('work_monthly_plan'\)/);
+  assert.match(contentContainer.innerHTML, /data-work-save-status="work_monthly_plan"/);
 });
 
 test('work renderers export helper downloads a js bootstrap payload', async () => {
@@ -409,7 +411,7 @@ test('kpi html loads work renderer split files before work runtime bootstrap', (
   const printIndex = kpiHtml.indexOf('runtime/work/KPI.work.renderers.print.js?v=1');
   const monthlyPlanIndex = kpiHtml.indexOf('runtime/work/KPI.work.renderers.monthly-plan.js?v=1');
   const renderersIndex = kpiHtml.indexOf('runtime/work/KPI.work.renderers.js?v=1');
-  const workRuntimeIndex = kpiHtml.indexOf('runtime/work/KPI.work.runtime.js?v=227');
+  const workRuntimeIndex = kpiHtml.indexOf('runtime/work/KPI.work.runtime.js?v=228');
 
   assert.ok(weeklyActionsIndex >= 0, 'work renderer weekly actions loader is missing');
   assert.ok(printIndex > weeklyActionsIndex, 'work renderer print helper must load after weekly actions');

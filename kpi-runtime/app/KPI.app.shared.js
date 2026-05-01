@@ -39,7 +39,7 @@
             data: '#f8fafc',
             owner: '#f5f3ff'
         });
-        const COMPANY_LOGO_SRC = '/shared-assets/kpi-demo-logo.svg';
+        const COMPANY_LOGO_SRC = '/\u203B_\uACF5\uC6A9\uC790\uC0B0/\uB85C\uACE0.jpg';
         const DashboardHomeState = {
             sectionId: DASHBOARD_SECTION_ORDER[0]
         };
@@ -214,7 +214,7 @@
         function syncDashboardLastModified() {
             const target = document.getElementById('last-modified-text');
             if (!target) return;
-            target.textContent = `理쒖쥌 ?섏젙: ${formatDashboardDateTime(getLatestRecentUpdateValue())}`;
+            target.textContent = `최종 수정: ${formatDashboardDateTime(getLatestRecentUpdateValue())}`;
         }
 
         function getRuntimeCurrentUser() {

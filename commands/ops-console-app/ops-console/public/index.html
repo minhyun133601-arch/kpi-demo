@@ -3,36 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KPI Demo Command Console</title>
+  <title>KPI 운영 콘솔</title>
   <link
     rel="icon"
     href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231f2723'/%3E%3Cpath d='M8 24V8h3v6.5L17.5 8H22l-7 7.5 7.3 8.5h-4.6L12 17.2V24H8Z' fill='%23f5f7f5'/%3E%3C/svg%3E"
   />
-  <link rel="stylesheet" href="/styles.css?v=20260425b" />
+  <link rel="stylesheet" href="/styles.css?v=20260428a" />
 </head>
 <body>
   <div class="page-shell">
     <header class="hero-band">
       <div class="hero-copy">
-        <p class="eyebrow">LOCAL DEMO COMMANDS</p>
-        <h1>KPI 데모 명령 콘솔</h1>
-        <p class="hero-summary">정적 데모와 선택형 서버 런타임을 현재 포트 기준으로 관리합니다.</p>
+        <p class="eyebrow" data-i18n-key="heroEyebrow">KPI OPERATIONS COMMANDS</p>
+        <h1 data-i18n-key="heroTitle">KPI 운영 콘솔</h1>
+        <p class="hero-summary" data-i18n-key="heroSummary">KPI 서버, DB, 계정 작업을 현재 저장소 포트 기준으로 관리합니다.</p>
         <div class="hero-meta">
-          <span class="meta-chip">정적 데모 5500</span>
-          <span class="meta-chip">런타임 3104</span>
-          <span class="meta-chip">DB 5400</span>
-          <span class="meta-chip"><span>명령 콘솔</span><strong id="opsHeaderUrl">-</strong></span>
+          <span class="meta-chip" data-i18n-key="metaRuntime">KPI 런타임 3104</span>
+          <span class="meta-chip" data-i18n-key="metaDb">DB 5400</span>
+          <span class="meta-chip"><span data-i18n-key="metaConsole">운영 콘솔</span><strong id="opsHeaderUrl">-</strong></span>
           <span class="meta-chip meta-chip-wide"><span>commands</span><strong id="opsHeaderRoot">-</strong></span>
         </div>
       </div>
       <div class="hero-actions">
+        <div class="language-toggle" aria-label="Language">
+          <button class="language-button is-active" type="button" data-language="ko" aria-pressed="true">한국어</button>
+          <button class="language-button" type="button" data-language="en" aria-pressed="false">English</button>
+        </div>
         <button id="refreshButton" class="secondary-button" type="button">
           <span class="ui-icon button-icon" data-icon="refresh" aria-hidden="true"></span>
-          <span>상태 새로고침</span>
+          <span data-i18n-key="refreshButton">상태 새로고침</span>
         </button>
         <button id="openKpiButton" class="primary-button" type="button">
           <span class="ui-icon button-icon" data-icon="monitor" aria-hidden="true"></span>
-          <span>KPI 런타임 로그인 열기</span>
+          <span data-i18n-key="openKpiButton">KPI 로그인 열기</span>
         </button>
       </div>
     </header>
@@ -43,19 +46,19 @@
           <div class="status-headline">
             <span class="status-light" aria-hidden="true"></span>
             <span class="ui-icon status-icon" data-icon="clock" aria-hidden="true"></span>
-            <span class="status-label">컴퓨터 예약</span>
+            <span class="status-label" data-i18n-key="scheduleLabel">컴퓨터 예약</span>
           </div>
-          <strong id="scheduleStatus">확인 중</strong>
-          <span id="scheduleSummary" class="status-meta">시작 / 종료 예약 상태</span>
+          <strong id="scheduleStatus" data-i18n-key="checking">확인 중</strong>
+          <span id="scheduleSummary" class="status-meta" data-i18n-key="scheduleInitialSummary">시작 / 종료 예약 상태</span>
           <div id="scheduleActions" class="status-actions"></div>
         </article>
         <article id="kpiTile" class="status-tile">
           <div class="status-headline">
             <span class="status-light" aria-hidden="true"></span>
             <span class="ui-icon status-icon" data-icon="server" aria-hidden="true"></span>
-            <span class="status-label">KPI 런타임 3104</span>
+            <span class="status-label" data-i18n-key="kpiLabel">KPI 런타임 3104</span>
           </div>
-          <strong id="kpiStatus">확인 중</strong>
+          <strong id="kpiStatus" data-i18n-key="checking">확인 중</strong>
           <span id="kpiSummary" class="status-meta">-</span>
           <div id="kpiActions" class="status-actions"></div>
         </article>
@@ -63,45 +66,49 @@
           <div class="status-headline">
             <span class="status-light" aria-hidden="true"></span>
             <span class="ui-icon status-icon" data-icon="database" aria-hidden="true"></span>
-            <span class="status-label">PostgreSQL 5400</span>
+            <span class="status-label" data-i18n-key="postgresLabel">PostgreSQL 5400</span>
           </div>
-          <strong id="postgresStatus">확인 중</strong>
+          <strong id="postgresStatus" data-i18n-key="checking">확인 중</strong>
           <span id="postgresSummary" class="status-meta">-</span>
         </article>
         <article id="startupTile" class="status-tile">
           <div class="status-headline">
             <span class="status-light" aria-hidden="true"></span>
             <span class="ui-icon status-icon" data-icon="clock" aria-hidden="true"></span>
-            <span class="status-label">부팅 자동실행</span>
+            <span class="status-label" data-i18n-key="startupLabel">부팅 자동실행</span>
           </div>
-          <strong id="startupStatus">확인 중</strong>
-          <span class="status-meta">현재 사용자 시작프로그램</span>
+          <strong id="startupStatus" data-i18n-key="checking">확인 중</strong>
+          <span class="status-meta" data-i18n-key="startupSummary">현재 사용자 시작프로그램</span>
           <div id="startupActions" class="status-actions"></div>
         </article>
         <article id="resultTile" class="status-tile status-result-tile">
           <div class="status-headline">
             <span class="status-light" aria-hidden="true"></span>
             <span class="ui-icon status-icon" data-icon="spark" aria-hidden="true"></span>
-            <span class="status-label">최근 결과</span>
+            <span class="status-label" data-i18n-key="resultLabel">최근 결과</span>
           </div>
-          <strong id="resultTileSummary">대기 중</strong>
-          <span id="resultTileMeta" class="status-meta">아직 실행한 작업이 없습니다.</span>
+          <strong id="resultTileSummary" data-i18n-key="resultIdle">대기 중</strong>
+          <span id="resultTileMeta" class="status-meta" data-i18n-key="resultIdleMeta">아직 실행한 작업이 없습니다.</span>
         </article>
       </section>
 
       <section class="workbench workbench-tabs">
-        <nav class="tab-bar" aria-label="운영 콘솔 분류">
+        <nav class="tab-bar" aria-label="운영 콘솔 분류" data-i18n-aria-label="tabAriaLabel">
           <button class="tab-button is-active" data-tab="server" type="button">
             <span class="ui-icon tab-icon" data-icon="server" aria-hidden="true"></span>
-            <span>서버 관리</span>
+            <span data-i18n-key="serverTab">서버 관리</span>
           </button>
           <button class="tab-button" data-tab="data" type="button">
             <span class="ui-icon tab-icon" data-icon="database" aria-hidden="true"></span>
-            <span>계정 관리</span>
+            <span data-i18n-key="accountTab">계정 관리</span>
           </button>
           <button class="tab-button" data-tab="preview" type="button">
             <span class="ui-icon tab-icon" data-icon="table" aria-hidden="true"></span>
             <span>Repository Map</span>
+          </button>
+          <button class="tab-button" data-tab="reference" type="button">
+            <span class="ui-icon tab-icon" data-icon="list" aria-hidden="true"></span>
+            <span data-i18n-key="dataReferenceTab">데이터 참조 경로</span>
           </button>
         </nav>
 
@@ -112,18 +119,18 @@
                 <div class="section-title-group">
                   <span class="ui-icon section-icon" data-icon="terminal" aria-hidden="true"></span>
                   <div>
-                    <h2>로그 보기</h2>
-                    <p>최근 로그 60줄을 바로 확인합니다.</p>
+                    <h2 data-i18n-key="logsTitle">로그 보기</h2>
+                    <p data-i18n-key="logsSummary">최근 로그 60줄을 바로 확인합니다.</p>
                   </div>
                 </div>
               </div>
               <div class="toolbar-row toolbar-row-tight">
-                <button class="secondary-button log-button" data-log-key="serverActions" type="button">서버 액션</button>
+                <button class="secondary-button log-button" data-log-key="serverActions" type="button" data-i18n-key="serverActionsLog">서버 액션</button>
                 <button class="secondary-button log-button" data-log-key="serverStdout" type="button">서버 stdout</button>
                 <button class="secondary-button log-button" data-log-key="serverStderr" type="button">서버 stderr</button>
                 <button class="secondary-button log-button" data-log-key="postgres" type="button">PostgreSQL</button>
               </div>
-              <pre id="logOutput" class="output-box drag-scroll">로그를 선택해 주세요.</pre>
+              <pre id="logOutput" class="output-box drag-scroll" data-i18n-key="logOutputIdle">로그를 선택해 주세요.</pre>
             </section>
           </div>
 
@@ -133,8 +140,8 @@
                 <div class="section-title-group">
                   <span class="ui-icon section-icon" data-icon="tools" aria-hidden="true"></span>
                   <div>
-                    <h2>DB / 도구</h2>
-                    <p>DB 콘솔과 운영 보조 작업을 처리합니다.</p>
+                    <h2 data-i18n-key="toolsTitle">DB / 도구</h2>
+                    <p data-i18n-key="toolsSummary">DB 콘솔과 운영 보조 작업을 처리합니다.</p>
                   </div>
                 </div>
               </div>
@@ -146,13 +153,13 @@
                 <div class="section-title-group">
                   <span class="ui-icon section-icon" data-icon="table" aria-hidden="true"></span>
                   <div>
-                    <h2>DB 테이블</h2>
-                    <p>테이블 목록을 이 화면에서 바로 확인합니다.</p>
+                    <h2 data-i18n-key="tablesTitle">DB 테이블</h2>
+                    <p data-i18n-key="tablesSummary">테이블 목록을 이 화면에서 바로 확인합니다.</p>
                   </div>
                 </div>
-                <button id="loadTablesButton" class="secondary-button" type="button">불러오기</button>
+                <button id="loadTablesButton" class="secondary-button" type="button" data-i18n-key="loadButton">불러오기</button>
               </div>
-              <pre id="tablesOutput" class="output-box drag-scroll">아직 불러오지 않았습니다.</pre>
+              <pre id="tablesOutput" class="output-box drag-scroll" data-i18n-key="tablesOutputIdle">아직 불러오지 않았습니다.</pre>
             </section>
           </div>
         </section>
@@ -164,8 +171,8 @@
                 <div class="section-title-group">
                   <span class="ui-icon section-icon" data-icon="user" aria-hidden="true"></span>
                   <div>
-                    <h2>계정 관리</h2>
-                    <p>오너, 직원 계정과 비밀번호 작업을 처리합니다.</p>
+                    <h2 data-i18n-key="accountTitle">계정 관리</h2>
+                    <p data-i18n-key="accountSummary">오너, 직원 계정과 비밀번호 작업을 처리합니다.</p>
                   </div>
                 </div>
               </div>
@@ -177,31 +184,31 @@
                 <div class="section-title-group">
                   <span class="ui-icon section-icon" data-icon="list" aria-hidden="true"></span>
                   <div>
-                    <h2>사용자 현황</h2>
-                    <p>현재 DB에 등록된 계정 상태를 확인합니다.</p>
+                    <h2 data-i18n-key="usersTitle">사용자 현황</h2>
+                    <p data-i18n-key="usersSummary">현재 DB에 등록된 계정 상태를 확인합니다.</p>
                   </div>
                 </div>
                 <div class="summary-group">
-                  <span class="summary-pill">총 사용자 <strong id="userCountStat">0명</strong></span>
-                  <span class="summary-pill">활성 세션 <strong id="sessionCountStat">0개</strong></span>
+                  <span class="summary-pill"><span data-i18n-key="userCountLabel">총 사용자</span> <strong id="userCountStat">0명</strong></span>
+                  <span class="summary-pill"><span data-i18n-key="sessionCountLabel">활성 세션</span> <strong id="sessionCountStat">0개</strong></span>
                 </div>
               </div>
               <div class="toolbar-row">
-                <button id="reloadUsersButton" class="secondary-button" type="button">사용자 목록 새로고침</button>
+                <button id="reloadUsersButton" class="secondary-button" type="button" data-i18n-key="reloadUsersButton">사용자 목록 새로고침</button>
               </div>
               <div class="table-wrap drag-scroll">
                 <table>
                   <thead>
                     <tr>
-                      <th>아이디</th>
-                      <th>표시 이름</th>
-                      <th>역할</th>
-                      <th>최근 접속</th>
-                      <th>세션</th>
+                      <th data-i18n-key="userIdHeader">아이디</th>
+                      <th data-i18n-key="displayNameHeader">표시 이름</th>
+                      <th data-i18n-key="roleHeader">역할</th>
+                      <th data-i18n-key="lastAccessHeader">최근 접속</th>
+                      <th data-i18n-key="sessionHeader">세션</th>
                     </tr>
                   </thead>
                   <tbody id="usersTableBody">
-                    <tr><td colspan="5">불러오는 중...</td></tr>
+                    <tr><td colspan="5" data-i18n-key="loading">불러오는 중...</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -210,25 +217,48 @@
         </section>
 
         <section class="tab-panel tab-panel-preview" data-tab-panel="preview">
-          <section class="section section-compact preview-intro">
-            <div class="section-head preview-intro-head">
+          <section class="section preview-intro">
+            <div class="section-head section-head-inline preview-intro-head">
               <div class="section-title-group">
                 <span class="ui-icon section-icon" data-icon="table" aria-hidden="true"></span>
                 <div>
                   <h2>Repository Map</h2>
-                  <p>Review the live KPI Demo folder map, change badges, and local port boundaries inside this console.</p>
+                  <p data-i18n-key="previewSummary">현재 저장소 폴더 지도, 포트 경계, 변경 기록을 콘솔 안에서 확인합니다.</p>
                 </div>
               </div>
-              <a class="secondary-button preview-open-link" href="/repository-map.html?v=console-20260425" target="_blank" rel="noopener">
-                <span>새 창</span>
+              <a class="secondary-button preview-open-link" href="/repository-map.html" target="_blank" rel="noopener noreferrer">
+                <span data-i18n-key="openNewWindow">새 창</span>
               </a>
             </div>
           </section>
           <iframe
+            id="repositoryMapFrame"
             class="preview-frame"
-            src="/repository-map.html?v=console-20260425"
-            title="KPI Demo repository map"
-            loading="lazy"
+            src="/repository-map.html"
+            title="Repository Map"
+          ></iframe>
+        </section>
+
+        <section class="tab-panel tab-panel-preview" data-tab-panel="reference">
+          <section class="section preview-intro">
+            <div class="section-head section-head-inline preview-intro-head">
+              <div class="section-title-group">
+                <span class="ui-icon section-icon" data-icon="list" aria-hidden="true"></span>
+                <div>
+                  <h2 data-i18n-key="dataReferenceTitle">데이터 참조 경로</h2>
+                  <p data-i18n-key="dataReferenceSummary">현재 입력 화면별 데이터가 어느 API, DB 레코드, 파일 저장소, 권한키를 거치는지 확인합니다.</p>
+                </div>
+              </div>
+              <a class="secondary-button preview-open-link" href="/data-reference-map.html" target="_blank" rel="noopener noreferrer">
+                <span data-i18n-key="openNewWindow">새 창</span>
+              </a>
+            </div>
+          </section>
+          <iframe
+            id="dataReferenceFrame"
+            class="preview-frame"
+            src="/data-reference-map.html"
+            title="Data Reference Paths"
           ></iframe>
         </section>
       </section>
@@ -240,16 +270,16 @@
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="scheduleModalTitle">
       <div class="modal-head">
         <div class="modal-copy">
-          <p class="eyebrow">COMPUTER SCHEDULE</p>
+          <p class="eyebrow" data-i18n-key="scheduleModalEyebrow">COMPUTER SCHEDULE</p>
           <h2 id="scheduleModalTitle">시작 / 종료 예약</h2>
           <p id="scheduleModalDescription">시작 또는 종료 시간을 예약합니다.</p>
         </div>
-        <button id="scheduleModalClose" class="secondary-button modal-close-button" type="button">닫기</button>
+        <button id="scheduleModalClose" class="secondary-button modal-close-button" type="button" data-i18n-key="closeButton">닫기</button>
       </div>
       <form id="scheduleModalForm" class="field-grid modal-form"></form>
     </div>
   </div>
 
-  <script src="/app.js?v=20260425b" type="module"></script>
+  <script src="/app.js?v=20260428a" type="module"></script>
 </body>
 </html>

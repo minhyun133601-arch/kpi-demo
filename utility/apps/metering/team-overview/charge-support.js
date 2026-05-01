@@ -172,7 +172,7 @@ function getTeamSharedCompressorSettlementDetailText(teamKey, monthValue = state
   }
 
   const parts = [
-    `Compressor 380V + Compressor 합계 ${formatWholeNumber(totalUsage)} x 배분 ${formatUsageShare(
+    `Compressor(380v) + Compressor 합계 ${formatWholeNumber(totalUsage)} x 배분 ${formatUsageShare(
       ratio
     )} = ${formatWholeNumber(teamUsage)}`,
   ];

@@ -22,20 +22,15 @@ function inferEquipmentIconKey(label) {
     return "power_active";
   }
 
-  if (normalizedLabel.includes("processgamma") || normalizedLabel.includes("process gamma")) {
+  if (normalizedLabel.includes("process gamma")) {
     return "liquid";
   }
 
-  if (
-    normalizedLabel.includes("adminarea") ||
-    normalizedLabel.includes("admin area") ||
-    normalizedLabel.includes("breakarea") ||
-    normalizedLabel.includes("break area")
-  ) {
+  if (normalizedLabel.includes("admin area") || normalizedLabel.includes("break area")) {
     return "building";
   }
 
-  if (normalizedLabel.includes("processbeta") || normalizedLabel.includes("process beta")) {
+  if (normalizedLabel.includes("process beta b") || normalizedLabel.includes("process beta a")) {
     return "packaging";
   }
 

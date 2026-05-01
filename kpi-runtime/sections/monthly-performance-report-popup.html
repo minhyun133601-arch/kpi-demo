@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>월간 실적보고</title>
+    <style>
+        :root {
+            --ink: #172033;
+            --muted: #667085;
+            --line: #dbe5f3;
+            --surface: #ffffff;
+            --page: #eef4fb;
+            --blue: #0b477b;
+            --blue-soft: #e8f1f8;
+            --amber: #b45309;
+            --green: #047857;
+            --shadow: 0 26px 70px rgba(18, 33, 58, 0.13);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 12% 0%, rgba(14, 116, 144, 0.16), transparent 30%),
+                radial-gradient(circle at 100% 16%, rgba(180, 83, 9, 0.13), transparent 32%),
+                linear-gradient(135deg, #f8fbff 0%, var(--page) 100%);
+            color: var(--ink);
+            font-family: "Noto Sans KR", "Malgun Gothic", sans-serif;
+        }
+
+        .monthly-shell {
+            width: min(1440px, calc(100vw - 36px));
+            margin: 18px auto;
+        }
+
+        .monthly-hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 20px;
+            align-items: end;
+            padding: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.44);
+            border-radius: 30px;
+            background: linear-gradient(135deg, #10243d 0%, #0b477b 54%, #123a5f 100%);
+            box-shadow: var(--shadow);
+            color: white;
+        }
+
+        .monthly-kicker {
+            color: #b9e5ff;
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .monthly-title {
+            margin: 8px 0 0;
+            font-size: clamp(30px, 4vw, 54px);
+            font-weight: 950;
+            line-height: 1.05;
+        }
+
+        .monthly-copy {
+            max-width: 820px;
+            margin: 14px 0 0;
+            color: #dceeff;
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.7;
+        }
+
+        .monthly-period {
+            display: grid;
+            gap: 6px;
+            min-width: 220px;
+            padding: 16px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.11);
+        }
+
+        .monthly-period span {
+            color: #b9e5ff;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 0.1em;
+        }
+
+        .monthly-period strong {
+            font-size: 24px;
+            font-weight: 950;
+        }
+
+        .team-tabs {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .team-tab {
+            min-height: 76px;
+            padding: 13px 14px;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.86);
+            color: var(--ink);
+            box-shadow: 0 10px 28px rgba(18, 33, 58, 0.07);
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .team-tab small {
+            display: block;
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .team-tab strong {
+            display: block;
+            margin-top: 4px;
+            font-size: 17px;
+            font-weight: 950;
+        }
+
+        .team-tab.is-active {
+            border-color: rgba(11, 71, 123, 0.4);
+            background: #ffffff;
+            box-shadow: 0 16px 34px rgba(11, 71, 123, 0.16);
+            outline: 3px solid rgba(11, 71, 123, 0.12);
+        }
+
+        .team-panel {
+            display: none;
+            margin-top: 16px;
+            padding: 20px;
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.92);
+            box-shadow: var(--shadow);
+        }
+
+        .team-panel.is-active {
+            display: block;
+        }
+
+        .panel-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+
+        .panel-title {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 950;
+        }
+
+        .panel-note {
+            margin: 6px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.55;
+        }
+
+        .source-pill {
+            flex: 0 0 auto;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: var(--blue-soft);
+            color: var(--blue);
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .metric-card {
+            min-height: 138px;
+            padding: 18px;
+            border: 1px solid #e5edf7;
+            border-radius: 22px;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        }
+
+        .metric-label {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .metric-value {
+            margin-top: 8px;
+            color: var(--ink);
+            font-size: 34px;
+            font-weight: 950;
+            line-height: 1;
+        }
+
+        .metric-card.production .metric-value {
+            color: var(--blue);
+        }
+
+        .metric-card.yield .metric-value {
+            color: var(--green);
+        }
+
+        .metric-card.labor .metric-value {
+            color: var(--amber);
+        }
+
+        .metric-desc {
+            margin-top: 12px;
+            color: #7a8699;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.45;
+        }
+
+        .report-guide {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .guide-card {
+            padding: 15px;
+            border: 1px dashed #c7d7ea;
+            border-radius: 18px;
+            background: #fbfdff;
+        }
+
+        .guide-card strong {
+            display: block;
+            font-size: 13px;
+            font-weight: 950;
+        }
+
+        .guide-card p {
+            margin: 7px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.55;
+        }
+
+        @media (max-width: 980px) {
+            .monthly-hero,
+            .report-guide {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .team-tabs,
+            .metric-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="monthly-shell">
+        <section class="monthly-hero">
+            <div>
+                <div class="monthly-kicker">Monthly Performance Report</div>
+                <h1 class="monthly-title">월간 실적보고</h1>
+                <p class="monthly-copy">
+                    작업이력의 보고서 검색 화면이 아니라, 월간 생산량 기입 시트와 원가 자료를 기준으로 팀별 생산량, 수율, 노무비를 보고하는 별도 팝업입니다.
+                </p>
+            </div>
+            <div class="monthly-period" aria-label="보고 기간">
+                <span>REPORT MONTH</span>
+                <strong>월간 기준</strong>
+            </div>
+        </section>
+
+        <nav class="team-tabs" aria-label="팀 선택">
+            <button class="team-tab is-active" type="button" data-team-tab="team1part1"><small>Team 1-A</small><strong>Line Alpha</strong></button>
+            <button class="team-tab" type="button" data-team-tab="team1part2"><small>Team 1-B</small><strong>Line Beta</strong></button>
+            <button class="team-tab" type="button" data-team-tab="team2"><small>Team 2</small><strong>Line Gamma</strong></button>
+            <button class="team-tab" type="button" data-team-tab="team3"><small>Team 3</small><strong>Line Delta</strong></button>
+            <button class="team-tab" type="button" data-team-tab="team4"><small>Utility</small><strong>공무환경팀</strong></button>
+        </nav>
+
+        <section class="team-panel is-active" data-team-panel="team1part1">
+            <div class="panel-head">
+                <div>
+                    <h2 class="panel-title">Line Alpha</h2>
+                    <p class="panel-note">월간 생산량 기입 시트의 Plant B/Process Alpha 생산 자료와 원가 자료를 연결할 자리입니다.</p>
+                </div>
+                <span class="source-pill">생산량 시트 연결 예정</span>
+            </div>
+            <div class="metric-grid"></div>
+            <div class="report-guide"></div>
+        </section>
+
+        <section class="team-panel" data-team-panel="team1part2">
+            <div class="panel-head">
+                <div>
+                    <h2 class="panel-title">Line Beta</h2>
+                    <p class="panel-note">Plant A Process Alpha 생산량, 수율, 노무비를 월간 기준으로 보고합니다.</p>
+                </div>
+                <span class="source-pill">생산량 시트 연결 예정</span>
+            </div>
+            <div class="metric-grid"></div>
+            <div class="report-guide"></div>
+        </section>
+
+        <section class="team-panel" data-team-panel="team2">
+            <div class="panel-head">
+                <div>
+                    <h2 class="panel-title">Line Gamma</h2>
+                    <p class="panel-note">Process Beta B·Process Beta A 생산량과 수율, 월간 노무비를 한 화면에 모읍니다.</p>
+                </div>
+                <span class="source-pill">생산량 시트 연결 예정</span>
+            </div>
+            <div class="metric-grid"></div>
+            <div class="report-guide"></div>
+        </section>
+
+        <section class="team-panel" data-team-panel="team3">
+            <div class="panel-head">
+                <div>
+                    <h2 class="panel-title">Line Delta</h2>
+                    <p class="panel-note">Process Gamma 생산량, 수율, 노무비를 월간 보고 단위로 표시합니다.</p>
+                </div>
+                <span class="source-pill">생산량 시트 연결 예정</span>
+            </div>
+            <div class="metric-grid"></div>
+            <div class="report-guide"></div>
+        </section>
+
+        <section class="team-panel" data-team-panel="team4">
+            <div class="panel-head">
+                <div>
+                    <h2 class="panel-title">공무환경팀</h2>
+                    <p class="panel-note">폐수·공무환경 관련 월간 처리량, 비용, 노무비 지표를 별도 보고합니다.</p>
+                </div>
+                <span class="source-pill">원가 자료 연결 예정</span>
+            </div>
+            <div class="metric-grid"></div>
+            <div class="report-guide"></div>
+        </section>
+    </main>
+
+    <script>
+        const metricHtml = `
+            <article class="metric-card production">
+                <div class="metric-label">생산량</div>
+                <div class="metric-value">-</div>
+                <div class="metric-desc">월간 생산량 기입 시트에서 팀별 생산량을 연결합니다.</div>
+            </article>
+            <article class="metric-card yield">
+                <div class="metric-label">수율</div>
+                <div class="metric-value">-</div>
+                <div class="metric-desc">생산량 입력값의 수율 항목을 월간 기준으로 표시합니다.</div>
+            </article>
+            <article class="metric-card labor">
+                <div class="metric-label">노무비</div>
+                <div class="metric-value">-</div>
+                <div class="metric-desc">유틸리티/원가 월간 비용 자료에서 팀별 노무비를 연결합니다.</div>
+            </article>
+        `;
+
+        const guideHtml = `
+            <article class="guide-card">
+                <strong>이 화면에서 할 일</strong>
+                <p>각 팀의 월간 생산량, 수율, 노무비를 보고용으로 확인하고 월간 실적보고에 반영합니다.</p>
+            </article>
+            <article class="guide-card">
+                <strong>분리 기준</strong>
+                <p>작업이력의 작업내역/보고서 기록은 이 화면의 원천 데이터로 사용하지 않습니다.</p>
+            </article>
+        `;
+
+        document.querySelectorAll('.metric-grid').forEach((target) => {
+            target.innerHTML = metricHtml;
+        });
+        document.querySelectorAll('.report-guide').forEach((target) => {
+            target.innerHTML = guideHtml;
+        });
+
+        document.querySelectorAll('[data-team-tab]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const teamKey = button.getAttribute('data-team-tab');
+                document.querySelectorAll('[data-team-tab]').forEach((node) => {
+                    node.classList.toggle('is-active', node === button);
+                });
+                document.querySelectorAll('[data-team-panel]').forEach((panel) => {
+                    panel.classList.toggle('is-active', panel.getAttribute('data-team-panel') === teamKey);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

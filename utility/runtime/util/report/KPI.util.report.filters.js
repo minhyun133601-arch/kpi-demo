@@ -60,7 +60,7 @@
         function isUtilReportGasCombinedTeamSelection(teamName) {
             const normalized = normalizeUtilTeamName(teamName).toLowerCase();
             if (!normalized) return false;
-            return normalized.includes('linebeta') && normalized.includes('lng+lpg');
+            return normalized.includes('1팀2파트') && normalized.includes('lng+lpg');
         }
 
         function matchesUtilReportTeamFilter(scopeKey, teamFilter, entryTeamName) {
@@ -87,7 +87,7 @@
                 if (entrySite && entrySite === filterSite) return true;
             }
             if (normalizedScope === 'gas' && isUtilReportGasCombinedTeamSelection(filter)) {
-                return canonicalizeUtilTeamName(entry) === 'LineBeta';
+                return canonicalizeUtilTeamName(entry) === '1팀2파트';
             }
             const filterCanonical = canonicalizeUtilTeamName(filter);
             if (normalizedScope === 'gas' && filterCanonical) {
@@ -251,17 +251,17 @@
                     const fuelKey = inferUtilFuelType(rawTeamName);
                     const value = Number(item?.value) || 0;
                     if (!(value > 0)) return;
-                    if (canonical === 'LineAlpha') {
+                    if (canonical === '1팀1파트') {
                         gasTotals.north += value;
                         return;
                     }
-                    if (canonical === 'LineBeta') {
+                    if (canonical === '1팀2파트') {
                         gasTotals.team12 += value;
                         if (fuelKey === 'lpg') gasTotals.team12Lpg += value;
                         if (fuelKey === 'lng') gasTotals.team12Lng += value;
                         return;
                     }
-                    if (canonical === 'LineDelta') {
+                    if (canonical === 'Line Delta') {
                         gasTotals.team3 += value;
                     }
                 });

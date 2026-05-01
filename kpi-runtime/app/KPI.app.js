@@ -13,10 +13,11 @@
             tone: ''
         };
         const GLOBAL_RECENT_UPDATE_STORAGE_KEY = 'kpi:global-recent-update';
-        const DASHBOARD_SECTION_ORDER = ['work', 'util', 'audit', 'data', 'owner'];
+        const DASHBOARD_SECTION_ORDER = ['work', 'util', 'audit', 'data', 'productionReport', 'owner'];
         const DASHBOARD_SECTION_SOFT = Object.freeze({
             util: '#fff7ed',
             work: '#ecfdf5',
+            productionReport: '#e8f1f8',
             audit: '#fef2f2',
             data: '#f8fafc',
             owner: '#f5f3ff'
@@ -31,6 +32,7 @@
                 util: false,
                 audit: false,
                 data: false,
+                productionReport: false,
                 owner: false
             }
         };
@@ -404,19 +406,73 @@
                     <div class="viewer-home-hero">
                         <div class="viewer-home-brand-panel">
                             <div class="viewer-home-brand-frame">
-                                <img class="viewer-home-brand-logo" src="${companyLogoSrc}" alt="KPI Demo logo" />
+                                <img class="viewer-home-brand-logo" src="${companyLogoSrc}" alt="회사 로고" />
                             </div>
                         </div>
                         <div class="viewer-home-copy-panel">
-                            <h1 class="viewer-home-policy-title">KD 데모</h1>
+                            <h1 class="viewer-home-policy-title">2026년 경영방침</h1>
                             <div class="viewer-home-policy-rule"></div>
                             <div class="viewer-home-policy-points">
+                                <p class="viewer-home-policy-line">
+                                    <span class="viewer-home-policy-line-icon" aria-hidden="true"><i class="fas fa-arrow-trend-up"></i></span>
+                                    <span>새로운 기준으로 지속 성장의 기반을 구축한다</span>
+                                </p>
                                 <p class="viewer-home-policy-line viewer-home-policy-line-strong">
-                                    <span>26년 방침</span>
+                                    <span class="viewer-home-policy-line-icon" aria-hidden="true"><i class="fas fa-brain"></i></span>
+                                    <span>AI 역량을 확보하여 업무효율을 극대화한다.</span>
                                 </p>
                             </div>
                         </div>
                     </div>
+                    <section class="viewer-home-guideline-section" aria-label="행동 강령">
+                        <div class="viewer-home-guideline-header">
+                            <h2 class="viewer-home-guideline-title">KPI Demo 운영 원칙</h2>
+                        </div>
+                        <div class="viewer-home-guideline-grid">
+                            <article class="viewer-home-guideline-card viewer-home-guideline-card-trust">
+                                <div class="viewer-home-guideline-icon"><i class="fas fa-handshake"></i></div>
+                                <div class="viewer-home-guideline-copy">
+                                    <div class="viewer-home-guideline-name">정확성</div>
+                                    <div class="viewer-home-guideline-quote">“기록하고, 확인하고, 공유한다”</div>
+                                    <div class="viewer-home-guideline-tag">“Record, Check, Share”</div>
+                                    <ul class="viewer-home-guideline-list">
+                                        <li>기록 기준을 먼저 확인하고 예외를 남기는 자세</li>
+                                        <li>같은 데이터를 함께 보고 판단하는 협업 태도</li>
+                                        <li>입력, 검증, 저장 결과를 책임 있게 확인하는 자세</li>
+                                        <li>개선 의견을 다음 화면과 절차에 반영하는 자세</li>
+                                    </ul>
+                                </div>
+                            </article>
+                            <article class="viewer-home-guideline-card viewer-home-guideline-card-communication">
+                                <div class="viewer-home-guideline-icon"><i class="fas fa-comments"></i></div>
+                                <div class="viewer-home-guideline-copy">
+                                    <div class="viewer-home-guideline-name">소통(疏通)</div>
+                                    <div class="viewer-home-guideline-quote">“찾아가고, 다가가고, 듣고, 말하라”</div>
+                                    <div class="viewer-home-guideline-tag">“방다청설”</div>
+                                    <ul class="viewer-home-guideline-list">
+                                        <li>적극적인 문제해결과 도전하려는 자세</li>
+                                        <li>자발적이며 친절하게 협업하고 협력하는 모습</li>
+                                        <li>경청하고 수용하는 태도</li>
+                                        <li>진정성과 공감대 형성을 위한 적극적인 자세</li>
+                                    </ul>
+                                </div>
+                            </article>
+                            <article class="viewer-home-guideline-card viewer-home-guideline-card-value">
+                                <div class="viewer-home-guideline-icon"><i class="fas fa-lightbulb"></i></div>
+                                <div class="viewer-home-guideline-copy">
+                                    <div class="viewer-home-guideline-name">가치창조(價値創造)</div>
+                                    <div class="viewer-home-guideline-quote">“경험하고, 나누고, 배우고, 쓸모있게 하라”</div>
+                                    <div class="viewer-home-guideline-tag">“경나학쓸”</div>
+                                    <ul class="viewer-home-guideline-list">
+                                        <li>도전을 통해 노하우를 쌓고 다양한 기능과 지식을 획득하는 자세</li>
+                                        <li>생각과 정보를 나누고 공유하는 자세</li>
+                                        <li>새로운 기술과 환경에서 아이디어를 찾고 학습하려는 자세</li>
+                                        <li>창의적인 마인드와 가치지향적인 태도</li>
+                                    </ul>
+                                </div>
+                            </article>
+                        </div>
+                    </section>
                 </div>
             `;
             mainScroll.scrollTop = 0;
@@ -497,15 +553,15 @@
             sideNav.innerHTML = entries.map(entry => {
                 const isActive = entry.id === activeEntry?.id;
                 const navCategories = getSectionNavigationCategories(entry.section);
-                const opensDefaultCategory = entry.section?.openDefaultCategory === true;
-                const actionIcon = entry.section?.directLaunch === true || opensDefaultCategory
+                const shouldKeepDirectLaunchSubmenuVisible = entry.section?.directLaunch === true && navCategories.length > 0;
+                const actionIcon = entry.section?.directLaunch === true
                     ? 'fa-arrow-up-right-from-square'
                     : 'fa-chevron-right';
-                const sectionAction = entry.section?.directLaunch === true || opensDefaultCategory
+                const sectionAction = entry.section?.directLaunch === true
                     ? `openSection('${entry.id}')`
                     : `setDashboardSection('${entry.id}')`;
                 return `
-                    <div class="dashboard-tree-group${isActive ? ' active' : ''}" style="--section-color:${entry.accent}; --section-soft:${entry.softAccent};">
+                    <div class="dashboard-tree-group${isActive ? ' active' : ''}${shouldKeepDirectLaunchSubmenuVisible ? ' is-expanded' : ''}" style="--section-color:${entry.accent}; --section-soft:${entry.softAccent};">
                         <button type="button" class="dashboard-tree-main${isActive ? ' active' : ''}" onclick="${sectionAction}">
                             <span class="dashboard-tree-main-head">
                                 <span class="dashboard-side-button-icon"><i class="fas ${escapeDashboardHtml(entry.section.icon || 'fa-folder-open')}"></i></span>
@@ -556,10 +612,6 @@
             const section = AppData[normalizedSectionId];
             if (section?.directLaunch === true) {
                 openCategoryLaunch(section);
-                return;
-            }
-            if (section?.openDefaultCategory === true) {
-                openSection(normalizedSectionId);
                 return;
             }
             DashboardHomeState.sectionId = normalizedSectionId;
@@ -629,11 +681,7 @@
             document.getElementById('dashboard')?.classList.add('hidden-view');
             if (data.categories && data.categories.length > 0) {
                 const defaultOptions = KpiRuntime?.getDefaultOpenOptions?.(id, { section: data }) || {};
-                const defaultIndex = Number.isFinite(Number(data.defaultCategoryIndex))
-                    ? Number(data.defaultCategoryIndex)
-                    : 0;
-                const normalizedDefaultIndex = data.categories[defaultIndex] ? defaultIndex : 0;
-                selectCategory(data.id, normalizedDefaultIndex, defaultOptions);
+                selectCategory(data.id, 0, defaultOptions);
                 return;
             }
             activeSectionId = id;
@@ -1071,13 +1119,16 @@
                         if (isUtilityTeamSelectorSection) {
                             SidebarTreeState.expandedSections.work = true;
                         }
-                        const isExpanded = isUtilityTeamSelectorSection || SidebarTreeState.expandedSections[sectionEntry.id] === true;
+                        const renderableCategories = getSidebarRenderableCategories(sectionEntry);
+                        const shouldKeepDirectLaunchSubmenuVisible = sectionEntry.section?.directLaunch === true && renderableCategories.length > 0;
+                        const isExpanded = isUtilityTeamSelectorSection
+                            || SidebarTreeState.expandedSections[sectionEntry.id] === true
+                            || shouldKeepDirectLaunchSubmenuVisible;
                         const isActiveSection = selectedSectionId === sectionEntry.id;
-                        const opensDefaultCategory = sectionEntry.section?.openDefaultCategory === true;
-                        const actionIcon = sectionEntry.section?.directLaunch === true || opensDefaultCategory
+                        const actionIcon = sectionEntry.section?.directLaunch === true
                             ? 'fa-arrow-up-right-from-square'
                             : 'fa-chevron-right';
-                        const sectionAction = sectionEntry.section?.directLaunch === true || opensDefaultCategory
+                        const sectionAction = sectionEntry.section?.directLaunch === true
                             ? `openSection('${sectionEntry.id}')`
                             : `toggleSidebarSection('${sectionEntry.id}')`;
                         return `
@@ -1090,7 +1141,7 @@
                                     <span class="sidebar-group-chevron"><i class="fas ${actionIcon}"></i></span>
                                 </button>
                                 <div class="sidebar-group-items">
-                                    ${getSidebarRenderableCategories(sectionEntry).map(({ category, index }) => {
+                                    ${renderableCategories.map(({ category, index }) => {
                                         const categoryColor = category.color || sectionEntry.accent;
                                         const isActiveCategory = isActiveSection && getNavigationSelectionCategoryIndex(sectionEntry.id) === index;
                                         const teamCategories = getSidebarTeamCategories(sectionEntry, category);
@@ -1239,11 +1290,6 @@
                     buildCategoryPopupFeatures(category)
                 );
                 if (popupWindow) {
-                    try {
-                        popupWindow.opener = null;
-                    } catch (error) {
-                        // Ignore opener cleanup failures; the popup still remains independent when the KPI window closes.
-                    }
                     try {
                         popupWindow.focus();
                     } catch (error) {

@@ -569,10 +569,10 @@
 
         function getUtilEnergyReportTeamLabel(teamName, siteKey = '') {
             const canonical = canonicalizeUtilTeamName(teamName);
-            if (canonical === 'LineAlpha') return 'Line Alpha';
-            if (canonical === 'LineBeta') return 'Line Beta';
-            if (canonical === 'LineGamma') return 'Line Gamma';
-            if (canonical === 'LineDelta') return 'Line Delta';
+            if (canonical === '1팀1파트') return 'Line Alpha';
+            if (canonical === '1팀2파트') return 'Line Beta';
+            if (canonical === 'Line Gamma') return 'Line Gamma';
+            if (canonical === 'Line Delta') return 'Line Delta';
             if (canonical === 'Plant B') return 'Line Alpha';
             if (canonical === 'Plant A') return siteKey === 'Plant A' ? 'Plant A' : 'Plant A';
             const stripped = String(teamName || '').replace(/\s+(?:LNG|LPG)\s*$/iu, '').trim();
@@ -633,10 +633,10 @@
         function getUtilEnergyReportElectricTeamOrderRank(teamName) {
             const canonical = canonicalizeUtilTeamName(teamName);
             if (canonical === 'Plant A') return 0;
-            if (canonical === 'LineAlpha') return 1;
-            if (canonical === 'LineBeta') return 2;
-            if (canonical === 'LineGamma') return 3;
-            if (canonical === 'LineDelta') return 4;
+            if (canonical === '1팀1파트') return 1;
+            if (canonical === '1팀2파트') return 2;
+            if (canonical === 'Line Gamma') return 3;
+            if (canonical === 'Line Delta') return 4;
             return 50;
         }
 
@@ -644,9 +644,9 @@
             const canonical = canonicalizeUtilTeamName(teamName);
             let baseRank = 50;
             if (canonical === 'Plant A') baseRank = 0;
-            else if (canonical === 'LineAlpha') baseRank = 10;
-            else if (canonical === 'LineBeta') baseRank = 20;
-            else if (canonical === 'LineDelta') baseRank = 30;
+            else if (canonical === '1팀1파트') baseRank = 10;
+            else if (canonical === '1팀2파트') baseRank = 20;
+            else if (canonical === 'Line Delta') baseRank = 30;
             const normalizedFuel = String(fuelKey || '').trim().toLowerCase();
             const fuelRank = isCombined ? 0 : (normalizedFuel === 'lng' ? 1 : (normalizedFuel === 'lpg' ? 2 : 0));
             return baseRank + fuelRank;

@@ -219,6 +219,7 @@ test('work team calendar overview modal renders after split files are loaded tog
   });
   assert.match(modal.innerHTML, /work-team-calendar-utility-strip/);
   assert.match(modal.innerHTML, /work-team-calendar-grid/);
+  assert.match(modal.innerHTML, /data-work-save-status="overview"/);
 });
 
 test('work team calendar offday cells keep production and history cues in the flag slot', () => {
@@ -238,4 +239,12 @@ test('work team calendar offday cells keep production and history cues in the fl
 
 test('work team calendar source does not keep stray equipUtilityChipHtml references', () => {
   assert.doesNotMatch(combinedTeamCalendarSource, /\bequipUtilityChipHtml\b/);
+});
+
+test('work team calendar attachment actions confirm server save before destructive file cleanup', () => {
+  assert.match(combinedTeamCalendarSource, /async function updateWorkTeamCalendarAttachments/);
+  assert.match(combinedTeamCalendarSource, /confirmWorkTeamCalendarSave\(dataKey, data, 'work_team_calendar_attachment_save_failed'\)/);
+  assert.match(combinedTeamCalendarSource, /cleanupWorkTeamCalendarUploadedAttachments\(uploadedAttachments, folderHandle, dataKey\)/);
+  assert.match(combinedTeamCalendarSource, /confirmWorkTeamCalendarSave\(dataKey, data, 'work_team_calendar_delete_save_failed'\)/);
+  assert.match(combinedTeamCalendarSource, /첨부 기록에서는 제거했지만 파일 삭제는 실패했습니다/);
 });

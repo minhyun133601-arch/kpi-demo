@@ -176,7 +176,7 @@ function createNormalizedStickItem(baseItem) {
   const labelKey = normalizeEquipmentFactorLabel(baseItem?.label);
   const keepLabel =
     labelKey &&
-    !["Process Beta", "Process Beta#1", "Process Beta#2", "Process Beta(구)"].includes(labelKey);
+    !["Process Beta B", "Process Beta B#1", "Process Beta B#2", "Process Beta B(구)"].includes(labelKey);
 
   return {
     ...(baseItem || {}),
@@ -212,7 +212,7 @@ function applyRequestedStickSingleEquipmentMigration(items, entries) {
   const nextItems = Array.isArray(items) ? items.map((item) => ({ ...item })) : [];
   const entryMap = isPlainObject(entries) ? entries : {};
   const stickLabelKeys = new Set(
-    ["Process Beta", "Process Beta (구)", "Process Beta #1", "Process Beta #2"].map((label) => normalizeEquipmentFactorLabel(label))
+    ["Process Beta B", "Process Beta B (구)", "Process Beta B #1", "Process Beta B #2"].map((label) => normalizeEquipmentFactorLabel(label))
   );
   const baseItem = nextItems.find(
     (item) =>

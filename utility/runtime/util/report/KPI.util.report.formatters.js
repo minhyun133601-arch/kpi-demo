@@ -345,8 +345,8 @@
         function resolveUtilReportSiteKeyByTeam(teamName) {
             const canonical = canonicalizeUtilTeamName(teamName);
             if (!canonical) return '';
-            if (canonical === 'Plant B' || canonical === 'LineAlpha') return 'Plant B';
-            if (canonical === 'Plant A' || canonical === 'LineBeta' || canonical === 'LineGamma' || canonical === 'LineDelta') return 'Plant A';
+            if (canonical === 'Plant B' || canonical === '1팀1파트') return 'Plant B';
+            if (canonical === 'Plant A' || canonical === '1팀2파트' || canonical === 'Line Gamma' || canonical === 'Line Delta') return 'Plant A';
             return '';
         }
 
@@ -379,7 +379,7 @@
             const canonical = canonicalizeUtilTeamName(raw);
             const categoryKey = getUtilReportCompositionCategory(options.categoryKey || UtilReportState.categoryKey);
             const scopeKey = normalizeUtilReportScope(options.scopeKey || UtilReportState.scopeKey);
-            if (canonical === 'LineAlpha' && (categoryKey === 'production' || scopeKey === 'electric' || scopeKey === 'gas')) {
+            if (canonical === '1팀1파트' && (categoryKey === 'production' || scopeKey === 'electric' || scopeKey === 'gas')) {
                 return 'Plant B';
             }
             return raw;

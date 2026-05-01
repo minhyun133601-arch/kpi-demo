@@ -28,7 +28,7 @@
                                 <li>측정 연도/분기, 팀, 구역, 측정 유형</li>
                                 <li>측정값(Lux) 및 기준값 대비 결과</li>
                                 <li>미달 시 개선 조치, 완료 일자 및 확인 결과</li>
-                                <li>측정자, 측정 장비, 교정 정보는 공개용 예시로 처리</li>
+                                <li>측정자, 측정 장비, 교정 정보 관리</li>
                             </ul>
                             <div class="mt-3 text-xs text-slate-500">입력 위치: Central Server DB / Audit Lux</div>
                         </div>
@@ -39,13 +39,13 @@
                     icon: 'fa-scale-balanced',
                     color: '#e11d48',
                     viewerMode: 'full-bleed',
-                    desc: '법정 점검 대상 설비와 점검 예정일을 팝업 관리 화면으로 확인하는 프리뷰',
+                    desc: '법정 점검 대상 설비와 점검 예정일을 한 화면에서 확인합니다.',
                     dataKey: 'audit_legal_facility',
                     fileName: 'Central Server DB / Audit Legal Facility',
-                    readOnly: true,
+                    readOnly: false,
                     content: `
                         <div class="p-4 rounded-xl border border-rose-100 bg-rose-50 text-sm text-rose-900">
-                            법정 설비 점검 일정, 담당 기관, 증빙 문서 상태를 한 화면에서 확인하는 공개용 프리뷰입니다.
+                            법정 설비 점검 일정, 담당 기관, 증빙 문서 상태를 한 화면에서 확인합니다.
                         </div>
                     `
                 },

@@ -8,8 +8,16 @@
         state,
         normalizeRecordCategory,
         normalizeRecordCategoryGroup,
-        getElement
+        getElement,
+        getFixedCategoryFilter
     } = history;
+
+    function getResolvedCategoryFilter(value = '') {
+        const fixedFilter = typeof getFixedCategoryFilter === 'function'
+            ? getFixedCategoryFilter()
+            : '';
+        return fixedFilter || String(value || '').trim();
+    }
 
     function getActiveSearchInput(triggerTarget = null) {
         const panel = triggerTarget?.closest?.('.history-search-panel') || null;
@@ -59,7 +67,7 @@
     }
 
     function syncCategoryFilterInputs(value, sourceSelect = null) {
-        const normalizedValue = String(value || '');
+        const normalizedValue = getResolvedCategoryFilter(value);
         history.queryAll('[data-role="category-filter"]').forEach((select) => {
             if (select === sourceSelect) return;
             select.value = normalizedValue;
@@ -76,9 +84,11 @@
 
         const rawCategoryValue = String(categoryValue || '').trim();
         const normalizedCategoryValue = normalizeRecordCategory(rawCategoryValue, { preserveLegacy: true }) || rawCategoryValue;
-        const normalizedGroupValue = normalizeRecordCategoryGroup(groupValue, {
-            category: normalizedCategoryValue
-        });
+        const normalizedGroupValue = history.isProductionReportWorkspace?.()
+            ? 'report'
+            : normalizeRecordCategoryGroup(groupValue, {
+                category: normalizedCategoryValue
+            });
 
         if (typeof view.buildCategoryOptionsMarkup === 'function') {
             categorySelect.innerHTML = view.buildCategoryOptionsMarkup(normalizedGroupValue, normalizedCategoryValue);
@@ -87,15 +97,19 @@
         const hasSelectableCategories = Array.from(categorySelect.options || []).some(option => (
             String(option.value || '').trim()
         ));
-        categorySelect.disabled = !normalizedGroupValue || !hasSelectableCategories;
+        categorySelect.disabled = history.isProductionReportWorkspace?.() === true
+            ? true
+            : (!normalizedGroupValue || !hasSelectableCategories);
         groupSelect.value = normalizedGroupValue;
 
         const optionValues = Array.from(categorySelect.options || [])
             .map(option => String(option.value || '').trim())
             .filter(Boolean);
-        categorySelect.value = optionValues.includes(normalizedCategoryValue)
-            ? normalizedCategoryValue
-            : '';
+        categorySelect.value = history.isProductionReportWorkspace?.() === true
+            ? ''
+            : (optionValues.includes(normalizedCategoryValue)
+                ? normalizedCategoryValue
+                : '');
     }
 
     function switchTab(teamKey) {
@@ -124,9 +138,9 @@
         if (startInput) startInput.value = '';
         if (endInput) endInput.value = '';
         state.currentKeyword = '';
-        state.currentCategoryFilter = '';
+        state.currentCategoryFilter = getResolvedCategoryFilter('');
         syncSearchInputs('');
-        syncCategoryFilterInputs('');
+        syncCategoryFilterInputs(state.currentCategoryFilter);
         view.renderCurrentView?.();
     }
 
@@ -134,7 +148,7 @@
         const input = getActiveSearchInput(triggerTarget);
         const categorySelect = getActiveCategoryFilterSelect(triggerTarget);
         state.currentKeyword = String(input?.value || getElement('keywordSearch')?.value || '').trim();
-        state.currentCategoryFilter = String(categorySelect?.value || '').trim();
+        state.currentCategoryFilter = getResolvedCategoryFilter(categorySelect?.value || '');
         syncSearchInputs(state.currentKeyword, input);
         syncCategoryFilterInputs(state.currentCategoryFilter, categorySelect);
         view.renderCurrentView?.();

@@ -35,14 +35,14 @@ function createGasLngReferenceSelectorCard() {
 
   const sourceMeta = document.createElement("span");
   sourceMeta.className = "team-total-selector-meta";
-  sourceMeta.textContent = "Line Beta Demo Boiler A + Process Gamma Boiler + Demo Boiler B 합계";
+  sourceMeta.textContent = "Line Beta Demo Boiler A + Process Gamma 보일러 + Demo Boiler B 합계";
 
   const excludeMeta = document.createElement("span");
   excludeMeta.className = "team-total-selector-meta";
   excludeMeta.textContent = "가스 총사용량, 비율 계산 제외";
 
   metaStack.append(sourceMeta, excludeMeta);
-  card.title = "Plant A LNG 합계 = Line Beta Demo Boiler A + Process Gamma Boiler + Demo Boiler B";
+  card.title = "Plant A LNG 합계 = Line Beta Demo Boiler A + Process Gamma 보일러 + Demo Boiler B";
   card.append(head, totalValue, metaStack);
   return card;
 }

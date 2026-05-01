@@ -1,4 +1,4 @@
-function isDirectTeamUsageBoardEditable(teamKey, resourceType = getCurrentResourceType()) {
+﻿function isDirectTeamUsageBoardEditable(teamKey, resourceType = getCurrentResourceType()) {
   if (isGasResourceType(resourceType) && teamKey === TEAM_01_01_KEY) {
     return false;
   }

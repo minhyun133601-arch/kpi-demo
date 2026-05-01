@@ -193,3 +193,136 @@ function getEquipmentManageFactorButtonText(field, monthValue = state.currentMon
   const gasFactorText = getGasManageUsageFactorText(field?.id, monthValue);
   return gasFactorText ? `${baseText} · ${gasFactorText}` : baseText;
 }
+
+function renderSummary() {
+  const summaryInfo = getCurrentMonthlySummaryInfo();
+  const usageCard = elements.totalPowerMonthUsageTotal?.parentElement;
+  usageCard?.classList.remove("is-focus-highlight");
+  usageCard?.classList.add("is-focus-highlight");
+  const selectedEquipmentIds = getSelectedEquipmentIds();
+  const isGas = isGasResourceType();
+  const isWaste = isWasteResourceType();
+  const isProduction = isProductionResourceType();
+  const isElectricTeamMode = !isProduction && !isGas && !isWaste && getCurrentMode() === MODES.TEAM;
+
+  if (isGas) {
+    const isGasTeamMode = getCurrentMode() === MODES.TEAM;
+    const focusedGasSummaryInfo =
+      getCurrentMode() === MODES.EQUIPMENT && selectedEquipmentIds.length
+        ? getMonthlyFocusedSummaryInfo()
+        : null;
+    const gasPrimarySummaryInfo = isGasTeamMode ? getGasTeamModeSummaryInfo() : summaryInfo;
+    const gasSecondarySummaryInfo = isGasTeamMode
+      ? getGasTeamModeFocusedSummaryInfo()
+      : focusedGasSummaryInfo || getDefaultGasFocusedSummaryInfo();
+    const gasStandaloneSummaryInfo = isGasTeamMode
+      ? getGasTeamModeStandaloneSummaryInfo()
+      : getGasStandaloneSummaryInfo();
+
+    if (elements.totalPowerMonthUsageTotal) {
+      elements.totalPowerMonthUsageTotal.textContent = formatDailyUsage(gasPrimarySummaryInfo.value);
+    }
+    if (elements.summaryFocusLabel) {
+      let gasSummaryLabel = gasPrimarySummaryInfo.label;
+      if (hasGasMonthlyBoundaryReadingOverrideForMonth()) {
+        gasSummaryLabel = `${gasSummaryLabel} · 경계보정 포함`;
+      }
+      elements.summaryFocusLabel.textContent = gasSummaryLabel;
+    }
+    if (elements.equipmentMonthUsageTotal) {
+      elements.equipmentMonthUsageTotal.textContent = formatDailyUsage(gasSecondarySummaryInfo.value);
+    }
+    if (elements.equipmentMonthUsageLabel) {
+      elements.equipmentMonthUsageLabel.textContent = gasSecondarySummaryInfo.label;
+    }
+    if (elements.otherMonthUsageTotal) {
+      elements.otherMonthUsageTotal.textContent = formatDailyUsage(gasStandaloneSummaryInfo.value);
+    }
+    if (elements.otherMonthUsageLabel) {
+      elements.otherMonthUsageLabel.textContent = gasStandaloneSummaryInfo.label;
+    }
+    syncCalendarDisplayModeToggleButton();
+    syncClearCardSelectionButton();
+    syncCalendarPopupWindow();
+    return;
+  }
+
+  if (isWaste) {
+    const overallUsage = calculateWasteOverallMonthlyUsage();
+    const plantAUsage = getTeamBoardMonthlyUsage(WASTE_PLANT_A_TEAM_KEY, {
+      monthValue: state.currentMonth,
+      selectionOnly: true,
+    });
+    const plantBUsage = getTeamBoardMonthlyUsage(WASTE_PLANT_B_TEAM_KEY, {
+      monthValue: state.currentMonth,
+      selectionOnly: true,
+    });
+
+    if (elements.totalPowerMonthUsageTotal) {
+      elements.totalPowerMonthUsageTotal.textContent = formatDailyUsage(overallUsage);
+    }
+    if (elements.summaryFocusLabel) {
+      elements.summaryFocusLabel.textContent = "폐수 총사용량";
+    }
+    if (elements.equipmentMonthUsageTotal) {
+      elements.equipmentMonthUsageTotal.textContent = formatDailyUsage(plantAUsage);
+    }
+    if (elements.equipmentMonthUsageLabel) {
+      elements.equipmentMonthUsageLabel.textContent = "Plant A";
+    }
+    if (elements.otherMonthUsageTotal) {
+      elements.otherMonthUsageTotal.textContent = formatDailyUsage(plantBUsage);
+    }
+    if (elements.otherMonthUsageLabel) {
+      elements.otherMonthUsageLabel.textContent = "Plant B";
+    }
+    syncCalendarDisplayModeToggleButton();
+    syncClearCardSelectionButton();
+    syncCalendarPopupWindow();
+    return;
+  }
+
+  const focusedSummaryInfo =
+    getCurrentMode() === MODES.EQUIPMENT && selectedEquipmentIds.length
+      ? getMonthlyFocusedSummaryInfo()
+      : null;
+  const equipmentSummaryInfo = focusedSummaryInfo || {
+    value: isElectricTeamMode
+      ? getElectricTeamModeEquipmentSummaryUsage()
+      : calculateEquipmentGroupMonthlyUsage(
+          isProduction ? getAllEquipmentIds() : getEquipmentSummaryIds()
+        ),
+    label:
+      getCurrentMode() === MODES.TEAM
+        ? getTeamModeSummaryLabel()
+        : isProduction
+          ? "입력 항목"
+          : "설비 전력",
+  };
+  const otherUsage = isProduction ? null : calculateOtherMonthlyUsage();
+  const summaryValue = isElectricTeamMode
+    ? getElectricTeamModeOverallMonthlyUsage()
+    : summaryInfo.value;
+
+  if (elements.totalPowerMonthUsageTotal) {
+    elements.totalPowerMonthUsageTotal.textContent = formatDailyUsage(summaryValue);
+  }
+  if (elements.summaryFocusLabel) {
+    elements.summaryFocusLabel.textContent = summaryInfo.label;
+  }
+  if (elements.equipmentMonthUsageTotal) {
+    elements.equipmentMonthUsageTotal.textContent = formatDailyUsage(equipmentSummaryInfo.value);
+  }
+  if (elements.equipmentMonthUsageLabel) {
+    elements.equipmentMonthUsageLabel.textContent = equipmentSummaryInfo.label;
+  }
+  if (elements.otherMonthUsageTotal) {
+    elements.otherMonthUsageTotal.textContent = formatDailyUsage(otherUsage);
+  }
+  if (elements.otherMonthUsageLabel) {
+    elements.otherMonthUsageLabel.textContent = "기타";
+  }
+  syncCalendarDisplayModeToggleButton();
+  syncClearCardSelectionButton();
+  syncCalendarPopupWindow();
+}

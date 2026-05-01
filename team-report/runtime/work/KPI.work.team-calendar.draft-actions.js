@@ -1,13 +1,57 @@
-        function updateWorkTeamCalendarAttachments(dataKey, dateKey, attachments, options = {}) {
+        function cloneWorkTeamCalendarPayload(value) {
+            if (typeof cloneWorkDataPayload === 'function') return cloneWorkDataPayload(value);
+            return JSON.parse(JSON.stringify(value || {}));
+        }
+
+        function restoreWorkTeamCalendarPayload(dataKey, data, snapshot) {
+            const restored = cloneWorkTeamCalendarPayload(snapshot);
+            Object.keys(data || {}).forEach((key) => delete data[key]);
+            Object.assign(data, restored);
+            if (typeof WorkCache !== 'undefined') WorkCache[dataKey] = data;
+            if (typeof syncWorkPortalDataCache === 'function') {
+                syncWorkPortalDataCache(dataKey, data);
+            } else if (window.PortalData) {
+                window.PortalData[dataKey] = cloneWorkTeamCalendarPayload(data);
+            }
+        }
+
+        async function confirmWorkTeamCalendarSave(dataKey, data, message = 'work_team_calendar_save_failed') {
+            if (typeof saveWorkDataConfirmed === 'function') {
+                return saveWorkDataConfirmed(dataKey, data, { message });
+            }
+            const saved = await Promise.resolve(saveWorkData(dataKey, data));
+            if (saved !== true) throw new Error(message);
+            return true;
+        }
+
+        async function cleanupWorkTeamCalendarUploadedAttachments(uploadedAttachments, folderHandle, dataKey) {
+            const targets = Array.isArray(uploadedAttachments) ? uploadedAttachments.slice().reverse() : [];
+            for (const target of targets) {
+                try {
+                    await deleteWorkTeamCalendarAttachmentStorage(target, folderHandle, dataKey);
+                } catch (error) {
+                    console.warn('[kpi] work team calendar attachment cleanup failed', target?.documentId || target?.fileName, error);
+                }
+            }
+        }
+
+        async function updateWorkTeamCalendarAttachments(dataKey, dateKey, attachments, options = {}) {
             if (!dataKey || !dateKey || isWorkTeamCalendarDateLocked(dateKey)) return false;
             const nextAttachments = normalizeWorkTeamCalendarAttachments(attachments);
             const currentDraft = getWorkTeamCalendarDraftSnapshot(dataKey, dateKey);
             if (JSON.stringify(currentDraft.attachments) === JSON.stringify(nextAttachments)) return false;
             const data = getWorkTeamCalendarData(dataKey);
+            const previousData = cloneWorkTeamCalendarPayload(data);
             const draft = ensureWorkTeamCalendarDraft(dataKey, dateKey);
             draft.attachments = nextAttachments;
             cleanupWorkTeamCalendarDraft(dataKey, dateKey);
-            saveWorkData(dataKey, data);
+            try {
+                await confirmWorkTeamCalendarSave(dataKey, data, 'work_team_calendar_attachment_save_failed');
+            } catch (error) {
+                restoreWorkTeamCalendarPayload(dataKey, data, previousData);
+                syncWorkTeamCalendarDraftUi(dataKey, dateKey);
+                throw error;
+            }
             syncWorkTeamCalendarDraftUi(dataKey, dateKey);
             if (options.markModified !== false) {
                 const category = getWorkTeamCalendarCategory(dataKey);
@@ -31,13 +75,20 @@
                 alert('날짜를 먼저 선택해 주세요.');
                 return;
             }
+            let folderHandleForCleanup = null;
+            const uploadedAttachmentsForCleanup = [];
             try {
                 const serverRuntime = getWorkAttachmentServerRuntimeConfig(dataKey);
                 const useServerStorage = !!(serverRuntime && serverRuntime.writeEnabled === true);
                 const folderHandle = useServerStorage ? null : await getWorkEntryFolderHandle({ prompt: true });
+                folderHandleForCleanup = folderHandle;
                 if (!useServerStorage && !folderHandle) {
                     throw new Error('작업내역 폴더를 찾을 수 없습니다.');
                 }
+                const data = getWorkTeamCalendarData(dataKey);
+                const previousData = cloneWorkTeamCalendarPayload(data);
+                const uploadedAttachments = uploadedAttachmentsForCleanup;
+                const nextAttachmentByDate = new Map();
                 for (const dateKey of dateKeys) {
                     if (isWorkTeamCalendarDateLocked(dateKey)) continue;
                     const currentDraft = getWorkTeamCalendarDraftSnapshot(dataKey, dateKey);
@@ -53,29 +104,46 @@
                                 throw new Error('work_attachment_server_upload_failed');
                             }
                             nextAttachments.push(uploaded);
+                            uploadedAttachments.push(uploaded);
                         } else {
                             const finalName = await ensureUniqueWorkEntryFileName(folderHandle, requestedName);
                             const fileHandle = await folderHandle.getFileHandle(finalName, { create: true });
                             const writable = await fileHandle.createWritable();
                             await writable.write(file);
                             await writable.close();
-                            nextAttachments.push({
+                            const directoryAttachment = {
                                 fileName: finalName,
                                 name: finalName,
                                 type: normalizeAreaAssetType(file.type, finalName),
                                 relativePath: `${WORK_ENTRY_FOLDER_NAME}/${finalName}`,
                                 storage: 'directory',
                                 originalName: file.name || finalName
-                            });
+                            };
+                            nextAttachments.push(directoryAttachment);
+                            uploadedAttachments.push(directoryAttachment);
                         }
                     }
-                    updateWorkTeamCalendarAttachments(dataKey, dateKey, nextAttachments, { render: false, markModified: false });
+                    nextAttachmentByDate.set(dateKey, nextAttachments);
+                }
+                nextAttachmentByDate.forEach((nextAttachments, dateKey) => {
+                    const draft = ensureWorkTeamCalendarDraft(dataKey, dateKey);
+                    draft.attachments = normalizeWorkTeamCalendarAttachments(nextAttachments);
+                    cleanupWorkTeamCalendarDraft(dataKey, dateKey);
+                });
+                try {
+                    await confirmWorkTeamCalendarSave(dataKey, data, 'work_team_calendar_attachment_save_failed');
+                } catch (saveError) {
+                    restoreWorkTeamCalendarPayload(dataKey, data, previousData);
+                    await cleanupWorkTeamCalendarUploadedAttachments(uploadedAttachments, folderHandle, dataKey);
+                    uploadedAttachments.length = 0;
+                    throw saveError;
                 }
                 const category = getWorkTeamCalendarCategory(dataKey);
                 setLastModified(category?.title || AppData?.work?.name || 'Work Calendar');
                 renderWorkTeamCalendarModal();
             } catch (error) {
-                alert(`Attachment update failed: ${error?.message || 'Unknown error'}`);
+                await cleanupWorkTeamCalendarUploadedAttachments(uploadedAttachmentsForCleanup, folderHandleForCleanup, dataKey);
+                alert(`첨부 저장 실패: ${error?.message || '알 수 없는 오류'}`);
             }
         }
 
@@ -160,22 +228,39 @@
                 if (needsFolderAccess) {
                     folderHandle = await getWorkEntryFolderHandle({ prompt: true });
                 }
+                const data = getWorkTeamCalendarData(dataKey);
+                const previousData = cloneWorkTeamCalendarPayload(data);
+                const workEntries = ensureWorkTeamCalendarEntries(dataKey);
+                entries.forEach((entry) => {
+                    delete workEntries[entry.dateKey];
+                });
+                try {
+                    await confirmWorkTeamCalendarSave(dataKey, data, 'work_team_calendar_delete_save_failed');
+                } catch (saveError) {
+                    restoreWorkTeamCalendarPayload(dataKey, data, previousData);
+                    throw saveError;
+                }
+                let cleanupFailed = false;
                 for (const entry of entries) {
                     const attachments = normalizeWorkTeamCalendarAttachments(entry.draft.attachments);
                     for (const attachment of attachments) {
-                        await deleteWorkTeamCalendarAttachmentStorage(attachment, folderHandle, dataKey);
+                        try {
+                            await deleteWorkTeamCalendarAttachmentStorage(attachment, folderHandle, dataKey);
+                        } catch (cleanupError) {
+                            cleanupFailed = true;
+                            console.warn('[kpi] work team calendar attachment delete failed', attachment?.documentId || attachment?.fileName, cleanupError);
+                        }
                     }
-                    const data = getWorkTeamCalendarData(dataKey);
-                    const workEntries = ensureWorkTeamCalendarEntries(dataKey);
-                    delete workEntries[entry.dateKey];
-                    saveWorkData(dataKey, data);
                 }
                 closeWorkTeamCalendarEditor(dataKey, { render: false });
                 const category = getWorkTeamCalendarCategory(dataKey);
                 setLastModified(category?.title || AppData?.work?.name || 'Work Calendar');
                 renderWorkTeamCalendarModal();
+                if (cleanupFailed) {
+                    alert('작업내역은 삭제됐지만 첨부 파일 일부를 삭제하지 못했습니다.');
+                }
             } catch (error) {
-                alert(`Save failed: ${error?.message || 'Unknown error'}`);
+                alert(`저장 실패: ${error?.message || '알 수 없는 오류'}`);
             }
         }
 
@@ -195,12 +280,18 @@
             const targetKey = target.documentId || target.assetId || target.fileName || target.relativePath;
             const nextAttachments = currentDraft.attachments.filter(item => (item.documentId || item.assetId || item.fileName || item.relativePath) !== targetKey);
             try {
-                await deleteWorkTeamCalendarAttachmentStorage(target, null, dataKey);
+                await updateWorkTeamCalendarAttachments(dataKey, dateKey, nextAttachments, { render: false });
             } catch (error) {
-                alert(`Attachment delete failed: ${error?.message || 'Unknown error'}`);
+                alert(`첨부 기록 저장 실패: ${error?.message || '알 수 없는 오류'}`);
                 return;
             }
-            updateWorkTeamCalendarAttachments(dataKey, dateKey, nextAttachments, { render: true });
+            try {
+                await deleteWorkTeamCalendarAttachmentStorage(target, null, dataKey);
+            } catch (error) {
+                console.warn('[kpi] work team calendar attachment file delete failed', target?.documentId || target?.fileName, error);
+                alert(`첨부 기록에서는 제거했지만 파일 삭제는 실패했습니다: ${error?.message || '알 수 없는 오류'}`);
+            }
+            renderWorkTeamCalendarModal();
         }
 
         async function openWorkTeamCalendarAttachment(refKey) {

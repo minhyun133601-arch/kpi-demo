@@ -167,6 +167,8 @@ function createRuntimeEntryUiContext(options = {}) {
     syncSelectedDateHeaderStatus(payload) {
       calls.syncSelectedDateHeaderStatus.push(payload);
     },
+    clearEquipmentFieldValidationSuppression() {},
+    clearQuickEntryFieldValidationSuppression() {},
     getSelectedCalendarDateKeys() {
       return [...(options.selectedCalendarDateKeys || state.selectedCalendarDates)];
     },
@@ -217,6 +219,9 @@ function createRuntimeEntryUiContext(options = {}) {
     },
     formatEquipmentInputDisplay(value) {
       return value === null || value === undefined || value === '' ? '' : `fmt:${value}`;
+    },
+    formatShortDate(value) {
+      return `short:${value}`;
     },
     isGasResourceType() {
       return options.isGasResourceType === true;
@@ -427,4 +432,24 @@ test('runtime entry ui syncs equipment placeholders, auto-calculated values, and
   assert.equal(autoCard.__restChip.classList.contains('is-hidden'), true);
   assert.equal(inactiveCard.__restChip.classList.contains('is-hidden'), false);
   assert.deepEqual(calls.syncEquipmentCardMetaVisibility, ['eq_manual', 'eq_auto', 'eq_inactive']);
+});
+
+test('runtime entry ui exposes previous reading meta while keeping placeholders compact', () => {
+  const { context } = createRuntimeEntryUiContext({
+    selectedDate: '2026-04-18',
+    equipmentItems: [{ id: 'eq_manual', autoCalculated: false }],
+    previousStoredReadings: {
+      eq_manual: {
+        rawValue: '1234',
+        dateString: '2026-04-17',
+      },
+    },
+  });
+
+  assert.deepEqual(toPlainJson(context.getEquipmentPreviousReadingMeta('eq_manual')), {
+    text: '이전값 fmt:1234 (short:2026-04-17)',
+    valueText: 'fmt:1234',
+    dateText: 'short:2026-04-17',
+  });
+  assert.equal(context.getEquipmentInputPlaceholder('eq_manual'), '이전 fmt:1234');
 });

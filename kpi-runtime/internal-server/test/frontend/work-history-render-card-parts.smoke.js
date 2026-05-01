@@ -38,7 +38,7 @@ function createContext() {
   const history = {
     TEAM_KEYS: ['team1part1'],
     TeamInfo: {
-      team1part1: { name: 'Line Alpha', desc: 'Dry', class: 'team1part1' }
+      team1part1: { name: 'Team 1-A', desc: 'Dry', class: 'team1part1' }
     },
     state: {
       currentTeam: 'overview',
@@ -160,8 +160,8 @@ test('work history render card parts registry exposes summary, attachment, compa
 });
 
 test('kpi html loads work history render card parts between render and print', () => {
-  const renderIndex = kpiHtml.indexOf('runtime/work/history/KPI.work.history.view.render.js?v=233');
-  const cardPartsIndex = kpiHtml.indexOf('runtime/work/history/render/card-parts.js?v=233');
+  const renderIndex = kpiHtml.indexOf('runtime/work/history/KPI.work.history.view.render.js?v=234');
+  const cardPartsIndex = kpiHtml.indexOf('runtime/work/history/render/card-parts.js?v=234');
   const printIndex = kpiHtml.indexOf('runtime/work/history/render/print.js?v=233');
 
   assert.ok(renderIndex >= 0, 'work history render loader is missing');

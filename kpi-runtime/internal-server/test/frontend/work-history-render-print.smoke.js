@@ -72,7 +72,7 @@ function createContext() {
   const history = {
     TEAM_KEYS: ['team1part1'],
     TeamInfo: {
-      team1part1: { name: 'Line Alpha', desc: 'Dry', class: 'team1part1' }
+      team1part1: { name: 'Team 1-A', desc: 'Dry', class: 'team1part1' }
     },
     state: {
       currentTeam: 'overview',
@@ -214,13 +214,13 @@ test('work history render print registry exposes print helpers and bootstrap sna
 });
 
 test('kpi html loads work history render print between render and view bootstrap', () => {
-  const renderIndex = kpiHtml.indexOf('runtime/work/history/KPI.work.history.view.render.js?v=233');
-  const cardPartsIndex = kpiHtml.indexOf('runtime/work/history/render/card-parts.js?v=233');
+  const renderIndex = kpiHtml.indexOf('runtime/work/history/KPI.work.history.view.render.js?v=234');
+  const cardPartsIndex = kpiHtml.indexOf('runtime/work/history/render/card-parts.js?v=234');
   const printIndex = kpiHtml.indexOf('runtime/work/history/render/print.js?v=233');
-  const actionsIndex = kpiHtml.indexOf('runtime/work/history/KPI.work.history.view.actions.js?v=232');
-  const searchIndex = kpiHtml.indexOf('runtime/work/history/KPI.work.history.view.actions.search.js?v=1');
-  const recordIndex = kpiHtml.indexOf('runtime/work/history/KPI.work.history.view.actions.record.js?v=1');
-  const documentIndex = kpiHtml.indexOf('runtime/work/history/KPI.work.history.view.actions.document.js?v=1');
+  const actionsIndex = kpiHtml.indexOf('runtime/work/history/KPI.work.history.view.actions.js?v=233');
+  const searchIndex = kpiHtml.indexOf('runtime/work/history/KPI.work.history.view.actions.search.js?v=2');
+  const recordIndex = kpiHtml.indexOf('runtime/work/history/KPI.work.history.view.actions.record.js?v=2');
+  const documentIndex = kpiHtml.indexOf('runtime/work/history/KPI.work.history.view.actions.document.js?v=2');
   const viewIndex = kpiHtml.indexOf('runtime/work/history/KPI.work.history.view.js');
 
   assert.ok(renderIndex >= 0, 'work history render loader is missing');

@@ -72,8 +72,18 @@ function Get-EnvFileValue {
 }
 
 function Resolve-PostgresDumpPath {
-  $binDir = Resolve-KpiPostgresBinDir -ServerDir $serverDir -RequiredExecutable 'pg_dump.exe' -InstallIfMissing
-  return (Join-Path $binDir 'pg_dump.exe')
+  $pathCommand = Get-Command pg_dump -ErrorAction SilentlyContinue
+  if ($pathCommand) {
+    return $pathCommand.Source
+  }
+
+  $postgresBinDir = Resolve-KpiPostgresBinDir -ServerDir $serverDir -RequiredExecutable 'pg_dump.exe'
+  $pgDumpPath = Join-Path $postgresBinDir 'pg_dump.exe'
+  if (Test-Path $pgDumpPath) {
+    return (Resolve-Path $pgDumpPath).Path
+  }
+
+  throw 'pg_dump_not_found'
 }
 
 function Convert-DatabaseUrl {
@@ -114,7 +124,7 @@ $databaseUrl = if ($env:KPI_DATABASE_URL) {
   Get-EnvFileValue -ServerDir $serverDir -Key 'KPI_DATABASE_URL'
 }
 if ([string]::IsNullOrWhiteSpace($databaseUrl)) {
-  $databaseUrl = 'postgresql://postgres:postgres@127.0.0.1:5432/postgres'
+  $databaseUrl = 'postgresql://postgres:postgres@127.0.0.1:5400/postgres'
 }
 
 $storageRootValue = if ($env:KPI_STORAGE_ROOT) {

@@ -1,4 +1,4 @@
-const ELECTRIC_UTILITY_SNAPSHOT_TEAM_KEYS = Object.freeze([
+﻿const ELECTRIC_UTILITY_SNAPSHOT_TEAM_KEYS = Object.freeze([
   TEAM_01_01_KEY,
   "team_01_02",
   "team_02",

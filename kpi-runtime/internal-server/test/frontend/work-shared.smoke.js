@@ -198,8 +198,8 @@ function createContext() {
       },
       equip: {
         teamCategories: [
-          { title: 'Plant A Line', rooms: [], icon: 'fa-industry', color: '#0f766e' },
-          { title: 'Plant B Line', rooms: [], icon: 'fa-warehouse', color: '#b45309' },
+          { title: 'Plant A 1팀', rooms: [], icon: 'fa-industry', color: '#0f766e' },
+          { title: 'Plant B 1팀', rooms: [], icon: 'fa-warehouse', color: '#b45309' },
           { title: 'Line Gamma', rooms: [], icon: 'fa-box', color: '#15803d' },
           { title: 'Line Delta', rooms: [], icon: 'fa-tint', color: '#1d4ed8' },
         ],

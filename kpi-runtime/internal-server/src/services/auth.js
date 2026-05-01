@@ -16,10 +16,10 @@ import {
 
 const ADMIN_ROLES = new Set(['owner', 'admin']);
 const OWNER_ROLE = 'owner';
-const USERNAME_PATTERN = /^[A-Za-z0-9._-]+$/;
+const USERNAME_PATTERN = /^[\p{L}\p{N}._-]+$/u;
 
-function normalizeUsername(input) {
-  const value = String(input || '').trim();
+export function normalizeUsername(input) {
+  const value = String(input || '').trim().normalize('NFC');
   if (!value) {
     throw new Error('username_and_password_required');
   }

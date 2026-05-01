@@ -199,7 +199,7 @@ test('report sheet summary render registry builds badges, stats, compare, matrix
     latestUnit: 9.7,
     latestMonthLabel: '2026-04',
     latestRow: { year: 2026, month: 4, monthKey: '2026-04' },
-    currentYearSummary: { cost: 31000, unit: 9.8 },
+    currentYearSummary: { cost: 31040, unit: 9.8 },
     prevMonthRow: { monthKey: '2026-03' },
     prevYearRow: { monthKey: '2025-04' },
     deltaUsageVsPrevMonth: 5,
@@ -251,7 +251,7 @@ test('report sheet summary render registry builds badges, stats, compare, matrix
   const compareCardsHtml = summaryRender.buildUtilSheetCompareCardsHtml(datasetResult);
   const matrixHtml = summaryRender.buildUtilSheetMatrixHtml(datasetResult);
   const recentTableHtml = summaryRender.buildUtilSheetRecentTableHtml(datasetResult);
-  const memoHtml = summaryRender.buildUtilSheetMemoSectionHtml(['????ш끽維뽳쭩??????????????醫롫윪???????醫롫윥???亦껋꼦維뽬뜎??????????????醫롫윪??', 'LNG ??????關?쒎첎?嫄????耀붾굝???壤굿?怨쀫ぁ????醫롫짗??????????????醫롫윪??']);
+  const memoHtml = summaryRender.buildUtilSheetMemoSectionHtml(['Electric usage stayed within the demo baseline.', 'LNG usage was reviewed against the synthetic meter table.']);
   const memoItems = summaryRender.resolveUtilSheetMemoItems('meter', 'gas', datasetResult, 'month', {
     ready: true,
     selectedTable: {

@@ -130,7 +130,7 @@
                         <div class="work-week-meta">
                             <div class="work-week-title">${weekLabel}</div>
                             <div class="work-week-range">${weekRange}</div>
-                            <div class="work-autosave">자동 저장: 브라우저</div>
+                            ${typeof renderWorkSaveStatusBadge === 'function' ? renderWorkSaveStatusBadge(dataKey) : `<div class="work-autosave work-save-status is-idle" data-work-save-status="${escapeHtml(dataKey)}"></div>`}
                         </div>
                         <div class="work-controls">
                             <button class="work-btn" onclick="workPrev('${dataKey}')">이전 주</button>

@@ -44,7 +44,7 @@ function createContext() {
   const history = {
     TEAM_KEYS: ['team1part1'],
     TeamInfo: {
-      team1part1: { name: 'Line Alpha', desc: 'Dry', class: 'team1part1' },
+      team1part1: { name: 'Team 1-A', desc: 'Dry', class: 'team1part1' },
     },
     OVERVIEW_KEY: 'overview',
     DATA_KEY: 'work-history',

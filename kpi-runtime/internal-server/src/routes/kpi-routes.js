@@ -4,7 +4,7 @@ import { handleKpiRootHtml, handleKpiStaticFile, isAllowedKpiStaticPath } from '
 import { sendRedirect } from './route-context.js';
 
 const KPI_ROOT_PATHS = new Set(['/', '/KPI.html', '/kpi', '/kpi/']);
-const KPI_PUBLIC_STATIC_PATHS = new Set(['/shared-assets/kpi-demo-logo.svg']);
+const KPI_PUBLIC_STATIC_PATHS = new Set(['/favicon.ico']);
 
 export async function handleKpiRoute(context) {
   const { req, res, url, pathName, method, auth } = context;

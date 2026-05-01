@@ -27,6 +27,8 @@ team-report/work-log/teams/**
 !team-report/work-log/teams/
 !team-report/work-log/teams/*/
 !team-report/work-log/teams/*/.gitkeep
+KPI_*평가*.md
+KPI_*냉정*.md
 
 # Active internal server runtime state
 kpi-runtime/internal-server/.env

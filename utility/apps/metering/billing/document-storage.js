@@ -220,3 +220,38 @@ function uploadBillingDocument(
       });
   });
 }
+
+async function deleteBillingDocumentFromSharedServer(billingDocument) {
+  const documentId = normalizeText(billingDocument?.documentId);
+  if (!supportsSharedServerPersistence() || !documentId) {
+    return false;
+  }
+
+  const sharedAppConfig = resolveSharedAppConfig();
+  const response = await window.fetch(
+    `${sharedAppConfig.apiBase.replace(/\/+$/, "")}/files/${encodeURIComponent(documentId)}`,
+    {
+      method: "DELETE",
+      cache: "no-store",
+      credentials: "same-origin",
+    }
+  );
+
+  if (!response.ok && response.status !== 404) {
+    throw new Error(`billing_document_delete_failed:${response.status}`);
+  }
+
+  return true;
+}
+
+async function deleteBillingDocumentStorage(
+  billingDocument,
+  resourceType = getCurrentResourceType()
+) {
+  const documentId = normalizeText(billingDocument?.documentId);
+  if (documentId) {
+    return deleteBillingDocumentFromSharedServer(billingDocument);
+  }
+
+  return deleteBillingDocumentFromLocalDirectory(billingDocument, resourceType);
+}

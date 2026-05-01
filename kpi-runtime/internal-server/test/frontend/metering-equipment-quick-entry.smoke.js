@@ -11,6 +11,14 @@ const equipmentQuickEntrySource = await fs.readFile(
   new URL('../../../../utility/apps/metering/equipment/quick-entry.js', import.meta.url),
   'utf8'
 );
+const meteringStylesSource = await fs.readFile(
+  new URL('../../../../utility/apps/metering/styles.css', import.meta.url),
+  'utf8'
+);
+const meteringEmbeddedStylesSource = await fs.readFile(
+  new URL('../../../../utility/apps/metering/embedded.css', import.meta.url),
+  'utf8'
+);
 
 function createClassList(initialTokens = []) {
   const tokens = new Set(initialTokens);
@@ -45,125 +53,241 @@ function createClassList(initialTokens = []) {
   };
 }
 
-function createElementStub(overrides = {}) {
+function matchesSelector(node, selector) {
+  if (!node || !selector) {
+    return false;
+  }
+
+  const classMatch = selector.match(/^\.([a-zA-Z0-9_-]+)$/);
+  if (classMatch) {
+    return node.classList.contains(classMatch[1]);
+  }
+
+  const attributeMatch = selector.match(/^\[([^=\]]+)(?:="([^"]+)")?\]$/);
+  if (attributeMatch) {
+    const attributeValue = node.getAttribute(attributeMatch[1]);
+    if (attributeValue === null) {
+      return false;
+    }
+    return attributeMatch[2] ? attributeValue === attributeMatch[2] : true;
+  }
+
+  const tagAttributeMatch = selector.match(/^([a-zA-Z0-9_-]+)\[([^=\]]+)(?:="([^"]+)")?\]$/);
+  if (tagAttributeMatch) {
+    if (node.tagName.toLowerCase() !== tagAttributeMatch[1].toLowerCase()) {
+      return false;
+    }
+    const attributeValue = node.getAttribute(tagAttributeMatch[2]);
+    if (attributeValue === null) {
+      return false;
+    }
+    return tagAttributeMatch[3] ? attributeValue === tagAttributeMatch[3] : true;
+  }
+
+  return node.tagName.toLowerCase() === selector.toLowerCase();
+}
+
+function createElementStub(tagName = 'div') {
   const attributes = new Map();
-  return {
+  const listeners = new Map();
+  const node = {
+    tagName,
+    children: [],
+    childNodes: [],
+    parentNode: null,
     className: '',
     textContent: '',
     value: '',
-    innerHTML: '',
-    parentNode: null,
+    title: '',
     dataset: {},
     style: {},
-    children: [],
-    classList: createClassList(),
     focusCalls: 0,
     selectCalls: 0,
+    classList: createClassList(),
+    append(...childNodes) {
+      childNodes.forEach((childNode) => this.appendChild(childNode));
+    },
+    appendChild(childNode) {
+      if (!childNode) {
+        return childNode;
+      }
+      if (childNode.parentNode) {
+        childNode.parentNode.removeChild(childNode);
+      }
+      childNode.parentNode = this;
+      this.children.push(childNode);
+      this.childNodes = this.children;
+      return childNode;
+    },
+    removeChild(childNode) {
+      this.children = this.children.filter((candidate) => candidate !== childNode);
+      this.childNodes = this.children;
+      childNode.parentNode = null;
+      return childNode;
+    },
+    addEventListener(type, handler) {
+      const registrations = listeners.get(type) || [];
+      registrations.push(handler);
+      listeners.set(type, registrations);
+    },
+    dispatch(type, event = {}) {
+      (listeners.get(type) || []).forEach((handler) => {
+        handler({
+          ...event,
+          currentTarget: this,
+          target: event.target || this,
+        });
+      });
+    },
+    setAttribute(name, value) {
+      attributes.set(name, String(value));
+      if (name.startsWith('data-')) {
+        const datasetKey = name
+          .slice(5)
+          .replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+        this.dataset[datasetKey] = String(value);
+      }
+    },
+    getAttribute(name) {
+      return attributes.has(name) ? attributes.get(name) : null;
+    },
     focus() {
       this.focusCalls += 1;
     },
     select() {
       this.selectCalls += 1;
     },
-    appendChild(child) {
-      child.parentNode = this;
-      this.children.push(child);
-      return child;
+    matches(selector) {
+      return matchesSelector(this, selector);
     },
-    setAttribute(name, value) {
-      attributes.set(name, String(value));
-    },
-    getAttribute(name) {
-      return attributes.get(name) || null;
-    },
-    querySelector() {
+    closest(selector) {
+      let cursor = this;
+      while (cursor) {
+        if (matchesSelector(cursor, selector)) {
+          return cursor;
+        }
+        cursor = cursor.parentNode;
+      }
       return null;
     },
-    querySelectorAll() {
-      return [];
+    querySelector(selector) {
+      for (const child of this.children) {
+        if (matchesSelector(child, selector)) {
+          return child;
+        }
+        const nestedResult = child.querySelector(selector);
+        if (nestedResult) {
+          return nestedResult;
+        }
+      }
+      return null;
     },
-    getBoundingClientRect() {
-      return {
-        left: 0,
-        top: 0,
-        width: 320,
-        height: 240,
-      };
+    querySelectorAll(selector) {
+      const matches = [];
+      this.children.forEach((child) => {
+        if (matchesSelector(child, selector)) {
+          matches.push(child);
+        }
+        matches.push(...child.querySelectorAll(selector));
+      });
+      return matches;
     },
-    ...overrides,
   };
-}
 
-function createEquipmentFieldCardStub(fieldKey) {
-  return {
-    dataset: {
-      fieldKey,
-    },
-    classList: createClassList(),
-    scrollCalls: 0,
-    scrollIntoView() {
-      this.scrollCalls += 1;
-    },
-    offsetWidth: 120,
-  };
-}
-
-function createQuickEntryContext(options = {}) {
-  const portalRoot = createElementStub();
-  const quickEntryWrap = createElementStub();
-  const quickEntryMenu = createElementStub({
-    offsetWidth: 320,
-    offsetHeight: 240,
-  });
-  const quickEntryResultList = createElementStub();
-  const quickEntryTextarea = createElementStub();
-  const quickEntryToggleBtn = createElementStub();
-  const equipmentOrderHead = createElementStub();
-  const equipmentOrderList = createElementStub();
-  const quickEntryCounter = createElementStub();
-  const quickEntryCounterFraction = createElementStub();
-  const fieldCard = createEquipmentFieldCardStub('field-a');
-  const resultNodes = [];
-
-  quickEntryWrap.appendChild(quickEntryMenu);
-  Object.defineProperty(quickEntryResultList, 'innerHTML', {
+  Object.defineProperty(node, 'innerHTML', {
     get() {
       return '';
     },
     set() {
-      resultNodes.length = 0;
+      node.children = [];
+      node.childNodes = node.children;
     },
   });
-  quickEntryResultList.appendChild = (child) => {
-    child.parentNode = quickEntryResultList;
-    resultNodes.push(child);
-    return child;
+
+  return node;
+}
+
+function buildLegacyQuickEntryMenu() {
+  const quickEntryMenu = createElementStub('div');
+  const dragBar = createElementStub('div');
+  dragBar.className = 'quick-entry-menu-drag-bar';
+  dragBar.classList.add('quick-entry-menu-drag-bar');
+
+  const head = createElementStub('div');
+  head.className = 'quick-entry-menu-head';
+  head.classList.add('quick-entry-menu-head');
+
+  const copy = createElementStub('div');
+  const title = createElementStub('p');
+  title.className = 'quick-entry-menu-title';
+  title.classList.add('quick-entry-menu-title');
+  const subtitle = createElementStub('p');
+  subtitle.className = 'quick-entry-menu-sub';
+  subtitle.classList.add('quick-entry-menu-sub');
+  copy.append(title, subtitle);
+
+  const counter = createElementStub('div');
+  counter.className = 'quick-entry-counter';
+  const counterFraction = createElementStub('span');
+  counterFraction.className = 'quick-entry-counter-fraction';
+  counterFraction.id = 'quickEntryCounterFraction';
+  counter.appendChild(counterFraction);
+
+  head.append(copy, counter);
+
+  const textarea = createElementStub('textarea');
+  const actionRow = createElementStub('div');
+  actionRow.className = 'quick-entry-action-row';
+  actionRow.classList.add('quick-entry-action-row');
+  const completeButton = createElementStub('button');
+  actionRow.appendChild(completeButton);
+  const resultList = createElementStub('div');
+
+  quickEntryMenu.append(dragBar, head, textarea, actionRow, resultList);
+
+  return {
+    quickEntryMenu,
+    quickEntryCounter: counter,
+    quickEntryCounterFraction: counterFraction,
+    quickEntryTextarea: textarea,
+    quickEntryCompleteBtn: completeButton,
+    quickEntryResultList: resultList,
   };
+}
 
-  const equipmentInputs = options.equipmentInputs || [
-    {
-      dataset: { fieldKey: 'field-a' },
-      value: '',
+function createQuickEntryContext() {
+  const documentStub = {
+    createElement(tagName) {
+      return createElementStub(tagName);
     },
-    {
-      dataset: { fieldKey: 'field-b' },
-      value: '44',
-    },
-  ];
+  };
+  const portalRoot = createElementStub('div');
+  const quickEntryWrap = createElementStub('div');
+  const quickEntryToggleBtn = createElementStub('button');
+  const equipmentOrderHead = createElementStub('div');
+  const equipmentOrderList = createElementStub('div');
+  const legacyMenu = buildLegacyQuickEntryMenu();
+  quickEntryWrap.appendChild(legacyMenu.quickEntryMenu);
 
-  const equipmentItems =
-    options.equipmentItems || {
-      'field-a': { id: 'field-a', label: '설비 A' },
-      'field-b': { id: 'field-b', label: '설비 B' },
-    };
+  const activeFieldInputs = {
+    'field-a': createElementStub('input'),
+    'field-b': createElementStub('input'),
+  };
+  activeFieldInputs['field-a'].dataset.fieldKey = 'field-a';
+  activeFieldInputs['field-b'].dataset.fieldKey = 'field-b';
+  activeFieldInputs['field-a'].value = '';
+  activeFieldInputs['field-b'].value = '44';
 
-  const resourceDatasets = options.resourceDatasets || {
+  const resourceDatasets = {
     electric: {
-      equipmentItems: Object.values(equipmentItems),
+      equipmentItems: [
+        { id: 'field-a', label: '전기 A', decimalDigits: 1 },
+        { id: 'field-b', label: '전기 B', decimalDigits: 0 },
+      ],
       equipmentEntries: {},
     },
     gas: {
-      equipmentItems: [{ id: 'gas-a', label: '가스 A' }],
+      equipmentItems: [{ id: 'gas-a', label: '가스 A', decimalDigits: 0 }],
       equipmentEntries: {
         '2026-04-18': {
           values: {
@@ -174,17 +298,13 @@ function createQuickEntryContext(options = {}) {
     },
   };
 
-  let mountHostStateValue = false;
-  let equipmentAddResetCalls = 0;
-  let equipmentAddSyncCalls = 0;
-  let equipmentManageSyncCalls = 0;
-  let equipmentOrderSyncCalls = 0;
-  let equipmentOrderDragClearCalls = 0;
-  let quickEntryRestSyncCalls = 0;
-  let quickEntryValidationSyncCalls = 0;
+  let hostStateActive = false;
   let dirtyStateCalls = 0;
   let actionStateCalls = 0;
   let autosaveCalls = 0;
+  let restSyncCalls = 0;
+  let validationSyncCalls = 0;
+  const suppressedQuickEntryValidationKeys = new Set();
 
   const context = {
     console,
@@ -197,15 +317,8 @@ function createQuickEntryContext(options = {}) {
     String,
     Number,
     Boolean,
-    RegExp,
-    document: {
-      createElement() {
-        return createElementStub();
-      },
-    },
+    document: documentStub,
     window: {
-      innerWidth: 1440,
-      innerHeight: 900,
       setTimeout(handler) {
         if (typeof handler === 'function') {
           handler();
@@ -215,7 +328,6 @@ function createQuickEntryContext(options = {}) {
     },
     QUICK_ENTRY_RESULT_LIMIT: 5,
     QUICK_ENTRY_HIGHLIGHT_DURATION: 1200,
-    EQUIPMENT_INPUT_FRACTION_DIGITS: 2,
     MODES: {
       EQUIPMENT: 'equipment',
       TEAM: 'team',
@@ -226,137 +338,190 @@ function createQuickEntryContext(options = {}) {
     },
     state: {
       selectedDate: '2026-04-18',
-      quickEntryResults: [],
       openQuickEntryMenu: false,
       openEquipmentAddMenu: true,
       openEquipmentManageKey: 'field-b',
       openEquipmentOrderMenu: true,
+      quickEntryResults: [],
       store: {
+        resourceType: 'electric',
+        mode: 'equipment',
+        equipmentItems: resourceDatasets.electric.equipmentItems,
+        equipmentEntries: resourceDatasets.electric.equipmentEntries,
         resourceDatasets,
       },
     },
     elements: {
       quickEntryWrap,
       quickEntryToggleBtn,
-      quickEntryMenu,
-      quickEntryTextarea,
-      quickEntryCompleteBtn: createElementStub(),
-      quickEntryResultList,
-      quickEntryCounter,
-      quickEntryCounterFraction,
+      quickEntryMenu: legacyMenu.quickEntryMenu,
+      quickEntryTextarea: legacyMenu.quickEntryTextarea,
+      quickEntryCompleteBtn: legacyMenu.quickEntryCompleteBtn,
+      quickEntryResultList: legacyMenu.quickEntryResultList,
+      quickEntryCounter: legacyMenu.quickEntryCounter,
+      quickEntryCounterFraction: legacyMenu.quickEntryCounterFraction,
       equipmentOrderHead,
       equipmentOrderList,
+    },
+    normalizeText(value) {
+      return String(value || '').trim();
+    },
+    normalizeEntryValue(value) {
+      return String(value || '').trim();
+    },
+    normalizeResourceType(value) {
+      return String(value || '').trim().toLowerCase() === 'gas' ? 'gas' : 'electric';
+    },
+    getSuppressedQuickEntryValidationFieldKeys(resourceType) {
+      const normalizedResourceType = context.normalizeResourceType(resourceType);
+      const fieldKeys = new Set();
+      suppressedQuickEntryValidationKeys.forEach((key) => {
+        const [candidateResourceType = '', candidateFieldKey = ''] = String(key).split('::');
+        if (candidateResourceType === normalizedResourceType && candidateFieldKey) {
+          fieldKeys.add(candidateFieldKey);
+        }
+      });
+      return fieldKeys;
+    },
+    suppressQuickEntryFieldValidation(resourceType, fieldKey) {
+      suppressedQuickEntryValidationKeys.add(
+        `${context.normalizeResourceType(resourceType)}::${String(fieldKey || '').trim()}`
+      );
+    },
+    clearQuickEntryFieldValidationSuppression(resourceType = '', fieldKey = '') {
+      if (!resourceType && !fieldKey) {
+        suppressedQuickEntryValidationKeys.clear();
+        return;
+      }
+
+      suppressedQuickEntryValidationKeys.delete(
+        `${context.normalizeResourceType(resourceType)}::${String(fieldKey || '').trim()}`
+      );
+    },
+    getCurrentResourceType() {
+      return context.normalizeResourceType(context.state.store.resourceType);
+    },
+    isElectricResourceType(resourceType = context.getCurrentResourceType()) {
+      return context.normalizeResourceType(resourceType) === 'electric';
+    },
+    isGasResourceType(resourceType = context.getCurrentResourceType()) {
+      return context.normalizeResourceType(resourceType) === 'gas';
     },
     isPlainObject(value) {
       return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
     },
     getCurrentMode() {
-      return options.currentMode || 'equipment';
+      return 'equipment';
+    },
+    getActiveResourceDataset(store, resourceType) {
+      return store?.resourceDatasets?.[context.normalizeResourceType(resourceType)] || null;
+    },
+    getMountDocument() {
+      return documentStub;
     },
     getMountPortalRoot() {
       return portalRoot;
     },
     toggleMountHostStateClass(className, isActive) {
-      mountHostStateValue = className === 'is-quick-entry-active' ? isActive : mountHostStateValue;
+      if (className === 'is-quick-entry-active') {
+        hostStateActive = isActive;
+      }
     },
-    getActiveResourceDataset(store, resourceType) {
-      return store?.resourceDatasets?.[resourceType] || null;
+    resetEquipmentAddDraft() {},
+    syncEquipmentAddMenu() {},
+    syncEquipmentManageMenus() {},
+    clearEquipmentOrderDragState() {},
+    syncEquipmentOrderMenu() {},
+    formatFullDate(dateString) {
+      return dateString;
     },
-    getEquipmentVisibilityContextDate() {
-      return context.state.selectedDate;
+    getEquipmentDisplayLabel(item) {
+      return item?.label || '';
     },
-    isSummaryOnlyEquipment() {
+    isAutoCalculatedEquipment() {
       return false;
     },
-    isAutoCalculatedEquipment(item) {
-      return Boolean(item?.isAutoCalculated);
+    isHiddenEquipmentFieldCard() {
+      return false;
     },
-    isHiddenEquipmentFieldCard(item) {
-      return Boolean(item?.isHidden);
+    getEquipmentDecimalDigits(fieldKey) {
+      const currentItem = context.state.store.equipmentItems.find((item) => item.id === fieldKey);
+      return Number.isInteger(currentItem?.decimalDigits) ? currentItem.decimalDigits : 0;
     },
-    normalizeEntryValue(value) {
-      return String(value || '').trim();
-    },
-    getTabNavigableEquipmentInputs() {
-      return equipmentInputs;
-    },
-    getEquipmentItem(fieldKey) {
-      return equipmentItems[fieldKey] || null;
-    },
-    isGasResourceType() {
-      return Boolean(options.isGasResourceType);
-    },
-    resetEquipmentAddDraft() {
-      equipmentAddResetCalls += 1;
-    },
-    syncEquipmentAddMenu() {
-      equipmentAddSyncCalls += 1;
-    },
-    syncEquipmentManageMenus() {
-      equipmentManageSyncCalls += 1;
-    },
-    clearEquipmentOrderDragState() {
-      equipmentOrderDragClearCalls += 1;
-    },
-    syncEquipmentOrderMenu() {
-      equipmentOrderSyncCalls += 1;
-    },
-    normalizeText(value) {
-      return String(value || '').trim();
-    },
-    sanitizeEquipmentInputValue(value) {
-      const numeric = Number.parseFloat(String(value || '').trim());
-      return Number.isFinite(numeric) ? String(numeric) : '';
+    sanitizeEquipmentInputValue(value, options = {}) {
+      const maxFractionDigits = Number.isInteger(options.maxFractionDigits)
+        ? options.maxFractionDigits
+        : 2;
+      const rawValue = String(value || '').replace(/,/g, '').replace(/[^\d.]/g, '');
+      if (!rawValue) {
+        return '';
+      }
+      const [integerPart = '', ...decimalParts] = rawValue.split('.');
+      if (!decimalParts.length || maxFractionDigits <= 0) {
+        return integerPart;
+      }
+      const decimalPart = decimalParts.join('').slice(0, maxFractionDigits);
+      return decimalPart ? `${integerPart}.${decimalPart}` : integerPart;
     },
     formatEquipmentInputDisplayByDecimalDigits(value) {
-      return String(value);
+      return String(value || '');
     },
-    getEquipmentDecimalDigits() {
-      return 1;
+    getEquipmentInputPlaceholder(fieldKey) {
+      return `이전 ${fieldKey}`;
     },
-    getValidationReadingDetailOnDate(fieldKey, _date, optionsForField = {}) {
-      const numeric = Number.parseFloat(optionsForField.currentRawValue);
-      return Number.isFinite(numeric)
-        ? {
-            value: numeric,
-            fractionDigits: 1,
-          }
-        : null;
-    },
-    getEquipmentDisplayLabel(equipment) {
-      return equipment.label;
-    },
-    getAdjacentRecordedEquipmentReadingDetail(fieldKey) {
-      const references = options.references || {
-        'field-a': { value: 10, fractionDigits: 1 },
-        'field-b': { value: 90, fractionDigits: 1 },
+    getEquipmentPreviousReadingMeta(fieldKey) {
+      return {
+        text: `이전값 ${fieldKey} (04.17)`,
+        valueText: fieldKey,
+        dateText: '04.17',
       };
-      return references[fieldKey] || null;
     },
-    getEquipmentReadingValidationIssuesForDate(entry) {
-      const rawValue = entry?.values?.['field-a'];
-      if (rawValue === '12.5') {
-        return [{ message: '검침 범위를 다시 확인하세요.' }];
+    getEntryDayStatus(entry) {
+      return entry?.dayStatus || '';
+    },
+    readEquipmentFormData() {
+      return {
+        values: Object.fromEntries(
+          Object.entries(activeFieldInputs)
+            .map(([fieldKey, input]) => [fieldKey, context.normalizeEntryValue(input.value)])
+            .filter(([, value]) => value !== '')
+        ),
+        statuses: {},
+        fieldDayStatuses: {},
+      };
+    },
+    getCurrentEntryDayStatus() {
+      return '';
+    },
+    getEquipmentReadingValidationIssuesForDate(formData, _dateString, options = {}) {
+      if (options.skipFieldKeys?.has('gas-a')) {
+        return [];
+      }
+      if (formData?.values?.['gas-a'] === '9') {
+        return [{ fieldKey: 'gas-a', message: '가스 값 확인' }];
       }
       return [];
     },
+    hasEntryData(entry) {
+      return Boolean(Object.keys(entry?.values || {}).length || entry?.dayStatus);
+    },
+    getEquipmentFieldInput(fieldKey) {
+      return activeFieldInputs[fieldKey] || null;
+    },
     syncEquipmentRestIndicators() {
-      quickEntryRestSyncCalls += 1;
+      restSyncCalls += 1;
     },
     syncEquipmentReadingValidationStates() {
-      quickEntryValidationSyncCalls += 1;
+      validationSyncCalls += 1;
+    },
+    scheduleEquipmentLocalAutosave() {
+      autosaveCalls += 1;
     },
     updateDirtyState() {
       dirtyStateCalls += 1;
     },
     updateActionState() {
       actionStateCalls += 1;
-    },
-    scheduleEquipmentLocalAutosave() {
-      autosaveCalls += 1;
-    },
-    getEquipmentFieldCard(fieldKey) {
-      return fieldKey === 'field-a' ? fieldCard : null;
     },
   };
 
@@ -373,37 +538,10 @@ function createQuickEntryContext(options = {}) {
     context,
     portalRoot,
     quickEntryWrap,
-    quickEntryMenu,
-    quickEntryTextarea,
     quickEntryToggleBtn,
-    quickEntryResultList,
-    quickEntryCounter,
-    quickEntryCounterFraction,
-    resultNodes,
-    fieldCard,
-    getMountHostStateValue() {
-      return mountHostStateValue;
-    },
-    getEquipmentAddResetCalls() {
-      return equipmentAddResetCalls;
-    },
-    getEquipmentAddSyncCalls() {
-      return equipmentAddSyncCalls;
-    },
-    getEquipmentManageSyncCalls() {
-      return equipmentManageSyncCalls;
-    },
-    getEquipmentOrderSyncCalls() {
-      return equipmentOrderSyncCalls;
-    },
-    getEquipmentOrderDragClearCalls() {
-      return equipmentOrderDragClearCalls;
-    },
-    getQuickEntryRestSyncCalls() {
-      return quickEntryRestSyncCalls;
-    },
-    getQuickEntryValidationSyncCalls() {
-      return quickEntryValidationSyncCalls;
+    activeFieldInputs,
+    getHostStateActive() {
+      return hostStateActive;
     },
     getDirtyStateCalls() {
       return dirtyStateCalls;
@@ -414,22 +552,27 @@ function createQuickEntryContext(options = {}) {
     getAutosaveCalls() {
       return autosaveCalls;
     },
+    getRestSyncCalls() {
+      return restSyncCalls;
+    },
+    getValidationSyncCalls() {
+      return validationSyncCalls;
+    },
   };
 }
 
-test('quick-entry ui opens the menu and closes competing equipment menus first', () => {
-  const {
-    context,
-    portalRoot,
-    quickEntryMenu,
-    quickEntryTextarea,
-    getMountHostStateValue,
-    getEquipmentAddResetCalls,
-    getEquipmentAddSyncCalls,
-    getEquipmentManageSyncCalls,
-    getEquipmentOrderSyncCalls,
-    getEquipmentOrderDragClearCalls,
-  } = createQuickEntryContext();
+function findPopupFieldInput(context, resourceType, fieldKey) {
+  return context
+    .getQuickEntryPopupBody()
+    .querySelectorAll('input[data-quick-entry-popup-field]')
+    .find(
+      (input) =>
+        input.dataset.resourceType === resourceType && input.dataset.fieldKey === fieldKey
+    );
+}
+
+test('quick-entry popup opens from the existing button and focuses the search input', () => {
+  const { context, portalRoot, getHostStateActive } = createQuickEntryContext();
 
   context.toggleQuickEntryMenu();
 
@@ -437,73 +580,146 @@ test('quick-entry ui opens the menu and closes competing equipment menus first',
   assert.equal(context.state.openEquipmentAddMenu, false);
   assert.equal(context.state.openEquipmentManageKey, '');
   assert.equal(context.state.openEquipmentOrderMenu, false);
-  assert.equal(getEquipmentAddResetCalls(), 1);
-  assert.equal(getEquipmentAddSyncCalls(), 1);
-  assert.equal(getEquipmentManageSyncCalls(), 1);
-  assert.equal(getEquipmentOrderDragClearCalls(), 1);
-  assert.equal(getEquipmentOrderSyncCalls(), 1);
-  assert.equal(quickEntryMenu.parentNode, portalRoot);
-  assert.equal(quickEntryTextarea.focusCalls, 1);
-  assert.equal(quickEntryTextarea.selectCalls, 1);
-  assert.equal(getMountHostStateValue(), true);
+  assert.equal(context.elements.quickEntryMenu.parentNode, portalRoot);
+  assert.equal(context.getQuickEntryPopupSearchInput().focusCalls, 1);
+  assert.equal(context.elements.quickEntryCounterFraction.textContent, '2/3');
+  assert.equal(getHostStateActive(), true);
 });
 
-test('quick-entry ui counter merges current inputs with the other resource dataset', () => {
-  const { context, quickEntryCounter, quickEntryCounterFraction } = createQuickEntryContext();
+test('quick-entry popup skipStateRefresh option prevents closed-menu state recursion', () => {
+  const { context, getDirtyStateCalls, getActionStateCalls } = createQuickEntryContext();
 
-  context.syncQuickEntryCounter();
+  context.syncQuickEntryMenu({ skipStateRefresh: true });
 
-  assert.equal(quickEntryCounterFraction.textContent, '2/3');
-  assert.equal(quickEntryCounter.classList.contains('is-complete'), false);
-});
+  assert.equal(getDirtyStateCalls(), 0);
+  assert.equal(getActionStateCalls(), 0);
 
-test('quick-entry matching picks the closest candidate and applies the formatted value', () => {
-  const { context } = createQuickEntryContext({
-    equipmentInputs: [
-      {
-        dataset: { fieldKey: 'field-a' },
-        value: '',
-      },
-      {
-        dataset: { fieldKey: 'field-b' },
-        value: '',
-      },
-    ],
-  });
+  context.syncQuickEntryMenu();
 
-  const result = context.applyQuickEntryValue('12.5');
-
-  assert.equal(result.ok, true);
-  assert.equal(result.kind, 'warning');
-  assert.equal(result.fieldKey, 'field-a');
-  assert.equal(result.message.includes('설비 A 12.5 기입'), true);
-});
-
-test('quick-entry processing keeps unmatched lines and triggers the save-refresh pipeline', () => {
-  const {
-    context,
-    quickEntryTextarea,
-    resultNodes,
-    fieldCard,
-    getQuickEntryRestSyncCalls,
-    getQuickEntryValidationSyncCalls,
-    getDirtyStateCalls,
-    getActionStateCalls,
-    getAutosaveCalls,
-  } = createQuickEntryContext();
-
-  quickEntryTextarea.value = '12.5\nbad';
-
-  context.processQuickEntryTextarea();
-
-  assert.equal(quickEntryTextarea.value, 'bad');
-  assert.equal(resultNodes.length, 2);
-  assert.equal(context.state.quickEntryResults.length, 2);
-  assert.equal(getQuickEntryRestSyncCalls(), 1);
-  assert.equal(getQuickEntryValidationSyncCalls(), 1);
   assert.equal(getDirtyStateCalls(), 1);
   assert.equal(getActionStateCalls(), 1);
+});
+
+test('quick-entry popup renders electric and gas equipment rows together', () => {
+  const { context } = createQuickEntryContext();
+
+  context.toggleQuickEntryMenu();
+
+  const popupRows = context
+    .getQuickEntryPopupBody()
+    .querySelectorAll('[data-quick-entry-popup-row]');
+
+  assert.equal(popupRows.length, 3);
+  assert.equal(
+    context.getQuickEntryPopupBody().querySelectorAll('[data-quick-entry-popup-section]').length,
+    2
+  );
+  assert.equal(
+    context
+      .getQuickEntryPopupBody()
+      .querySelectorAll('[data-quick-entry-popup-grid]')
+      .map((node) => node.className)
+      .every((className) => className.includes('is-dense-entry-grid')),
+    true
+  );
+  assert.equal(
+    context
+      .getQuickEntryPopupBody()
+      .querySelectorAll('[data-quick-entry-resource-count]')
+      .map((node) => node.textContent)
+      .join('|'),
+    '1/2 입력|1/1 입력'
+  );
+  assert.equal(
+    context.getQuickEntryPopupBody().querySelectorAll('[data-quick-entry-popup-previous]').length,
+    0
+  );
+  assert.equal(
+    popupRows[0].children[0].children[1].textContent.includes('소수점'),
+    true
+  );
+});
+
+test('quick-entry popup CSS uses a dense fullscreen grid instead of large row cards', () => {
+  [meteringStylesSource, meteringEmbeddedStylesSource].forEach((source) => {
+    assert.match(source, /\.quick-entry-popup-panel\s*\{[\s\S]*width:\s*min\(1720px,\s*100%\)/);
+    assert.match(source, /\.quick-entry-popup-panel\s*\{[\s\S]*min-height:\s*calc\(100vh - clamp\(16px,\s*2\.8vw,\s*32px\)\)/);
+    assert.match(source, /\.quick-entry-popup-body\s*\{[\s\S]*overflow:\s*hidden/);
+    assert.match(source, /\.quick-entry-popup-row-list\s*\{[\s\S]*grid-template-columns:\s*repeat\(auto-fill,\s*minmax\(172px,\s*1fr\)\)/);
+    assert.match(source, /\.quick-entry-popup-row\s*\{[\s\S]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s*minmax\(74px,\s*94px\)/);
+    assert.match(source, /\.quick-entry-popup-row-title\s*\{[\s\S]*white-space:\s*nowrap/);
+    assert.doesNotMatch(source, /\.quick-entry-popup-row-meta\.has-previous-value/);
+    assert.doesNotMatch(source, /\.field-card-previous\s*\{/);
+  });
+});
+
+test('quick-entry popup updates the active resource form and autosave pipeline', () => {
+  const {
+    context,
+    activeFieldInputs,
+    getAutosaveCalls,
+    getDirtyStateCalls,
+    getActionStateCalls,
+    getRestSyncCalls,
+    getValidationSyncCalls,
+  } = createQuickEntryContext();
+
+  context.toggleQuickEntryMenu();
+
+  const fieldInput = findPopupFieldInput(context, 'electric', 'field-a');
+  fieldInput.value = '12.5';
+
+  context.handleQuickEntryPopupFieldInput({ target: fieldInput });
+
+  assert.equal(activeFieldInputs['field-a'].value, '12.5');
+  assert.equal(context.elements.quickEntryCounterFraction.textContent, '3/3');
   assert.equal(getAutosaveCalls(), 1);
-  assert.equal(fieldCard.scrollCalls, 1);
-  assert.equal(quickEntryTextarea.focusCalls, 1);
+  assert.equal(getRestSyncCalls(), 1);
+  assert.equal(getValidationSyncCalls(), 1);
+  assert.equal(getDirtyStateCalls(), 1);
+  assert.equal(getActionStateCalls(), 1);
+});
+
+test('quick-entry popup stores non-active resource values directly in that dataset', () => {
+  const { context, getDirtyStateCalls, getActionStateCalls } = createQuickEntryContext();
+
+  context.toggleQuickEntryMenu();
+
+  const gasInput = findPopupFieldInput(context, 'gas', 'gas-a');
+  gasInput.value = '123';
+
+  context.handleQuickEntryPopupFieldInput({ target: gasInput });
+
+  assert.equal(
+    context.state.store.resourceDatasets.gas.equipmentEntries['2026-04-18'].values['gas-a'],
+    '123'
+  );
+  assert.equal(getDirtyStateCalls(), 1);
+  assert.equal(getActionStateCalls(), 1);
+});
+
+test('quick-entry popup suppresses transient validation while typing and restores it on blur', () => {
+  const { context, getValidationSyncCalls, getDirtyStateCalls, getActionStateCalls } =
+    createQuickEntryContext();
+
+  context.toggleQuickEntryMenu();
+
+  const gasInput = findPopupFieldInput(context, 'gas', 'gas-a');
+  gasInput.value = '9';
+
+  context.handleQuickEntryPopupFieldInput({ target: gasInput });
+
+  const gasRow = gasInput.closest('[data-quick-entry-popup-row]');
+  const gasMessage = gasRow.querySelector('[data-quick-entry-popup-message]');
+  assert.equal(gasRow.classList.contains('is-invalid'), false);
+  assert.equal(gasMessage.classList.contains('is-hidden'), true);
+
+  gasInput.dispatch('blur');
+
+  assert.equal(gasRow.classList.contains('is-invalid'), true);
+  assert.equal(gasMessage.classList.contains('is-hidden'), false);
+  assert.equal(gasMessage.textContent, '가스 값 확인');
+  assert.equal(getValidationSyncCalls(), 1);
+  assert.equal(getDirtyStateCalls(), 2);
+  assert.equal(getActionStateCalls(), 2);
 });

@@ -3,6 +3,8 @@ function handleEquipmentFieldInput(event) {
     return;
   }
 
+  suppressEquipmentFieldValidation(event.target.dataset.fieldKey || "");
+
   const equipment = getEquipmentItem(event.target.dataset.fieldKey);
   if (!isAutoCalculatedEquipment(equipment)) {
     const formattedValue = formatEquipmentInputDisplay(event.target.value);
@@ -16,6 +18,18 @@ function handleEquipmentFieldInput(event) {
   updateDirtyState();
   updateActionState();
   scheduleEquipmentLocalAutosave();
+}
+
+function handleEquipmentFieldFocusOut(event) {
+  const input = event.target?.closest?.("input[data-field-key]");
+  if (!input) {
+    return;
+  }
+
+  clearEquipmentFieldValidationSuppression(input.dataset.fieldKey || "");
+  syncEquipmentReadingValidationStates();
+  updateDirtyState();
+  updateActionState();
 }
 
 function handleEquipmentFieldKeydown(event) {
@@ -250,6 +264,7 @@ function handleEquipmentFieldValueChange(event) {
     return;
   }
 
+  clearEquipmentFieldValidationSuppression(event.target.dataset.fieldKey || "");
   clearEquipmentLocalAutosaveTimer();
   saveCurrentEquipmentEntry();
 }

@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
-import { appPidFile, appRoot, publicDir } from './lib/paths.mjs';
-import { getRepositoryMap } from './lib/repository-map.mjs';
+import { getRepositoryMap } from '../../../kpi-runtime/internal-server/src/services/repository-map.js';
+import { appPidFile, publicDir, repoRoot } from './lib/paths.mjs';
 import {
   getDbTableList,
   getLogContent,
@@ -84,6 +84,12 @@ function assertLocalActionRequest(req) {
   }
 }
 
+function readRepositoryMapDepth(url) {
+  const requestedDepth = Number.parseInt(url.searchParams.get('maxDepth') || '50', 10);
+  if (!Number.isFinite(requestedDepth)) return 50;
+  return Math.min(Math.max(requestedDepth, 1), 60);
+}
+
 function serveStaticFile(res, filePath) {
   if (!fs.existsSync(filePath)) {
     sendJson(res, 404, { ok: false, error: 'not_found' });
@@ -119,18 +125,13 @@ const server = http.createServer(async (req, res) => {
         ok: true,
         app: 'kpi-ops-console',
         port,
-        appRoot
+        appRoot: repoRoot
       }, getLocalCorsHeaders(req));
       return;
     }
 
     if (req.method === 'GET' && url.pathname === '/api/overview') {
       sendJson(res, 200, await getOverview());
-      return;
-    }
-
-    if (req.method === 'GET' && url.pathname === '/api/repository-map') {
-      sendJson(res, 200, getRepositoryMap(), getLocalCorsHeaders(req));
       return;
     }
 
@@ -141,6 +142,11 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === 'GET' && url.pathname === '/api/db/tables') {
       sendJson(res, 200, await getDbTableList());
+      return;
+    }
+
+    if (req.method === 'GET' && url.pathname === '/api/repository-map') {
+      sendJson(res, 200, getRepositoryMap({ rootDir: repoRoot, maxDepth: readRepositoryMapDepth(url) }), getLocalCorsHeaders(req));
       return;
     }
 

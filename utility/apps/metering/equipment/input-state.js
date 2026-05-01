@@ -61,7 +61,9 @@ function autofillInactiveEquipmentInputsOnComplete() {
 }
 
 function getCurrentEquipmentReadingValidationIssues(formData = readEquipmentFormData()) {
-  return getEquipmentReadingValidationIssuesForDate(formData, state.selectedDate);
+  return getEquipmentReadingValidationIssuesForDate(formData, state.selectedDate, {
+    skipFieldKeys: getSuppressedEquipmentValidationFieldKeys(),
+  });
 }
 
 function shouldSkipEquipmentReadingComparisonValidation(fieldKey, currentDateString, adjacentDateString) {
@@ -70,8 +72,96 @@ function shouldSkipEquipmentReadingComparisonValidation(fieldKey, currentDateStr
   );
 }
 
+function getEquipmentValidationSuppressionState() {
+  if (!state.equipmentValidationSuppression || typeof state.equipmentValidationSuppression !== "object") {
+    state.equipmentValidationSuppression = {};
+  }
+
+  if (!(state.equipmentValidationSuppression.fieldKeys instanceof Set)) {
+    state.equipmentValidationSuppression.fieldKeys = new Set();
+  }
+
+  if (!(state.equipmentValidationSuppression.quickEntryKeys instanceof Set)) {
+    state.equipmentValidationSuppression.quickEntryKeys = new Set();
+  }
+
+  return state.equipmentValidationSuppression;
+}
+
+function getSuppressedEquipmentValidationFieldKeys() {
+  return new Set(getEquipmentValidationSuppressionState().fieldKeys);
+}
+
+function suppressEquipmentFieldValidation(fieldKey) {
+  if (!fieldKey) {
+    return;
+  }
+
+  getEquipmentValidationSuppressionState().fieldKeys.add(fieldKey);
+}
+
+function clearEquipmentFieldValidationSuppression(fieldKey = "") {
+  if (!fieldKey) {
+    getEquipmentValidationSuppressionState().fieldKeys.clear();
+    return;
+  }
+
+  getEquipmentValidationSuppressionState().fieldKeys.delete(fieldKey);
+}
+
+function buildQuickEntryValidationSuppressionKey(resourceType, fieldKey) {
+  const normalizedResourceType = normalizeResourceType(resourceType);
+  const normalizedFieldKey = normalizeText(fieldKey);
+  if (!normalizedResourceType || !normalizedFieldKey) {
+    return "";
+  }
+
+  return `${normalizedResourceType}::${normalizedFieldKey}`;
+}
+
+function getSuppressedQuickEntryValidationFieldKeys(resourceType) {
+  const normalizedResourceType = normalizeResourceType(resourceType);
+  const suppressedKeys = new Set();
+  if (!normalizedResourceType) {
+    return suppressedKeys;
+  }
+
+  getEquipmentValidationSuppressionState().quickEntryKeys.forEach((key) => {
+    const [candidateResourceType = "", candidateFieldKey = ""] = String(key).split("::");
+    if (candidateResourceType === normalizedResourceType && candidateFieldKey) {
+      suppressedKeys.add(candidateFieldKey);
+    }
+  });
+
+  return suppressedKeys;
+}
+
+function suppressQuickEntryFieldValidation(resourceType, fieldKey) {
+  const key = buildQuickEntryValidationSuppressionKey(resourceType, fieldKey);
+  if (!key) {
+    return;
+  }
+
+  getEquipmentValidationSuppressionState().quickEntryKeys.add(key);
+}
+
+function clearQuickEntryFieldValidationSuppression(resourceType = "", fieldKey = "") {
+  const suppressionState = getEquipmentValidationSuppressionState();
+  if (!resourceType && !fieldKey) {
+    suppressionState.quickEntryKeys.clear();
+    return;
+  }
+
+  const key = buildQuickEntryValidationSuppressionKey(resourceType, fieldKey);
+  if (!key) {
+    return;
+  }
+
+  suppressionState.quickEntryKeys.delete(key);
+}
+
 function getEquipmentReadingValidationIssuesForDate(formData, dateString, options = {}) {
-  const { allowAnyMode = false } = options;
+  const { allowAnyMode = false, skipFieldKeys = null } = options;
   if ((!allowAnyMode && getCurrentMode() !== MODES.EQUIPMENT) || !dateString) {
     return [];
   }
@@ -79,6 +169,10 @@ function getEquipmentReadingValidationIssuesForDate(formData, dateString, option
   const issues = [];
 
   Object.entries(formData.values || {}).forEach(([fieldKey, rawValue]) => {
+    if (skipFieldKeys?.has(fieldKey)) {
+      return;
+    }
+
     const equipment = getEquipmentItem(fieldKey);
     if (!equipment || isAutoCalculatedEquipment(equipment)) {
       return;

@@ -1,4 +1,4 @@
-﻿(function initKpiWorkHistoryViewRender() {
+(function initKpiWorkHistoryViewRender() {
     const history = window.KpiWorkHistory;
     if (!history) return;
 
@@ -9,20 +9,16 @@
         state,
         getPayload,
         getElement,
-        ATTACHMENT_SLOT_KEYS,
-        ATTACHMENT_SLOT_META,
         getRecordAttachments,
-        getRecordAttachment,
-        KPI_FLAG_LABEL,
-        KPI_FLAG_PILL_LABEL,
         normalizeRecordCategory,
         getRecordCategoryGroupLabel,
-        isKpiRecord,
-        isImportantRecord,
-        getRecordTagLabels,
-        escapeHtml,
-        escapeAttribute
+        isProductionReportWorkspace,
+        getRecordTagLabels
     } = history;
+
+    function isProductionWorkspace() {
+        return typeof isProductionReportWorkspace === 'function' && isProductionReportWorkspace();
+    }
 
     function getAllRecords() {
         const payload = getPayload();
@@ -105,7 +101,7 @@
             .join(' ');
         const remarks = String(record?.remarks || '').trim();
         if (tagPrefix && remarks) return `${tagPrefix} ${remarks}`;
-        return tagPrefix || remarks || '입력된 비고가 없습니다.';
+        return tagPrefix || remarks || (isProductionWorkspace() ? '입력된 보고 메모가 없습니다.' : '입력된 비고가 없습니다.');
     }
 
     function buildSearchHaystack(record) {
@@ -143,8 +139,8 @@
         if (!container) return;
         const records = getFilteredOverviewRecords();
         container.innerHTML = records.length
-            ? records.map(record => buildRecordCard(record, true)).join('')
-            : view.renderEmptyState('조건에 맞는 작업내역이 없습니다.');
+            ? records.map(record => view.buildRecordCard?.(record, true) || '').join('')
+            : view.renderEmptyState(view.getEmptyStateMessage?.() || '조건에 맞는 작업내역이 없습니다.');
     }
 
     function renderTeam(team) {
@@ -152,95 +148,10 @@
         if (!container) return;
         const records = getFilteredTeamRecords(team);
         container.innerHTML = records.length
-            ? records.map(record => buildRecordCard(record, false)).join('')
-            : view.renderEmptyState('조건에 맞는 작업내역이 없습니다.');
+            ? records.map(record => view.buildRecordCard?.(record, false) || '').join('')
+            : view.renderEmptyState(view.getEmptyStateMessage?.() || '조건에 맞는 작업내역이 없습니다.');
     }
 
-    function buildRecordCard(record, showTeam) {
-        const team = record.team || record._team;
-        const info = getRecordTeamInfo(record);
-        const summaryTitle = getRecordSummaryTitle(record);
-        void showTeam;
-        return `
-            <details class="report-card ${escapeHtml(info.class || '')}">
-                <summary class="report-card-summary">
-                    <div class="record-summary-main">
-                        <span class="record-team-icon">${view.getTeamIconSvg(team)}</span>
-                        <div class="record-summary-fields">
-                            <div class="record-summary-field record-summary-team">
-                                <span class="record-summary-label">팀</span>
-                                <span class="record-summary-value">
-                                    <span class="team-badge ${escapeHtml(info.class || '')}">${escapeHtml(info.name)}</span>
-                                </span>
-                            </div>
-                            <div class="record-summary-field record-summary-title">
-                                <span class="record-summary-label">제목</span>
-                                <span class="record-summary-value" title="${escapeAttribute(summaryTitle)}">${highlightText(escapeHtml(summaryTitle))}</span>
-                            </div>
-                            <div class="record-summary-field record-summary-date">
-                                <span class="record-summary-label">날짜</span>
-                                <span class="record-summary-value">${escapeHtml(view.formatDateRange(record.startDate, record.endDate))}</span>
-                            </div>
-                            <div class="record-summary-field record-summary-cost">
-                                <span class="record-summary-label">비용</span>
-                                <span class="record-summary-value">${escapeHtml(view.formatCurrency(record.cost))}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <span class="record-summary-chevron" aria-hidden="true"></span>
-                </summary>
-                <div class="report-card-body-shell">
-                    <div class="report-card-actions">
-                        <button class="btn-icon btn-icon-edit" type="button" data-action="edit-record" data-team="${team}" data-index="${record._index}" title="수정">수정</button>
-                        <button class="btn-icon btn-icon-delete" type="button" data-action="delete-record" data-team="${team}" data-index="${record._index}" title="삭제">삭제</button>
-                    </div>
-                    <div class="report-card-body">
-                        <div class="report-section summary-section">
-                            <div class="report-section-title"><span class="section-icon">${view.getSectionIconSvg('summary')}</span>기본 정보</div>
-                            <div class="report-section-content">${view.buildSummaryContent(record)}</div>
-                        </div>
-                        <div class="report-section attachment-section">
-                            <div class="report-section-title"><span class="section-icon">${view.getSectionIconSvg('attachment')}</span>첨부 문서</div>
-                            <div class="report-section-content attachment-view-list">${view.buildAttachmentLinks(record)}</div>
-                        </div>
-                        <div class="report-section record-content">
-                            <div class="report-section-title"><span class="section-icon">${view.getSectionIconSvg('work')}</span>업무내용</div>
-                            <div class="report-section-content">${highlightText(escapeHtml(record.workContent) || '입력된 업무내용이 없습니다.')}</div>
-                        </div>
-                        <div class="report-section remarks">
-                            <div class="report-section-title"><span class="section-icon">${view.getSectionIconSvg('remarks')}</span>비고</div>
-                            <div class="report-section-content">${escapeHtml(buildRecordRemarkText(record))}</div>
-                        </div>
-                    </div>
-                </div>
-            </details>
-        `;
-    }
-
-    function getRecordSummaryTitle(record) {
-        const categoryText = getRecordCategoryText(record);
-        const importantPrefix = isImportantRecord(record) ? `${KPI_FLAG_LABEL} · ` : '';
-        const workTitle = String(record?.workContent || '')
-            .split(/\r?\n/)
-            .map(line => String(line || '').trim())
-            .find(Boolean);
-        const billing = getRecordAttachment(record, 'billing');
-        const report = getRecordAttachment(record, 'report');
-        const attachmentLabel = billing && report
-            ? '청구서/보고자료'
-            : (billing ? '청구서' : (report ? '보고자료' : ''));
-
-        if (attachmentLabel && workTitle) return `${importantPrefix}${attachmentLabel} · ${workTitle}`;
-        if (attachmentLabel && categoryText) return `${importantPrefix}${attachmentLabel} · ${categoryText}`;
-        if (workTitle) return `${importantPrefix}${workTitle}`;
-        if (attachmentLabel) return `${importantPrefix}${attachmentLabel} 첨부`;
-        if (categoryText) return `${importantPrefix}${categoryText}`;
-        const remarksTitle = String(record?.remarks || '')
-            .split(/\r?\n/)
-            .map(line => String(line || '').trim())
-            .find(Boolean);
-        return `${importantPrefix}${remarksTitle || '제목 미입력'}`;
-    }
     function updateSearchCount() {
         const badges = [
             ...history.queryAll('[data-role="search-result-count"]'),
@@ -279,11 +190,9 @@
         renderCurrentView,
         renderOverview,
         renderTeam,
-        buildRecordCard,
         getRecordTags,
         getRecordTeamInfo,
         getRecordCategoryText,
-        getRecordSummaryTitle,
         buildRecordRemarkText,
         updateSearchCount,
         highlightText

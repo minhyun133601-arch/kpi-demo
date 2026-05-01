@@ -106,7 +106,7 @@ async function requestStatus(client, url) {
 }
 
 async function collectPublicAssetFailures(client) {
-  const publicAssetUrls = [resolveUrl('/shared-assets/kpi-demo-logo.svg')];
+  const publicAssetUrls = [resolveUrl('/favicon.ico')];
   const failures = [];
   for (const url of publicAssetUrls) {
     try {

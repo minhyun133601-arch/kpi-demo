@@ -1,4 +1,4 @@
-        const WORK_TEAM_CALENDAR_OVERVIEW_KEY = 'work_team_calendar_overview';
+﻿        const WORK_TEAM_CALENDAR_OVERVIEW_KEY = 'work_team_calendar_overview';
 
         function isWorkTeamCalendarOverview(dataKey) {
             return String(dataKey || '').trim() === WORK_TEAM_CALENDAR_OVERVIEW_KEY;

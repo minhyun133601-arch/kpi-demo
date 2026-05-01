@@ -21,7 +21,7 @@ import {
   writeAuthCookie
 } from './route-context.js';
 
-export function buildLoginPageHtml(nextPath) {
+function buildLoginPageHtml(nextPath) {
   const safeNext = JSON.stringify(normalizeNextPath(nextPath));
   return `<!DOCTYPE html>
 <html lang="en">
@@ -93,19 +93,6 @@ export function buildLoginPageHtml(nextPath) {
       font-size: 12px;
       color: #607267;
     }
-    .credential-hint {
-      padding: 10px 12px;
-      margin: 0 0 14px;
-      border: 1px solid #c7d3ca;
-      border-radius: 10px;
-      background: #f6faf7;
-      font-size: 13px;
-      color: #2f4137;
-    }
-    .credential-hint strong {
-      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
-      color: #123c2f;
-    }
     .error {
       min-height: 18px;
       margin: 8px 0 0;
@@ -117,13 +104,12 @@ export function buildLoginPageHtml(nextPath) {
 <body>
   <main>
     <h1>KPI Login</h1>
-    <p>This public portfolio runtime uses a sample login.</p>
-    <div class="credential-hint">Demo account: ID <strong>1234</strong> / password <strong>1234</strong></div>
+    <p>Only approved users can access this demo runtime.</p>
     <form id="loginForm">
       <label for="username">Username</label>
-      <input id="username" name="username" autocomplete="username" placeholder="1234" value="1234" required />
+      <input id="username" name="username" autocomplete="username" required />
       <label for="password">Password</label>
-      <input id="password" name="password" type="password" autocomplete="current-password" placeholder="1234" value="1234" required />
+      <input id="password" name="password" type="password" autocomplete="current-password" required />
       <button id="submitButton" type="submit">Login</button>
       <div id="errorMessage" class="error"></div>
     </form>

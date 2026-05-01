@@ -11,13 +11,15 @@
         return;
     }
 
-    const { state, loadData } = history;
+    const { state, loadData, applyWorkspaceOptions } = history;
 
     function render(category, context = {}) {
         state.activeCategory = category || null;
+        applyWorkspaceOptions?.(context.options || {});
         loadData();
         view.ensureShadowMount(context);
         if (!view.getShadowRoot?.()) return;
+        view.renderShell?.();
         view.syncViewportLayout?.(context);
         view.updateTitleState?.(category);
         view.initDateFilterLimits?.();

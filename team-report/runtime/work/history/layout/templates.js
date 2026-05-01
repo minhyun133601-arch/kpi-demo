@@ -18,17 +18,41 @@
     const OVERVIEW_KEY = view.OVERVIEW_KEY || 'overview';
     const TAB_META = view.TAB_META || {};
 
+    function isProductionWorkspace() {
+        return typeof history.isProductionReportWorkspace === 'function' && history.isProductionReportWorkspace();
+    }
+
+    function getCategoryFilterMarkup() {
+        const fixedFilter = typeof history.getFixedCategoryFilter === 'function'
+            ? history.getFixedCategoryFilter()
+            : '';
+        if (fixedFilter) {
+            return `
+                <input type="hidden" data-role="category-filter" value="${escapeAttribute(fixedFilter)}">
+                <span class="history-tool-pill history-filter-lock" data-role="fixed-category-pill">보고만 보기</span>
+            `;
+        }
+        return `
+            <select class="history-search-select" data-role="category-filter" aria-label="카테고리 선택">
+                ${buildCategoryFilterOptionsMarkup()}
+            </select>
+        `;
+    }
+
     function buildShellHtml() {
+        const searchLabel = isProductionWorkspace() ? '실적보고 검색' : '작업내역 검색';
         return `
             <div class="container">
                 <div class="week-search-bar no-print">
                     <div class="keyword-search-group">
-                        <span class="search-label">작업내역 검색</span>
+                        <span class="search-label">${searchLabel}</span>
                         <input type="text" id="keywordSearch" placeholder="검색어 입력">
                         <button class="btn btn-primary btn-sm" type="button" data-action="search">검색</button>
                         <span class="search-result-count" id="searchResultCount"></span>
                     </div>
                 </div>
+
+                ${buildPageHeader()}
 
                 <nav class="tab-navigation no-print">
                     ${buildTabButton(OVERVIEW_KEY)}
@@ -40,9 +64,6 @@
                     ${TEAM_KEYS.map(team => buildTeamSection(team)).join('')}
                 </main>
 
-                <footer class="main-footer no-print">
-                    <p>KPI Demo · 2026 KPI 작업내역</p>
-                </footer>
             </div>
 
             ${buildRecordModal()}
@@ -51,6 +72,39 @@
             <div class="toast" id="saveToast">
                 <span class="toast-message">저장되었습니다</span>
             </div>
+        `;
+    }
+
+    function buildPageHeader() {
+        const title = typeof view.getWorkspaceTitle === 'function'
+            ? view.getWorkspaceTitle()
+            : '작업 이력 기입';
+        const subtitle = typeof view.getWorkspaceSubtitle === 'function'
+            ? view.getWorkspaceSubtitle()
+            : '전체 팀의 작업 현황과 기록을 한눈에 확인합니다.';
+        return `
+                <div class="history-page-head no-print">
+                    <div class="history-title-area">
+                        <h1 id="history-title">${escapeHtml(title)}</h1>
+                        <p id="history-subtitle">${escapeHtml(subtitle)}</p>
+                    </div>
+                    <div class="history-page-tools" aria-label="작업 이력 보기 정보">
+                        <span class="history-tool-pill history-tool-mode" id="history-workspace-pill"${isProductionWorkspace() ? '' : ' hidden'}>보고 전용</span>
+                        <button class="history-tool-pill history-tool-select" type="button" data-action="switch-tab" data-team="${OVERVIEW_KEY}">
+                            <span>전체</span>
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </button>
+                        <span class="history-tool-pill history-tool-view">주간 뷰</span>
+                        <span class="history-tool-pill history-tool-date">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M7 3v3M17 3v3M4 9h16M6 5h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                            <span data-role="current-date">-</span>
+                        </span>
+                    </div>
+                </div>
         `;
     }
 
@@ -71,10 +125,11 @@
     }
 
     function buildCategoryGroupOptionsMarkup(selectedValue = '') {
+        const normalizedSelectedValue = isProductionWorkspace() ? 'report' : selectedValue;
         return [
             '<option value="">구분 선택</option>',
             ...RECORD_CATEGORY_GROUP_ORDER.map(groupKey => (
-                `<option value="${escapeAttribute(groupKey)}"${selectedValue === groupKey ? ' selected' : ''}>${escapeHtml(RECORD_CATEGORY_GROUPS[groupKey]?.label || groupKey)}</option>`
+                `<option value="${escapeAttribute(groupKey)}"${normalizedSelectedValue === groupKey ? ' selected' : ''}>${escapeHtml(RECORD_CATEGORY_GROUPS[groupKey]?.label || groupKey)}</option>`
             ))
         ].join('');
     }
@@ -91,9 +146,7 @@
                         value="${escapeAttribute(state.currentKeyword || '')}"
                         placeholder="검색어 입력"
                     >
-                    <select class="history-search-select" data-role="category-filter" aria-label="카테고리 선택">
-                        ${buildCategoryFilterOptionsMarkup()}
-                    </select>
+                    ${getCategoryFilterMarkup()}
                     <button class="btn btn-primary btn-sm history-search-action" type="button" data-action="search">검색</button>
                     <span class="search-result-count" data-role="search-result-count"></span>
                 </div>
@@ -102,10 +155,11 @@
     }
 
     function buildCategoryOptionsMarkup(selectedGroup = '', selectedCategory = '') {
+        const normalizedSelectedGroup = isProductionWorkspace() ? 'report' : selectedGroup;
         const categories = typeof history.getRecordCategoryOptionsForGroup === 'function'
-            ? history.getRecordCategoryOptionsForGroup(selectedGroup, { includeLegacyValue: selectedCategory })
+            ? history.getRecordCategoryOptionsForGroup(normalizedSelectedGroup, { includeLegacyValue: selectedCategory })
             : [];
-        const hasSelectedGroup = String(selectedGroup || '').trim().length > 0;
+        const hasSelectedGroup = String(normalizedSelectedGroup || '').trim().length > 0;
         const hasSelectableCategories = categories.length > 0;
         return [
             `<option value="">${hasSelectableCategories || !hasSelectedGroup ? '하위 카테고리 선택' : '하위 카테고리 없음'}</option>`,
@@ -223,7 +277,7 @@
                 <div class="section-header no-print">
                     <h2>
                         <span class="team-badge ${escapeHtml(info.class || '')}">${escapeHtml(meta.title)}</span>
-                        <button class="btn btn-success btn-sm" type="button" data-action="add-record" data-team="${teamKey}">내역 추가</button>
+                        <button class="btn btn-success btn-sm" type="button" data-action="add-record" data-team="${teamKey}"><span data-role="add-record-label">${escapeHtml(typeof view.getAddRecordLabel === 'function' ? view.getAddRecordLabel() : '내역 추가')}</span></button>
                     </h2>
                     <div class="section-actions">
                         ${buildHistorySearchPanel()}
@@ -240,16 +294,16 @@
             <div class="modal" id="recordModal">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3 id="modalTitle">작업내역 추가</h3>
+                        <h3 id="modalTitle">${escapeHtml(typeof view.getRecordModalTitle === 'function' ? view.getRecordModalTitle(false) : '작업내역 추가')}</h3>
                         <button class="modal-close" type="button" data-action="close-record-modal">&times;</button>
                     </div>
                     <div class="modal-body">
                         <div class="form-guide">
                             <strong>입력 기준</strong>
                             <ul>
-                                <li>기간, 팀, 작업자, 업무내용은 필수입니다.</li>
-                                <li>비용은 필요한 경우에만 입력합니다.</li>
-                                <li>첨부는 청구서 1건, 보고자료 1건으로 구분되며 PDF·엑셀·PPT·워드·한글 문서를 올릴 수 있습니다.</li>
+                                <li id="recordGuideItemRequired">기간, 팀, 작업자, 업무내용은 필수입니다.</li>
+                                <li id="recordGuideItemCost">비용은 필요한 경우에만 입력합니다.</li>
+                                <li id="recordGuideItemAttachment">첨부는 청구서 1건, 보고자료 1건으로 구분되며 PDF·엑셀·PPT·워드·한글 문서를 올릴 수 있습니다.</li>
                             </ul>
                         </div>
 
@@ -257,7 +311,7 @@
                             <input type="hidden" id="formSourceTeam" value="">
                             <input type="hidden" id="formIndex" value="">
 
-                            <div class="form-row">
+                            <div class="form-row" id="recordCategoryRow"${isProductionWorkspace() ? ' hidden' : ''}>
                                 <div class="form-group">
                                     <label for="recordCategoryGroup">구분</label>
                                     <select id="recordCategoryGroup" required>
@@ -283,8 +337,8 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="recordWorkContent">제목</label>
-                                <textarea id="recordWorkContent" rows="4" placeholder="작업 제목 또는 핵심 내용을 적습니다." required></textarea>
+                                <label for="recordWorkContent" id="recordWorkContentLabel">${isProductionWorkspace() ? '보고 제목 / 핵심 내용' : '제목'}</label>
+                                <textarea id="recordWorkContent" rows="4" placeholder="${escapeAttribute(isProductionWorkspace() ? '실적 보고 제목과 핵심 내용을 적습니다.' : '작업 제목 또는 핵심 내용을 적습니다.')}" required></textarea>
                             </div>
 
                             <div class="form-row">
@@ -301,7 +355,7 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="recordAssignee">작업자(여러 명 가능)</label>
-                                    <textarea id="recordAssignee" rows="4" placeholder="Operator G&#10;Operator B&#10;Operator C" required></textarea>
+                                    <textarea id="recordAssignee" rows="4" placeholder="Operator A&#10;Operator B&#10;Operator C" required></textarea>
                                     <div class="field-helper">
                                         <span class="field-helper-badge">줄바꿈 입력</span>
                                         <span class="field-helper-text">한 줄에 한 명씩 적으면 각각의 작업자로 정리됩니다.</span>
@@ -316,14 +370,14 @@
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="recordRemarks">비고</label>
-                                    <textarea id="recordRemarks" rows="3" placeholder="특이사항, 후속 메모, 참고 내용을 적습니다."></textarea>
+                                    <label for="recordRemarks" id="recordRemarksLabel">${isProductionWorkspace() ? '보고 메모' : '비고'}</label>
+                                    <textarea id="recordRemarks" rows="3" placeholder="${escapeAttribute(isProductionWorkspace() ? '실적 수치, 특이사항, 후속 메모를 적습니다.' : '특이사항, 후속 메모, 참고 내용을 적습니다.')}"></textarea>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label>첨부 파일</label>
-                                <div class="file-help">청구서와 보고자료 칸에서 각각 문서 1건씩 선택합니다.</div>
+                                <label id="recordAttachmentLabel">${isProductionWorkspace() ? '보고 첨부' : '첨부 파일'}</label>
+                                <div class="file-help" id="recordAttachmentHelp">${isProductionWorkspace() ? '보고자료 문서 1건을 선택합니다.' : '청구서와 보고자료 칸에서 각각 문서 1건씩 선택합니다.'}</div>
                                 <div class="attachment-list" id="attachmentList"></div>
                                 <div class="attachment-inputs" aria-hidden="true">
                                     <input type="file" id="recordBillingAttachment" class="attachment-file-input" accept="${escapeAttribute(WORK_HISTORY_ATTACHMENT_ACCEPT || '')}" tabindex="-1">
@@ -333,8 +387,8 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-action="close-record-modal">취소</button>
-                        <button type="button" class="btn btn-primary" data-action="save-record">저장</button>
+                        <button type="button" class="btn btn-secondary" id="recordCancelButton" data-action="close-record-modal">취소</button>
+                        <button type="button" class="btn btn-primary" id="recordSaveButton" data-action="save-record">${escapeHtml(typeof view.getRecordSaveButtonLabel === 'function' ? view.getRecordSaveButtonLabel() : '저장')}</button>
                     </div>
                 </div>
             </div>
@@ -346,12 +400,12 @@
             <div class="modal" id="deleteModal">
                 <div class="modal-content modal-sm">
                     <div class="modal-header modal-header-danger">
-                        <h3>삭제 확인</h3>
+                        <h3 id="deleteModalTitle">삭제 확인</h3>
                         <button class="modal-close" type="button" data-action="close-delete-modal">&times;</button>
                     </div>
                     <div class="modal-body">
-                        <p style="text-align:center; font-size:15px;">이 작업내역을 삭제하시겠습니까?</p>
-                        <p style="text-align:center; color:#6b7280; font-size:13px;">삭제 후에는 복구되지 않습니다.</p>
+                        <p id="deleteModalMessage" style="text-align:center; font-size:15px;">${escapeHtml(typeof view.getDeleteModalMessage === 'function' ? view.getDeleteModalMessage() : '이 작업내역을 삭제하시겠습니까?')}</p>
+                        <p id="deleteModalSubMessage" style="text-align:center; color:#6b7280; font-size:13px;">${escapeHtml(typeof view.getDeleteModalSubMessage === 'function' ? view.getDeleteModalSubMessage() : '삭제 후에는 복구되지 않습니다.')}</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-action="close-delete-modal">취소</button>
@@ -386,6 +440,7 @@
 
     Object.assign(view, {
         buildShellHtml,
+        buildPageHeader,
         buildCategoryGroupOptionsMarkup,
         buildCategoryOptionsMarkup,
         buildTabButton,

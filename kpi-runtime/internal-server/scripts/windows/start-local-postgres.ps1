@@ -5,11 +5,14 @@ $ErrorActionPreference = 'Stop'
 $serverDir = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 . (Join-Path $PSScriptRoot 'resolve-postgres-tools.ps1')
 
-$postgresBinDir = Resolve-KpiPostgresBinDir -ServerDir $serverDir -RequiredExecutable 'pg_ctl.exe' -InstallIfMissing
+$postgresBinDir = Resolve-KpiPostgresBinDir -ServerDir $serverDir -RequiredExecutable 'pg_ctl.exe'
 $pgCtlPath = Join-Path $postgresBinDir 'pg_ctl.exe'
 $pgIsReadyPath = Join-Path $postgresBinDir 'pg_isready.exe'
+$postgresPath = Join-Path $postgresBinDir 'postgres.exe'
 $postgresDataDir = Join-Path $serverDir 'var\central-runtime\postgres\data'
-$postgresLogFile = Join-Path $serverDir 'var\central-runtime\postgres\logs\postgres.log'
+$postgresLogDir = Join-Path $serverDir 'var\central-runtime\postgres\logs'
+$postgresStdoutLogFile = Join-Path $postgresLogDir 'postgres.stdout.log'
+$postgresStderrLogFile = Join-Path $postgresLogDir 'postgres.stderr.log'
 $postgresPort = 5400
 
 function Test-PostgresReady {
@@ -21,17 +24,29 @@ if (-not (Test-Path (Join-Path $postgresDataDir 'PG_VERSION'))) {
   throw "Local KPI PostgreSQL cluster is not initialized. Run initialize-central-runtime.ps1 first."
 }
 
+if (-not (Test-Path $postgresPath)) {
+  throw "Required command was not found: $postgresPath"
+}
+
+New-Item -ItemType Directory -Force -Path $postgresLogDir | Out-Null
+
 & $pgCtlPath -D $postgresDataDir status 2>$null | Out-Null
 if ($LASTEXITCODE -eq 0 -or (Test-PostgresReady)) {
   Write-Host "Local KPI PostgreSQL is already running on port $postgresPort."
   exit 0
 }
 
-& $pgCtlPath -D $postgresDataDir -l $postgresLogFile -o "-p $postgresPort" start | Out-Null
-$startExitCode = $LASTEXITCODE
-if ($startExitCode -ne 0 -and (Test-PostgresReady)) {
-  Write-Warning "pg_ctl start returned exit code $startExitCode, but PostgreSQL is already accepting connections on port $postgresPort."
-  exit 0
+$startProcess = Start-Process `
+  -FilePath $postgresPath `
+  -ArgumentList @('-D', $postgresDataDir, '-p', [string]$postgresPort) `
+  -PassThru `
+  -WindowStyle Hidden `
+  -RedirectStandardOutput $postgresStdoutLogFile `
+  -RedirectStandardError $postgresStderrLogFile
+
+Start-Sleep -Milliseconds 500
+if ($startProcess.HasExited -and -not (Test-PostgresReady)) {
+  throw "Local KPI PostgreSQL process exited during startup (exit code $($startProcess.ExitCode))."
 }
 
 $deadline = (Get-Date).AddSeconds(20)

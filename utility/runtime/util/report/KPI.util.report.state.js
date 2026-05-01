@@ -23,7 +23,7 @@
         const UTIL_REPORT_PROCESS_TOTAL_EX_WASTE_TOTAL_KEY = `${UTIL_REPORT_PROCESS_TOTAL_EX_WASTE_PREFIX}::total`;
         const UTIL_REPORT_PROCESS_TOTAL_EX_WASTE_SPECS = [
             { processKey: 'drying', label: 'Process Alpha', teamFilters: ['Plant B', 'Line Beta'], color: '#2563eb' },
-            { processKey: 'stick_pouch', label: 'Process Beta', teamFilters: ['Line Gamma'], color: '#16a34a' },
+            { processKey: 'stick_pouch', label: 'Process Beta B,Process Beta A', teamFilters: ['Line Gamma'], color: '#16a34a' },
             { processKey: 'liquid', label: 'Process Gamma', teamFilters: ['Line Delta'], color: '#db2777' }
         ];
         const UTIL_REPORT_GAS_PROCESS_SPECS = [
@@ -437,10 +437,10 @@
             if (!raw || raw === 'all' || raw === '전체') return 'all';
             if (UTIL_REPORT_PRODUCTION_TEAM_OPTIONS.includes(raw)) return raw;
             const canonical = canonicalizeUtilTeamName(raw);
-            if (canonical === 'LineAlpha') return 'Line Alpha';
-            if (canonical === 'LineBeta') return 'Line Beta';
-            if (canonical === 'LineGamma') return 'Line Gamma';
-            if (canonical === 'LineDelta') return 'Line Delta';
+            if (canonical === '1팀1파트') return 'Line Alpha';
+            if (canonical === '1팀2파트') return 'Line Beta';
+            if (canonical === 'Line Gamma') return 'Line Gamma';
+            if (canonical === 'Line Delta') return 'Line Delta';
             if (canonical === 'Plant B') return 'Line Alpha';
             if (canonical === 'Plant A') return 'Plant A';
             return 'all';
@@ -526,10 +526,10 @@
 
         function getUtilReportBaseTeamOrderRank(teamName) {
             const canonical = canonicalizeUtilTeamName(teamName);
-            if (canonical === 'LineAlpha') return 0;
-            if (canonical === 'LineBeta') return 1;
-            if (canonical === 'LineGamma') return 2;
-            if (canonical === 'LineDelta') return 3;
+            if (canonical === '1팀1파트') return 0;
+            if (canonical === '1팀2파트') return 1;
+            if (canonical === 'Line Gamma') return 2;
+            if (canonical === 'Line Delta') return 3;
             if (canonical === 'Plant B') return 4;
             if (canonical === 'Plant A') return 5;
             return 50;
@@ -611,11 +611,11 @@
             const canonical = canonicalizeUtilTeamName(name);
             const isCombined = isUtilReportGasCombinedTeamSelection(name);
             const fuel = inferUtilFuelType(name);
-            if (canonical === 'LineAlpha' && fuel === 'lng') return 0;
-            if (canonical === 'LineBeta' && isCombined) return 1;
-            if (canonical === 'LineBeta' && fuel === 'lng') return 2;
-            if (canonical === 'LineBeta' && fuel === 'lpg') return 3;
-            if (canonical === 'LineDelta' && fuel === 'lng') return 4;
+            if (canonical === '1팀1파트' && fuel === 'lng') return 0;
+            if (canonical === '1팀2파트' && isCombined) return 1;
+            if (canonical === '1팀2파트' && fuel === 'lng') return 2;
+            if (canonical === '1팀2파트' && fuel === 'lpg') return 3;
+            if (canonical === 'Line Delta' && fuel === 'lng') return 4;
             if (canonical === 'Plant B') return 5;
             if (canonical === 'Plant A') return 6;
             return 50;
@@ -688,10 +688,10 @@
             if (!canonical) return '';
 
             if (normalizedItemKey === 'waste') {
-                if (canonical === 'Plant B' || canonical === 'LineAlpha') {
+                if (canonical === 'Plant B' || canonical === '1팀1파트') {
                     return options.includes('Plant B') ? 'Plant B' : '';
                 }
-                if (['Plant A', 'LineBeta', 'LineGamma', 'LineDelta'].includes(canonical)) {
+                if (['Plant A', '1팀2파트', 'Line Gamma', 'Line Delta'].includes(canonical)) {
                     return options.includes('Plant A') ? 'Plant A' : '';
                 }
                 return '';
@@ -701,7 +701,7 @@
                 const aggregate = parseUtilReportGasAggregateTeamLabel(raw);
                 if (aggregate?.label && options.includes(aggregate.label)) return aggregate.label;
                 const fuel = inferUtilFuelType(raw);
-                if (canonical === 'LineGamma' && options.includes('Plant A')) return 'Plant A';
+                if (canonical === 'Line Gamma' && options.includes('Plant A')) return 'Plant A';
                 const matchedByCanonical = options.filter(option => canonicalizeUtilTeamName(option) === canonical);
                 if (!matchedByCanonical.length) return '';
                 if (fuel) {

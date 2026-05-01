@@ -140,36 +140,6 @@
         .audit-report-foot { font-size: 0.72rem; color: #94a3b8; }
         .audit-report-empty { text-align: center; color: #94a3b8; padding: 22px 12px; border: 1px dashed #cbd5e1; border-radius: 12px; background: #f8fafc; }
         .audit-legal-wrap { display: grid; gap: 0.8rem; }
-        .audit-legal-popup-launch { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.8rem; align-items: center; border: 1px solid #fecdd3; border-radius: 12px; background: linear-gradient(180deg, #fff7f8 0%, #ffffff 100%); padding: 12px 14px; box-shadow: 0 10px 22px rgba(190, 18, 60, 0.06); }
-        .audit-legal-popup-launch strong { display: block; color: #881337; font-size: 0.92rem; font-weight: 900; }
-        .audit-legal-popup-launch span { display: block; margin-top: 2px; color: #64748b; font-size: 0.78rem; font-weight: 700; }
-        .audit-legal-popup-launch-btn { min-height: 38px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid #be123c; border-radius: 8px; background: #be123c; color: #ffffff; padding: 0 13px; font-size: 0.8rem; font-weight: 900; cursor: pointer; white-space: nowrap; }
-        .audit-legal-popup-launch-btn:hover { background: #9f1239; border-color: #9f1239; }
-        .audit-legal-popup { position: fixed; inset: 0; z-index: 1460; display: none; place-items: center; padding: 16px; }
-        .audit-legal-popup.is-open { display: grid; }
-        .audit-legal-popup-backdrop { position: absolute; inset: 0; border: 0; border-radius: 0; background: rgba(15, 23, 42, 0.58); cursor: pointer; }
-        .audit-legal-popup-dialog { position: relative; z-index: 1; width: min(1540px, calc(100vw - 32px)); height: min(940px, calc(100vh - 32px)); display: grid; grid-template-rows: auto minmax(0, 1fr); overflow: hidden; border: 1px solid #fecdd3; border-radius: 8px; background: #fff7f8; box-shadow: 0 30px 80px rgba(15, 23, 42, 0.32); }
-        .audit-legal-popup-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; border-bottom: 1px solid #fecdd3; background: #ffffff; padding: 13px 16px; }
-        .audit-legal-popup-header strong { display: block; color: #881337; font-size: 1.02rem; font-weight: 900; }
-        .audit-legal-popup-header p { margin: 3px 0 0; color: #64748b; font-size: 0.78rem; font-weight: 700; }
-        .audit-legal-popup-kicker { display: block; margin-bottom: 2px; color: #be123c; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; }
-        .audit-legal-popup-close { width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #fecdd3; border-radius: 8px; background: #ffffff; color: #be123c; cursor: pointer; flex: 0 0 auto; }
-        .audit-legal-popup-close:hover { background: #fff1f2; border-color: #fb7185; }
-        .audit-legal-popup-body { min-height: 0; overflow: auto; padding: 14px; }
-        .audit-legal-popup-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.65rem; margin-bottom: 0.8rem; }
-        .audit-legal-popup-summary span { min-height: 70px; display: grid; align-content: center; gap: 3px; border: 1px solid #e2e8f0; border-radius: 8px; background: #ffffff; padding: 10px 12px; }
-        .audit-legal-popup-summary em { color: #64748b; font-size: 0.72rem; font-style: normal; font-weight: 900; }
-        .audit-legal-popup-summary strong { color: #0f172a; font-size: 1.24rem; font-weight: 900; }
-        .audit-legal-popup-summary .danger { border-color: #fecdd3; background: #fff1f2; }
-        .audit-legal-popup-summary .danger strong { color: #be123c; }
-        .audit-legal-popup-summary .warning { border-color: #fed7aa; background: #fff7ed; }
-        .audit-legal-popup-summary .warning strong { color: #c2410c; }
-        .audit-legal-popup-summary .safe { border-color: #bbf7d0; background: #f0fdf4; }
-        .audit-legal-popup-summary .safe strong { color: #166534; }
-        .audit-legal-popup-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr) minmax(260px, 0.75fr); gap: 0.8rem; align-items: start; }
-        .audit-legal-popup-equipment,
-        .audit-legal-popup-table { grid-column: span 2; }
-        .audit-legal-popup-preview { grid-column: span 1; }
         .audit-legal-meta { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; flex-wrap: wrap; font-size: 0.78rem; color: #475569; }
         .audit-legal-alarm { display: inline-flex; align-items: center; gap: 0.45rem; border: 1px solid #fecaca; background: #fee2e2; color: #991b1b; border-radius: 999px; padding: 4px 10px; font-size: 0.75rem; font-weight: 900; }
         .audit-legal-alarm.is-safe { border-color: #bbf7d0; background: #ecfdf5; color: #166534; }
@@ -182,11 +152,17 @@
         .audit-legal-side { min-width: 0; display: grid; gap: 0.8rem; }
         .audit-legal-equipment-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(156px, 1fr)); gap: 0.7rem; min-width: 0; }
         .audit-legal-equipment-card { min-height: 154px; border: 1px solid #e2e8f0; border-radius: 12px; background: #ffffff; padding: 12px; display: grid; grid-template-rows: auto 1fr auto; gap: 0.65rem; box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06); }
+        .audit-legal-equipment-card[data-audit-legal-category] { cursor: pointer; }
+        .audit-legal-equipment-card[data-audit-legal-category]:hover,
+        .audit-legal-equipment-card[data-audit-legal-category]:focus { border-color: #93c5fd; box-shadow: 0 10px 22px rgba(37, 99, 235, 0.12); outline: 0; }
         .audit-legal-equipment-top { display: flex; align-items: center; gap: 0.55rem; min-width: 0; }
         .audit-legal-equipment-icon { width: 34px; height: 34px; flex: 0 0 auto; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; background: #f8fafc; border: 1px solid #e2e8f0; color: #334155; }
         .audit-legal-equipment-icon.fire { background: #fef2f2; border-color: #fecaca; color: #dc2626; }
         .audit-legal-equipment-icon.environment { background: #f0fdf4; border-color: #86efac; color: #166534; }
+        .audit-legal-equipment-icon.boiler { background: #fff7ed; border-color: #fdba74; color: #c2410c; }
+        .audit-legal-equipment-icon.gas { background: #f0fdf4; border-color: #86efac; color: #15803d; }
         .audit-legal-equipment-icon.gasboiler { background: #fff7ed; border-color: #fdba74; color: #c2410c; }
+        .audit-legal-equipment-icon.pressure { background: #f8fafc; border-color: #cbd5e1; color: #475569; }
         .audit-legal-equipment-title { min-width: 0; font-size: 0.86rem; color: #0f172a; line-height: 1.25; word-break: keep-all; }
         .audit-legal-metric-list { display: grid; gap: 0.35rem; align-content: start; }
         .audit-legal-metric-row { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; font-size: 0.76rem; color: #475569; }
@@ -200,6 +176,21 @@
         .audit-legal-status-token.near { color: #f59e0b; }
         .audit-legal-status-token.danger,
         .audit-legal-status-token.overdue { color: #dc2626; }
+        .audit-legal-entry-card { border-top: 3px solid #2563eb; }
+        .audit-legal-entry-form { display: grid; gap: 0.75rem; }
+        .audit-legal-entry-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.58rem; min-width: 0; }
+        .audit-legal-entry-assets { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.58rem; min-width: 0; }
+        .audit-legal-entry-field { display: grid; gap: 0.25rem; min-width: 0; }
+        .audit-legal-entry-field.wide { grid-column: span 2; }
+        .audit-legal-entry-field span { color: #475569; font-size: 0.72rem; font-weight: 900; }
+        .audit-legal-entry-field input,
+        .audit-legal-entry-field select { width: 100%; min-width: 0; min-height: 34px; border: 1px solid #dbe4ef; border-radius: 8px; background: #fff; color: #0f172a; padding: 7px 9px; font: inherit; font-size: 0.78rem; font-weight: 750; }
+        .audit-legal-entry-field input[type="file"] { padding: 6px 8px; color: #475569; font-size: 0.74rem; }
+        .audit-legal-entry-field input:focus,
+        .audit-legal-entry-field select:focus { outline: 2px solid rgba(37, 99, 235, 0.18); border-color: #2563eb; }
+        .audit-legal-entry-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 0.45rem; }
+        .audit-legal-entry-actions button { min-height: 34px; border: 1px solid #dbe4ef; border-radius: 8px; background: #ffffff; color: #334155; padding: 0 11px; font-size: 0.75rem; font-weight: 900; cursor: pointer; }
+        .audit-legal-entry-actions .audit-legal-entry-primary { border-color: #2563eb; background: #2563eb; color: #ffffff; }
         .audit-legal-content-grid { display: grid; grid-template-columns: minmax(280px, 0.42fr) minmax(0, 0.58fr); gap: 0.8rem; align-items: stretch; min-width: 0; }
         .audit-legal-calendar-head { display: flex; align-items: center; justify-content: space-between; gap: 0.7rem; margin-bottom: 0.6rem; }
         .audit-legal-calendar-head strong { color: #0f172a; font-size: 0.94rem; }
@@ -245,7 +236,7 @@
         .audit-legal-filters .audit-select,
         .audit-legal-filters .audit-input { width: 100%; min-width: 0; }
         .audit-legal-table-wrap { overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 12px; background: #fff; }
-        .audit-legal-table { width: 100%; border-collapse: collapse; min-width: 1260px; font-size: 0.83rem; }
+        .audit-legal-table { width: 100%; border-collapse: collapse; min-width: 1360px; font-size: 0.83rem; }
         .audit-legal-table th,
         .audit-legal-table td { border-bottom: 1px solid #e2e8f0; padding: 8px 10px; text-align: left; }
         .audit-legal-table th { position: sticky; top: 0; background: #f8fafc; color: #334155; font-weight: 900; z-index: 1; }
@@ -257,8 +248,11 @@
         .audit-legal-item-badge.fire { border-color: #fecaca; background: #fef2f2; color: #dc2626; }
         .audit-legal-item-badge.environment { border-color: #86efac; background: #f0fdf4; color: #166534; }
         .audit-legal-item-badge.electric { border-color: #bfdbfe; background: #eff6ff; color: #1d4ed8; }
+        .audit-legal-item-badge.boiler { border-color: #fdba74; background: #fff7ed; color: #c2410c; }
+        .audit-legal-item-badge.gas { border-color: #86efac; background: #f0fdf4; color: #15803d; }
         .audit-legal-item-badge.gasboiler { border-color: #fdba74; background: #fff7ed; color: #c2410c; }
         .audit-legal-item-badge.cooling { border-color: #a5f3fc; background: #ecfeff; color: #0e7490; }
+        .audit-legal-item-badge.pressure { border-color: #cbd5e1; background: #f8fafc; color: #475569; }
         .audit-legal-item-badge.other { border-color: #cbd5e1; background: #f8fafc; color: #475569; }
         .audit-legal-table tr.is-near td { background: #fff7ed; }
         .audit-legal-table tr.is-overdue td { background: #fff1f2; color: #9f1239; }
@@ -506,20 +500,15 @@
             .audit-report-toolbar { grid-template-columns: 1fr; }
             .audit-report-row { grid-template-columns: 1fr; }
             .audit-report-actions { grid-template-columns: 1fr 1fr; }
-            .audit-legal-popup-launch,
             .audit-legal-dashboard,
             .audit-legal-content-grid { grid-template-columns: 1fr; }
-            .audit-legal-popup-launch-btn { width: 100%; }
-            .audit-legal-popup { padding: 10px; }
-            .audit-legal-popup-dialog { width: calc(100vw - 20px); height: calc(100vh - 20px); }
-            .audit-legal-popup-header { padding: 12px; }
-            .audit-legal-popup-summary { grid-template-columns: 1fr 1fr; }
-            .audit-legal-popup-grid { grid-template-columns: 1fr; }
-            .audit-legal-popup-equipment,
-            .audit-legal-popup-table,
-            .audit-legal-popup-preview { grid-column: auto; }
             .audit-legal-side { grid-template-columns: 1fr; }
             .audit-legal-equipment-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+            .audit-legal-entry-grid,
+            .audit-legal-entry-assets { grid-template-columns: 1fr; }
+            .audit-legal-entry-field.wide { grid-column: auto; }
+            .audit-legal-entry-actions { justify-content: stretch; }
+            .audit-legal-entry-actions button { flex: 1 1 150px; }
             .audit-legal-filters { grid-template-columns: 1fr; }
             .audit-legal-table { min-width: 900px; }
             .audit-legal-doc-card { grid-template-columns: 34px minmax(0, 1fr); }

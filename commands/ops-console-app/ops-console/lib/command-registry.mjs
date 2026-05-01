@@ -1,19 +1,19 @@
 export const commandRegistry = [
-  { key: 'server.start', category: 'server', title: '데모 런타임 열기', description: 'Node 런타임은 3104번, PostgreSQL은 5400번 포트로 올립니다. 예시 로그인은 1234 / 1234입니다.', kind: 'action' },
-  { key: 'server.stop', category: 'server', title: '데모 런타임 닫기', description: '3104번 Node 런타임과 5400번 PostgreSQL을 순서대로 종료합니다.', kind: 'action', confirmMessage: 'KPI 데모 런타임과 로컬 PostgreSQL을 종료합니다.' },
-  { key: 'server.recover', category: 'server', title: '복구 재시작', description: '3104번 런타임을 정리한 뒤 stale postmaster.pid를 안전 조건에서만 정리하고 다시 올립니다.', kind: 'action', confirmMessage: '현재 데모 런타임을 복구 재시작합니다.' },
+  { key: 'server.start', category: 'server', title: '서버 열기', description: 'KPI 서버, 로컬 PostgreSQL, 환경 파일을 현재 런타임 기준으로 올립니다.', kind: 'action' },
+  { key: 'server.stop', category: 'server', title: '서버 닫기', description: 'KPI 서버와 로컬 PostgreSQL을 순서대로 종료합니다.', kind: 'action', confirmMessage: 'KPI 서버와 로컬 PostgreSQL을 종료합니다.' },
+  { key: 'server.recover', category: 'server', title: '복구 재시작', description: '서버를 정리한 뒤 stale postmaster.pid를 안전 조건에서만 정리하고 다시 올립니다.', kind: 'action', confirmMessage: '현재 서버를 복구 재시작합니다.' },
   { key: 'startup.register', category: 'startup', title: '부팅 자동실행 등록', description: '현재 사용자 로그인 시 KPI 서버를 자동으로 올리는 시작프로그램을 등록합니다.', kind: 'action' },
   { key: 'startup.unregister', category: 'startup', title: '부팅 자동실행 해제', description: '현재 사용자 시작프로그램 자동실행을 제거합니다.', kind: 'action' },
   {
     key: 'account.bootstrapOwner',
     category: 'account',
     title: '오너 생성',
-    description: '최초 데모 owner 계정을 로컬에서 직접 생성합니다. 공개 데모 예시는 1234 / 1234입니다.',
+    description: '최초 owner 계정을 로컬에서 직접 생성합니다.',
     kind: 'form',
     fields: [
-      { name: 'username', label: '오너 아이디', type: 'text', placeholder: '1234', defaultValue: '1234', required: true },
-      { name: 'displayName', label: '오너 표시 이름', type: 'text', placeholder: 'Demo User', defaultValue: 'Demo User', required: true },
-      { name: 'password', label: '비밀번호', type: 'password', placeholder: '1234', defaultValue: '1234', required: true }
+      { name: 'username', label: '오너 아이디', type: 'text', placeholder: 'owner', required: true },
+      { name: 'displayName', label: '오너 표시 이름', type: 'text', placeholder: 'KPI Owner', required: true },
+      { name: 'password', label: '비밀번호', type: 'password', required: true }
     ]
   },
   {

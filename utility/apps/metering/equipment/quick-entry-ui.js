@@ -1,8 +1,92 @@
+const QUICK_ENTRY_POPUP_RESOURCE_TYPES = Object.freeze([
+  RESOURCE_TYPES.ELECTRIC,
+  RESOURCE_TYPES.GAS,
+]);
+
+function canUseMeteringQuickEntryPopup() {
+  if (typeof isMeteringQuickEntryPopupEnabled === "function") {
+    return Boolean(isMeteringQuickEntryPopupEnabled());
+  }
+
+  return true;
+}
+
+function isQuickEntryPopupSupportedResource(resourceType = getCurrentResourceType()) {
+  return isElectricResourceType(resourceType) || isGasResourceType(resourceType);
+}
+
+function getQuickEntryPopupResourceTypes() {
+  return QUICK_ENTRY_POPUP_RESOURCE_TYPES.filter((resourceType) =>
+    isPlainObject(getActiveResourceDataset(state.store, resourceType))
+  );
+}
+
+function getQuickEntryPopupDataset(resourceType) {
+  return getActiveResourceDataset(state.store, resourceType);
+}
+
+function runWithQuickEntryResourceContext(resourceType, callback) {
+  const dataset = getQuickEntryPopupDataset(resourceType);
+  if (!dataset || typeof callback !== "function") {
+    return null;
+  }
+
+  const previousResourceType = state.store?.resourceType;
+  const previousMode = state.store?.mode;
+  const previousItems = state.store?.equipmentItems;
+  const previousEntries = state.store?.equipmentEntries;
+
+  try {
+    state.store.resourceType = normalizeResourceType(resourceType);
+    state.store.mode = MODES.EQUIPMENT;
+    state.store.equipmentItems = Array.isArray(dataset.equipmentItems) ? dataset.equipmentItems : [];
+    state.store.equipmentEntries = isPlainObject(dataset.equipmentEntries)
+      ? dataset.equipmentEntries
+      : {};
+    return callback(dataset);
+  } finally {
+    state.store.resourceType = previousResourceType;
+    state.store.mode = previousMode;
+    state.store.equipmentItems = previousItems;
+    state.store.equipmentEntries = previousEntries;
+  }
+}
+
+function getQuickEntryPopupSearchInput() {
+  return elements.quickEntryMenu?.__quickEntrySearchInput || null;
+}
+
+function getQuickEntryPopupBody() {
+  return elements.quickEntryMenu?.__quickEntryPopupBody || null;
+}
+
+function getQuickEntryPopupEmptyState() {
+  return elements.quickEntryMenu?.__quickEntryPopupEmptyState || null;
+}
+
+function getQuickEntryPopupDateBadge() {
+  return elements.quickEntryMenu?.__quickEntryPopupDateBadge || null;
+}
+
+function getQuickEntryPopupRenderKey() {
+  return `${state.selectedDate || ""}::${getQuickEntryPopupSearchQuery?.() || ""}`;
+}
+
 function resetQuickEntryDraft(options = {}) {
-  const { preserveResults = false } = options;
+  const { preserveSearch = false, preserveResults = false } = options;
 
   if (elements.quickEntryTextarea) {
     elements.quickEntryTextarea.value = "";
+  }
+
+  if (!preserveSearch) {
+    const searchInput = getQuickEntryPopupSearchInput();
+    if (searchInput) {
+      searchInput.value = "";
+    }
+    if (elements.quickEntryMenu) {
+      elements.quickEntryMenu.__quickEntryPopupRenderKey = "";
+    }
   }
 
   if (!preserveResults) {
@@ -17,20 +101,7 @@ function renderQuickEntryResults() {
   }
 
   elements.quickEntryResultList.innerHTML = "";
-
-  if (!state.quickEntryResults.length) {
-    elements.quickEntryResultList.classList.add("is-hidden");
-    return;
-  }
-
-  state.quickEntryResults.slice(0, QUICK_ENTRY_RESULT_LIMIT).forEach((result) => {
-    const item = document.createElement("div");
-    item.className = `quick-entry-result is-${result.kind}`;
-    item.textContent = result.text;
-    elements.quickEntryResultList.appendChild(item);
-  });
-
-  elements.quickEntryResultList.classList.remove("is-hidden");
+  elements.quickEntryResultList.classList.add("is-hidden");
 }
 
 function pushQuickEntryResult(text, kind = "success") {
@@ -45,13 +116,141 @@ function pushQuickEntryResult(text, kind = "success") {
   renderQuickEntryResults();
 }
 
-function syncQuickEntryMenu() {
+function ensureQuickEntryPopupScaffold() {
+  const menu = elements.quickEntryMenu;
+  if (!menu || menu.__popupScaffoldReady) {
+    return;
+  }
+
+  const mountDocument = getMountDocument();
+  const panel = mountDocument.createElement("section");
+  panel.className = "quick-entry-popup-panel";
+
+  Array.from(menu.childNodes).forEach((childNode) => {
+    panel.appendChild(childNode);
+  });
+
+  const toolbar = mountDocument.createElement("div");
+  toolbar.className = "quick-entry-popup-toolbar";
+
+  const searchField = mountDocument.createElement("label");
+  searchField.className = "quick-entry-popup-search";
+
+  const searchLabel = mountDocument.createElement("span");
+  searchLabel.className = "quick-entry-popup-search-label";
+  searchLabel.textContent = "설비 찾기";
+
+  const searchInput = mountDocument.createElement("input");
+  searchInput.type = "search";
+  searchInput.className = "quick-entry-popup-search-input";
+  searchInput.placeholder = "설비명 검색: 전기/가스 전체";
+  searchInput.setAttribute("autocomplete", "off");
+  searchInput.setAttribute("spellcheck", "false");
+  searchInput.setAttribute("data-quick-entry-search-input", "true");
+
+  searchField.append(searchLabel, searchInput);
+
+  const toolbarMeta = mountDocument.createElement("div");
+  toolbarMeta.className = "quick-entry-popup-toolbar-meta";
+
+  const dateBadge = mountDocument.createElement("p");
+  dateBadge.className = "quick-entry-popup-date";
+  dateBadge.textContent = "";
+
+  const closeButton = mountDocument.createElement("button");
+  closeButton.type = "button";
+  closeButton.className = "quick-entry-popup-close";
+  closeButton.textContent = "닫기";
+  closeButton.setAttribute("data-quick-entry-close", "true");
+
+  toolbarMeta.append(dateBadge, closeButton);
+  toolbar.append(searchField, toolbarMeta);
+
+  const body = mountDocument.createElement("div");
+  body.className = "quick-entry-popup-body";
+  body.setAttribute("data-quick-entry-popup-body", "true");
+
+  const emptyState = mountDocument.createElement("div");
+  emptyState.className = "quick-entry-popup-empty is-hidden";
+  emptyState.setAttribute("data-quick-entry-popup-empty", "true");
+  emptyState.innerHTML = `
+    <strong>조건에 맞는 설비가 없습니다.</strong>
+    <span>검색어를 지우거나 설비명을 다시 확인해 주세요.</span>
+  `;
+
+  panel.append(toolbar, body, emptyState);
+  menu.appendChild(panel);
+
+  const title = panel.querySelector(".quick-entry-menu-title");
+  const subtitle = panel.querySelector(".quick-entry-menu-sub");
+  const dragBar = panel.querySelector(".quick-entry-menu-drag-bar");
+  const actionRow = panel.querySelector(".quick-entry-action-row");
+
+  if (title) {
+    title.textContent = "전기/가스 설비 기입";
+  }
+  if (subtitle) {
+    subtitle.textContent = "전기와 가스를 한 화면에 최대한 많이 펼쳐두고, 설비명만 찾아 바로 값을 넣으세요.";
+  }
+  dragBar?.classList.add("quick-entry-legacy");
+  elements.quickEntryTextarea?.classList.add("quick-entry-legacy");
+  actionRow?.classList.add("quick-entry-legacy");
+  elements.quickEntryCompleteBtn?.classList.add("quick-entry-legacy");
+  elements.quickEntryResultList?.classList.add("quick-entry-legacy");
+
+  menu.__quickEntrySearchInput = searchInput;
+  menu.__quickEntryPopupBody = body;
+  menu.__quickEntryPopupEmptyState = emptyState;
+  menu.__quickEntryPopupDateBadge = dateBadge;
+  menu.__popupScaffoldReady = true;
+
+  searchInput.addEventListener("input", () => {
+    renderQuickEntryPopupBody();
+  });
+  searchInput.addEventListener("keydown", handleQuickEntryPopupSearchKeydown);
+
+  closeButton.addEventListener("click", () => {
+    state.openQuickEntryMenu = false;
+    resetQuickEntryDraft();
+    syncQuickEntryMenu();
+    elements.quickEntryToggleBtn?.focus();
+  });
+
+  menu.addEventListener("click", (event) => {
+    if (event.target === menu) {
+      state.openQuickEntryMenu = false;
+      resetQuickEntryDraft();
+      syncQuickEntryMenu();
+      elements.quickEntryToggleBtn?.focus();
+    }
+  });
+}
+
+function syncQuickEntryPopupFrame() {
+  const dateBadge = getQuickEntryPopupDateBadge();
+  if (dateBadge) {
+    dateBadge.textContent = state.selectedDate ? formatFullDate(state.selectedDate) : "";
+    dateBadge.classList.toggle("is-hidden", !state.selectedDate);
+  }
+}
+
+function syncQuickEntryMenu(options = {}) {
+  const { skipStateRefresh = false } = options;
   if (!elements.quickEntryWrap || !elements.quickEntryToggleBtn || !elements.quickEntryMenu) {
     return;
   }
 
   const isEquipmentMode = getCurrentMode() === MODES.EQUIPMENT;
-  const canOpen = isEquipmentMode && Boolean(state.selectedDate);
+  const isSupportedResource = isQuickEntryPopupSupportedResource();
+  const isFeatureEnabled = canUseMeteringQuickEntryPopup();
+  const canOpen =
+    isFeatureEnabled && isEquipmentMode && isSupportedResource && Boolean(state.selectedDate);
+
+  if (!isFeatureEnabled && state.openQuickEntryMenu) {
+    state.openQuickEntryMenu = false;
+    resetQuickEntryDraft();
+  }
+
   const isOpen = state.openQuickEntryMenu && canOpen;
   const portalRoot = getMountPortalRoot();
 
@@ -61,50 +260,52 @@ function syncQuickEntryMenu() {
   toggleMountHostStateClass("is-quick-entry-active", isOpen);
 
   if (isOpen) {
+    ensureQuickEntryPopupScaffold();
     if (elements.quickEntryMenu.parentNode !== portalRoot) {
       portalRoot.appendChild(elements.quickEntryMenu);
     }
-    ensureQuickEntryDragBar();
+    syncQuickEntryPopupFrame();
     syncQuickEntryCounter();
+    if (elements.quickEntryMenu.__quickEntryPopupRenderKey !== getQuickEntryPopupRenderKey()) {
+      renderQuickEntryPopupBody();
+    } else {
+      syncQuickEntryPopupSectionCounts?.();
+      syncQuickEntryPopupValidationStates?.();
+    }
   } else {
+    clearQuickEntryFieldValidationSuppression?.();
     if (elements.quickEntryMenu.parentNode === portalRoot) {
       elements.quickEntryWrap.appendChild(elements.quickEntryMenu);
     }
-    elements.quickEntryMenu.style.top = "";
-    elements.quickEntryMenu.style.left = "";
-    elements.quickEntryMenu.style.transform = "";
+    syncQuickEntryPopupValidationStates?.();
+    syncEquipmentReadingValidationStates?.();
+    if (!skipStateRefresh) {
+      updateDirtyState?.();
+      updateActionState?.();
+    }
   }
 }
 
 function getQuickEntryEquipmentCounts(resourceType, dateString) {
-  const dataset = getActiveResourceDataset(state.store, resourceType);
-  if (!dataset) {
-    return { total: 0, filled: 0 };
-  }
+  const items = typeof getQuickEntryPopupVisibleItems === "function"
+    ? getQuickEntryPopupVisibleItems(resourceType, dateString)
+    : [];
 
-  const items = Array.isArray(dataset.equipmentItems) ? dataset.equipmentItems : [];
-  const entries = isPlainObject(dataset.equipmentEntries) ? dataset.equipmentEntries : {};
-  const entry = isPlainObject(entries[dateString]) ? entries[dateString] : {};
-  const contextDate = dateString || getEquipmentVisibilityContextDate();
-
-  let total = 0;
   let filled = 0;
-
   items.forEach((item) => {
-    if (isSummaryOnlyEquipment(item) || isAutoCalculatedEquipment(item)) {
-      return;
-    }
-    if (isHiddenEquipmentFieldCard(item, contextDate)) {
-      return;
-    }
-    total += 1;
-    const rawValue = isPlainObject(entry.values) ? entry.values[item.id] : entry?.[item.id];
-    if (rawValue !== undefined && rawValue !== null && normalizeEntryValue(String(rawValue)) !== "") {
+    const rawValue =
+      typeof getQuickEntryPopupFieldRawValue === "function"
+        ? getQuickEntryPopupFieldRawValue(resourceType, item.id, dateString)
+        : "";
+    if (normalizeEntryValue(rawValue) !== "") {
       filled += 1;
     }
   });
 
-  return { total, filled };
+  return {
+    total: items.length,
+    filled,
+  };
 }
 
 function syncQuickEntryCounter() {
@@ -113,74 +314,28 @@ function syncQuickEntryCounter() {
   }
 
   const dateString = state.selectedDate;
+  const counts = getQuickEntryPopupResourceTypes().reduce(
+    (accumulator, resourceType) => {
+      const resourceCounts = getQuickEntryEquipmentCounts(resourceType, dateString);
+      accumulator.total += resourceCounts.total;
+      accumulator.filled += resourceCounts.filled;
+      return accumulator;
+    },
+    { total: 0, filled: 0 }
+  );
+  const isComplete = counts.total > 0 && counts.filled === counts.total;
 
-  const currentInputs = getTabNavigableEquipmentInputs().filter((input) => {
-    const fieldKey = input.dataset.fieldKey || "";
-    const equipment = getEquipmentItem(fieldKey);
-    return equipment && !isHiddenEquipmentFieldCard(equipment) && !isAutoCalculatedEquipment(equipment);
-  });
-  const currentFilled = currentInputs.filter((input) => normalizeEntryValue(input.value) !== "").length;
-  const currentTotal = currentInputs.length;
-
-  const otherType = isGasResourceType() ? RESOURCE_TYPES.ELECTRIC : RESOURCE_TYPES.GAS;
-  const otherCounts = getQuickEntryEquipmentCounts(otherType, dateString);
-
-  const totalCount = currentTotal + otherCounts.total;
-  const filledCount = currentFilled + otherCounts.filled;
-  const isComplete = totalCount > 0 && filledCount === totalCount;
-
-  elements.quickEntryCounterFraction.textContent = `${filledCount}/${totalCount}`;
+  elements.quickEntryCounterFraction.textContent = `${counts.filled}/${counts.total}`;
   elements.quickEntryCounter.classList.toggle("is-complete", isComplete);
 }
 
-function ensureQuickEntryDragBar() {
-  const dragBar = elements.quickEntryMenu.querySelector(".quick-entry-menu-drag-bar");
-  if (!dragBar || dragBar.__dragBound) {
-    return;
-  }
-  dragBar.__dragBound = true;
-
-  let isDragging = false;
-  let offsetX = 0;
-  let offsetY = 0;
-
-  dragBar.addEventListener("pointerdown", (event) => {
-    isDragging = true;
-    const rect = elements.quickEntryMenu.getBoundingClientRect();
-    offsetX = event.clientX - rect.left;
-    offsetY = event.clientY - rect.top;
-    elements.quickEntryMenu.classList.add("is-dragging");
-    elements.quickEntryMenu.style.transform = "none";
-    elements.quickEntryMenu.style.left = rect.left + "px";
-    elements.quickEntryMenu.style.top = rect.top + "px";
-    dragBar.setPointerCapture(event.pointerId);
-    event.preventDefault();
-  });
-
-  dragBar.addEventListener("pointermove", (event) => {
-    if (!isDragging) {
-      return;
-    }
-    const x = Math.max(
-      0,
-      Math.min(event.clientX - offsetX, window.innerWidth - elements.quickEntryMenu.offsetWidth)
-    );
-    const y = Math.max(
-      0,
-      Math.min(event.clientY - offsetY, window.innerHeight - elements.quickEntryMenu.offsetHeight)
-    );
-    elements.quickEntryMenu.style.left = x + "px";
-    elements.quickEntryMenu.style.top = y + "px";
-  });
-
-  dragBar.addEventListener("pointerup", () => {
-    isDragging = false;
-    elements.quickEntryMenu.classList.remove("is-dragging");
-  });
-}
-
 function toggleQuickEntryMenu() {
-  if (getCurrentMode() !== MODES.EQUIPMENT || !state.selectedDate) {
+  if (
+    !canUseMeteringQuickEntryPopup() ||
+    getCurrentMode() !== MODES.EQUIPMENT ||
+    !state.selectedDate ||
+    !isQuickEntryPopupSupportedResource()
+  ) {
     return;
   }
 
@@ -203,14 +358,29 @@ function toggleQuickEntryMenu() {
     resetQuickEntryDraft();
     syncQuickEntryMenu();
     window.setTimeout(() => {
-      elements.quickEntryTextarea?.focus();
-      elements.quickEntryTextarea?.select?.();
+      getQuickEntryPopupSearchInput()?.focus();
+      getQuickEntryPopupSearchInput()?.select?.();
     }, 0);
     return;
   }
 
   resetQuickEntryDraft();
   syncQuickEntryMenu();
+}
+
+function handleQuickEntryPopupSearchKeydown(event) {
+  if (event.key !== "ArrowDown") {
+    return;
+  }
+
+  const firstInput = getQuickEntryPopupBody()?.querySelector?.("input[data-quick-entry-popup-field]");
+  if (!firstInput) {
+    return;
+  }
+
+  event.preventDefault();
+  firstInput.focus();
+  firstInput.select?.();
 }
 
 function handleQuickEntryTextareaKeydown(event) {
@@ -224,5 +394,6 @@ function handleQuickEntryTextareaKeydown(event) {
 }
 
 function handleQuickEntryCompleteClick() {
-  processQuickEntryTextarea();
+  getQuickEntryPopupSearchInput()?.focus();
+  getQuickEntryPopupSearchInput()?.select?.();
 }

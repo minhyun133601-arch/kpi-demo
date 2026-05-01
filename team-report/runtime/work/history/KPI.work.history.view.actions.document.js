@@ -11,11 +11,20 @@
         WORK_HISTORY_ATTACHMENT_MAX_BYTES,
         getElement,
         getPayload,
+        isProductionReportWorkspace,
         validateWorkHistoryAttachment,
         saveNow,
         getRecordRuntimeConfig,
         buildExportScript
     } = history;
+
+    function isProductionWorkspace() {
+        return typeof isProductionReportWorkspace === 'function' && isProductionReportWorkspace();
+    }
+
+    function getVisibleAttachmentSlotKeys() {
+        return isProductionWorkspace() ? ['report'] : ATTACHMENT_SLOT_KEYS;
+    }
 
     function getAttachmentValidationMessage(errorKey) {
         if (errorKey === 'unsupported_type' || errorKey === 'attachment_pdf_only') {
@@ -70,7 +79,7 @@
     function renderAttachmentList() {
         const container = getElement('attachmentList');
         if (!container) return;
-        const groups = ATTACHMENT_SLOT_KEYS.map((slotKey) => {
+        const groups = getVisibleAttachmentSlotKeys().map((slotKey) => {
             const meta = ATTACHMENT_SLOT_META[slotKey];
             const existing = state.formState.existingAttachments?.[slotKey] || null;
             const pending = state.formState.pendingFiles?.[slotKey] || null;
@@ -146,19 +155,23 @@
         const serverWritable = window.KpiRuntime?.canUseServerWrite?.(runtimeConfig?.writeEnabled === true) === true;
 
         if (!serverWritable) {
-            showToast('서버 기록이 가능한 환경에서만 저장할 수 있습니다.');
+            showToast(isProductionWorkspace()
+                ? '서버 기록이 가능한 환경에서만 실적 보고서를 저장할 수 있습니다.'
+                : '서버 기록이 가능한 환경에서만 저장할 수 있습니다.');
             return false;
         }
 
         const saved = await saveNow();
         if (saved) {
             if (typeof setLastModified === 'function') {
-                setLastModified(state.activeCategory?.title || '팀별내역서');
+                setLastModified(state.activeCategory?.title || (isProductionWorkspace() ? '생산 본부 실적보고' : '팀별내역서'));
             }
-            showToast('전체 작업내역이 저장되었습니다.');
+            showToast(isProductionWorkspace() ? '전체 실적 보고서가 저장되었습니다.' : '전체 작업내역이 저장되었습니다.');
             return true;
         }
-        showToast('서버 저장에 실패했습니다. 잠시 뒤 다시 시도해 주세요.');
+        showToast(isProductionWorkspace()
+            ? '실적 보고서 서버 저장에 실패했습니다. 잠시 뒤 다시 시도해 주세요.'
+            : '서버 저장에 실패했습니다. 잠시 뒤 다시 시도해 주세요.');
         return false;
     }
 
@@ -207,6 +220,7 @@
         getAttachmentInputId,
         openAttachmentPicker,
         handleAttachmentSelection,
+        getVisibleAttachmentSlotKeys,
         renderAttachmentList,
         removeExistingAttachment,
         removePendingAttachment,

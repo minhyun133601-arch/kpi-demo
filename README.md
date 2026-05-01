@@ -86,9 +86,11 @@ Windows 더블클릭 명령:
 ```text
 commands\open-kpi-demo.cmd
 commands\close-kpi-demo.cmd
+commands\open-ops-console.cmd
+commands\close-ops-console.cmd
 ```
 
-루트에서 직접 실행하도록 남긴 명령은 이 두 개뿐입니다. `open-kpi-demo.cmd`는 정적 데모와 로컬 운영 콘솔을 시작하고, `close-kpi-demo.cmd`는 실행 중인 데모와 콘솔을 종료합니다.
+`open-kpi-demo.cmd`는 정적 데모와 로컬 운영 콘솔을 함께 시작하고, `close-kpi-demo.cmd`는 실행 중인 데모와 콘솔을 종료합니다. 운영 콘솔만 따로 확인할 때는 `open-ops-console.cmd`와 `close-ops-console.cmd`를 사용합니다.
 
 ## 로컬 포트
 
@@ -98,12 +100,7 @@ commands\close-kpi-demo.cmd
 - 로컬 운영 콘솔: `http://127.0.0.1:3215`
 - 운영 콘솔 fallback 포트: `3216`-`3218`
 
-선택형 런타임 데모 로그인:
-
-```text
-ID: 1234
-Password: 1234
-```
+선택형 런타임 데모 로그인 계정은 초기화 명령에 `-BootstrapOwner`를 붙였을 때 처음 생성됩니다. 생성된 계정 정보는 Git에서 제외되는 `kpi-runtime/internal-server/var/central-runtime/secrets/initial-owner.txt`에서 확인합니다. 이미 owner 계정이 있으면 초기화 명령은 기존 계정을 덮어쓰지 않습니다.
 
 ## 선택형 런타임 실행
 
@@ -133,7 +130,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\commands\ops-console-app\s
 http://127.0.0.1:3215/repository-map.html
 ```
 
-Repository Map은 `commands/ops-console-app/ops-console/public/` 아래에 있으며, 공개 포트폴리오 기준의 폴더 구조, 변경 이력, 개인정보 보호 기준, 검증 맥락을 한국어/영어 보기로 제공합니다. 저장소의 실제 작업 규칙은 `AGENTS.md`가 담당합니다.
+Repository Map은 `commands/ops-console-app/ops-console/public/` 아래에 있으며, 공개 포트폴리오 기준의 폴더 구조, 변경 이력, 개인정보 보호 기준, 검증 맥락을 한국어/영어 보기로 제공합니다. 같은 콘솔의 Data Reference Map은 입력 화면에서 API, `module_key`/`record_key`, DB/파일 저장소로 이어지는 데이터 흐름을 분리해서 보여줍니다. 저장소의 실제 작업 규칙은 `AGENTS.md`가 담당합니다.
 
 ## 검증 기준
 

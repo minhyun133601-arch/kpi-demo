@@ -1,4 +1,4 @@
-
+﻿
         // ----------------------------------------------------------------
         // 유틸리티 데이터 - 전기
         // ----------------------------------------------------------------
@@ -397,9 +397,6 @@
             const utilProduction = isUtilPlainObject(runtimeConfig.utilProduction)
                 ? runtimeConfig.utilProduction
                 : {};
-            const archive = isUtilPlainObject(utilProduction.archive)
-                ? utilProduction.archive
-                : {};
             const apiBaseRaw = String(utilProduction.apiBase || runtimeConfig.apiBase || '/api').trim();
             const apiBase = apiBaseRaw.startsWith('/') ? apiBaseRaw : `/${apiBaseRaw.replace(/^\/+/, '')}`;
             const endpointRaw = String(utilProduction.endpoint || '').trim();
@@ -417,15 +414,7 @@
                 permissionKey: String(utilProduction.permissionKey || 'util.production.daily').trim() || 'util.production.daily',
                 readEnabled: Boolean(utilProduction.readEnabled),
                 writeEnabled: Boolean(utilProduction.writeEnabled),
-                archive: {
-                    enabled: Boolean(utilProduction.enabled),
-                    apiBase,
-                    permissionKey: String(archive.permissionKey || 'util.production.archive').trim() || 'util.production.archive',
-                    readEnabled: archive.readEnabled !== false && Boolean(utilProduction.readEnabled),
-                    writeEnabled: archive.writeEnabled !== false && Boolean(utilProduction.writeEnabled),
-                    ownerDomain: String(archive.ownerDomain || 'util.production.archive').trim() || 'util.production.archive',
-                    fileCategory: String(archive.fileCategory || 'source_archive').trim() || 'source_archive'
-                }
+                archive: { enabled: false, apiBase, permissionKey: '', readEnabled: false, writeEnabled: false }
             };
         }
 
@@ -441,21 +430,17 @@
 
         function getUtilProductionArchiveServerRuntimeConfig() {
             const config = getUtilProductionServerRuntimeConfig();
-            const archive = isUtilPlainObject(config.archive) ? config.archive : {};
             return {
-                enabled: Boolean(archive.enabled),
-                apiBase: String(archive.apiBase || config.apiBase || '/api').trim() || '/api',
-                permissionKey: String(archive.permissionKey || 'util.production.archive').trim() || 'util.production.archive',
-                readEnabled: Boolean(archive.readEnabled),
-                writeEnabled: Boolean(archive.writeEnabled),
-                ownerDomain: String(archive.ownerDomain || 'util.production.archive').trim() || 'util.production.archive',
-                fileCategory: String(archive.fileCategory || 'source_archive').trim() || 'source_archive'
+                enabled: false,
+                apiBase: String(config.apiBase || '/api').trim() || '/api',
+                permissionKey: '',
+                readEnabled: false,
+                writeEnabled: false
             };
         }
 
         function supportsUtilProductionArchiveServerPersistence() {
-            const config = getUtilProductionArchiveServerRuntimeConfig();
-            return isUtilProductionServerMode() && Boolean(config.writeEnabled);
+            return false;
         }
 
         function buildUtilProductionServerRecordEndpoint() {
@@ -531,9 +516,7 @@
             if (Array.isArray(normalized.teams)) {
                 UTIL_PRODUCTION_DAILY_STATE.teams.push(...normalized.teams);
             }
-            if (Array.isArray(normalized.archives)) {
-                UTIL_PRODUCTION_DAILY_STATE.archives.push(...normalized.archives);
-            }
+            normalized.archives = [];
             window.PortalData = window.PortalData || {};
             window.PortalData.util_production_daily = normalized;
         }
@@ -878,7 +861,7 @@
             return Array.from(set).sort((a, b) => a.localeCompare(b, 'ko'));
         }
 
-        const UTIL_PRODUCTION_ARCHIVE_SOURCE_LABEL_DEFAULT = '원본 저장';
+        const UTIL_PRODUCTION_ARCHIVE_SOURCE_LABEL_DEFAULT = '원본 보관 안 함';
 
         function normalizeUtilProductionArchiveSourceLabel(value) {
             const label = String(value || '').trim();
@@ -927,11 +910,6 @@
                     .map(team => cloneUtilProductionTeamRecord(team))
                     .filter(Boolean)
                 : [];
-            const archives = Array.isArray(source.archives)
-                ? source.archives
-                    .map(item => normalizeUtilProductionArchiveMeta(item))
-                    .filter(Boolean)
-                : [];
             const periodDefault = (source.periodDefault && typeof source.periodDefault === 'object') ? source.periodDefault : {};
             return {
                 meta: {
@@ -946,7 +924,7 @@
                     startDay: normalizeUtilProductionStartDay(periodDefault.startDay, DEFAULT_UTIL_PRODUCTION_PERIOD.startDay)
                 },
                 teams,
-                archives
+                archives: []
             };
         }
 

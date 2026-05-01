@@ -71,7 +71,7 @@ test('report sheet electric meter model registry builds electric comparison mode
       return {
         equipmentItems: [
           { id: 'field_24', label: '전력총량', factor: '1' },
-          { id: 'field_01', label: 'Line Alpha', factor: '1' },
+          { id: 'field_01', label: '1파트', factor: '1' },
           { id: 'field_02', label: 'Line Gamma', factor: '1' },
           { id: 'field_03', label: 'Line Delta', factor: '1' },
           { id: 'field_17', label: 'Admin Area', factor: '1' }

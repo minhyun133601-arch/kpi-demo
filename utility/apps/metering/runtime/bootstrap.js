@@ -71,6 +71,7 @@ function bindEvents() {
   elements.fieldsGrid.addEventListener("dblclick", handleEquipmentFieldGridDoubleClick);
   elements.fieldsGrid.addEventListener("input", handleEquipmentFieldInput);
   elements.fieldsGrid.addEventListener("change", handleEquipmentFieldValueChange);
+  elements.fieldsGrid.addEventListener("focusout", handleEquipmentFieldFocusOut, true);
   elements.fieldsGrid.addEventListener("keydown", handleEquipmentFieldKeydown);
   elements.fieldsGrid.addEventListener("dragstart", handleEquipmentFieldCardDragStart);
   elements.fieldsGrid.addEventListener("dragover", handleEquipmentFieldCardDragOver);

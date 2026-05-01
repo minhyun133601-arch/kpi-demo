@@ -7,6 +7,8 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $serverDir = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
+. (Join-Path $PSScriptRoot 'resolve-postgres-tools.ps1')
+
 $varDir = Join-Path $serverDir 'var'
 $centralDir = Join-Path $varDir 'central-runtime'
 $postgresDir = Join-Path $centralDir 'postgres'
@@ -18,20 +20,19 @@ $toolsDir = Join-Path $centralDir 'tools'
 $prodStorageDir = Join-Path $varDir 'prod'
 $envFilePath = Join-Path $serverDir '.env.production.local'
 
-. (Join-Path $PSScriptRoot 'resolve-postgres-tools.ps1')
-
-$postgresBinDir = Resolve-KpiPostgresBinDir -ServerDir $serverDir -RequiredExecutable 'initdb.exe' -InstallIfMissing
+$postgresBinDir = Resolve-KpiPostgresBinDir -ServerDir $serverDir -RequiredExecutable 'initdb.exe'
 $initdbPath = Join-Path $postgresBinDir 'initdb.exe'
 $pgCtlPath = Join-Path $postgresBinDir 'pg_ctl.exe'
 $pgIsReadyPath = Join-Path $postgresBinDir 'pg_isready.exe'
 $psqlPath = Join-Path $postgresBinDir 'psql.exe'
+$postgresPath = Join-Path $postgresBinDir 'postgres.exe'
 
 $postgresPort = 5400
 $postgresSuperuser = 'postgres'
 $appDatabase = 'kpi_internal'
 $appUser = 'kpi_app'
-$ownerUsername = '1234'
-$ownerDisplayName = 'Demo User'
+$ownerUsername = 'owner'
+$ownerDisplayName = 'KPI Owner'
 
 function Assert-CommandPath {
   param([string]$PathToCheck)
@@ -99,17 +100,24 @@ function Ensure-PostgresStarted {
     return
   }
 
-  & $pgCtlPath -D $postgresDataDir -l $postgresLogFile -o "-p $postgresPort" start | Out-Null
-  $startExitCode = $LASTEXITCODE
-  if ($startExitCode -eq 0) {
+  $startProcess = Start-Process `
+    -FilePath $postgresPath `
+    -ArgumentList @('-D', $postgresDataDir, '-p', [string]$postgresPort) `
+    -PassThru `
+    -WindowStyle Hidden `
+    -RedirectStandardOutput $postgresStdoutLogFile `
+    -RedirectStandardError $postgresStderrLogFile
+
+  Start-Sleep -Milliseconds 500
+  if (-not $startProcess.HasExited) {
     return
   }
 
   try {
     Wait-ForPostgres -TimeoutSeconds 10
-    Write-Warning "pg_ctl start returned exit code $startExitCode, but PostgreSQL became ready on port $postgresPort."
+    Write-Warning "postgres.exe exited early, but PostgreSQL became ready on port $postgresPort."
   } catch {
-    throw "Local KPI PostgreSQL failed to start cleanly on port $postgresPort (pg_ctl exit code $startExitCode)."
+    throw "Local KPI PostgreSQL failed to start cleanly on port $postgresPort (postgres exit code $($startProcess.ExitCode))."
   }
 }
 
@@ -152,20 +160,11 @@ function Invoke-Psql {
   }
 }
 
-function Convert-PsqlScalar {
-  param([object]$Value)
-
-  if ($null -eq $Value) {
-    return ''
-  }
-
-  return (($Value | Out-String).Trim())
-}
-
 Assert-CommandPath -PathToCheck $initdbPath
 Assert-CommandPath -PathToCheck $pgCtlPath
 Assert-CommandPath -PathToCheck $pgIsReadyPath
 Assert-CommandPath -PathToCheck $psqlPath
+Assert-CommandPath -PathToCheck $postgresPath
 
 New-Item -ItemType Directory -Force -Path $varDir, $centralDir, $postgresDir, $postgresLogDir, $secretsDir, $cloudflaredDir, $toolsDir, $prodStorageDir | Out-Null
 
@@ -190,19 +189,21 @@ if (-not (Test-Path (Join-Path $postgresDataDir 'PG_VERSION'))) {
 }
 
 $postgresLogFile = Join-Path $postgresLogDir 'postgres.log'
+$postgresStdoutLogFile = Join-Path $postgresLogDir 'postgres.stdout.log'
+$postgresStderrLogFile = Join-Path $postgresLogDir 'postgres.stderr.log'
 Ensure-PostgresStarted
 
 Wait-ForPostgres
 
 $escapedAppPassword = $appPassword.Replace("'", "''")
-$roleExists = Convert-PsqlScalar (Invoke-Psql -Database 'postgres' -Sql "select 1 from pg_roles where rolname = '$appUser';")
+$roleExists = (Invoke-Psql -Database 'postgres' -Sql "select 1 from pg_roles where rolname = '$appUser';").Trim()
 if ($roleExists -ne '1') {
   Invoke-Psql -Database 'postgres' -Sql "create role $appUser login password '$escapedAppPassword';" | Out-Null
 } else {
   Invoke-Psql -Database 'postgres' -Sql "alter role $appUser with login password '$escapedAppPassword';" | Out-Null
 }
 
-$dbExists = Convert-PsqlScalar (Invoke-Psql -Database 'postgres' -Sql "select 1 from pg_database where datname = '$appDatabase';")
+$dbExists = (Invoke-Psql -Database 'postgres' -Sql "select 1 from pg_database where datname = '$appDatabase';").Trim()
 if ($dbExists -ne '1') {
   Invoke-Psql -Database 'postgres' -Sql "create database $appDatabase owner $appUser;" | Out-Null
 }
@@ -233,8 +234,8 @@ if ($StartServer) {
 if ($BootstrapOwner) {
   Wait-ForHttpEndpoint -Uri 'http://127.0.0.1:3104/api/bootstrap/status'
   $status = Invoke-RestMethod -Uri 'http://127.0.0.1:3104/api/bootstrap/status' -Method Get
-  $ownerPassword = '1234'
-  Set-Content -Path (Join-Path $secretsDir 'initial-owner.password') -Value $ownerPassword -Encoding ascii -NoNewline
+  $ownerPassword = Get-OrCreateSecret -Name 'initial-owner.password'
+  $ownerInfoPath = Join-Path $secretsDir 'initial-owner.txt'
   if (-not $status.ownerExists) {
     $body = @{
       username = $ownerUsername
@@ -248,17 +249,21 @@ if ($BootstrapOwner) {
       -ContentType 'application/json' `
       -Body $body | Out-Null
 
-  }
-
-  $ownerInfoPath = Join-Path $secretsDir 'initial-owner.txt'
-  try {
+    try {
+      @(
+        "login_url=http://127.0.0.1:3104/login"
+        "username=$ownerUsername"
+        "password=$ownerPassword"
+      ) | Set-Content -Path $ownerInfoPath -Encoding ascii
+    } catch {
+      Write-Warning "Owner credential summary file is locked and could not be updated: $ownerInfoPath"
+    }
+  } elseif (-not (Test-Path $ownerInfoPath)) {
     @(
       "login_url=http://127.0.0.1:3104/login"
-      "username=$ownerUsername"
-      "password=$ownerPassword"
+      'owner_exists=true'
+      'credentials_not_reset=true'
     ) | Set-Content -Path $ownerInfoPath -Encoding ascii
-  } catch {
-    Write-Warning "Owner credential summary file is locked and could not be updated: $ownerInfoPath"
   }
 }
 

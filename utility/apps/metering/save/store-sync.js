@@ -100,6 +100,9 @@ async function performManualSave(options = {}) {
   const currentMode = getCurrentMode();
 
   sharedServerPersistenceState.lastErrorMessage = "";
+  if (currentMode === MODES.TEAM) {
+    syncPendingMeteringDraftInputs();
+  }
 
   let didSave = false;
 

@@ -9,11 +9,58 @@ async function buildPortalDataBootstrapScript(auth) {
   return buildPortalDataBootstrapScriptFromLib(auth, canAccessPermission);
 }
 
+function serializeJsonForScript(value) {
+  return JSON.stringify(value ?? {})
+    .replace(/</g, '\\u003c')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
+}
+
+function buildOpenPortalDataBootstrapFallbackScript(error) {
+  const runtimeConfig = {
+    source: 'open_verification_fallback',
+    enabled: false,
+    apiBase: '/api',
+    auth: { currentUser: null },
+    metering: { enabled: false, apiBase: '/api', readEnabled: false, writeEnabled: false },
+    utilProduction: { enabled: false, apiBase: '/api', readEnabled: false, writeEnabled: false },
+    audit: { enabled: false, apiBase: '/api', records: {}, assets: {} },
+    data: { enabled: false, apiBase: '/api', records: {}, assets: {} },
+    work: { enabled: false, apiBase: '/api', records: {}, assets: {} }
+  };
+  const meta = {
+    moduleKey: 'portal_data',
+    importedCount: 0,
+    importedMeta: [],
+    missing: ['portal_data'],
+    blocked: [],
+    generatedAt: new Date().toISOString(),
+    fallback: 'open_verification',
+    error: error?.message || 'portal_data_unavailable'
+  };
+
+  return [
+    `window.__KPI_SERVER_RUNTIME_CONFIG__ = ${serializeJsonForScript(runtimeConfig)};`,
+    'window.PortalData = window.PortalData || {};',
+    `window.__KPI_PORTAL_DATA_BOOTSTRAP__ = ${serializeJsonForScript(meta)};`,
+    "console.warn('[kpi] portal_data bootstrap fallback: open verification mode without DB data.');",
+    ''
+  ].join('\n');
+}
+
 export async function handlePortalDataBootstrap(context) {
   const { req, res, auth } = context;
   void req;
   requireAuth(auth);
-  const script = await buildPortalDataBootstrapScript(auth);
+  let script;
+  try {
+    script = await buildPortalDataBootstrapScript(auth);
+  } catch (error) {
+    if (config.authEnabled) {
+      throw error;
+    }
+    script = buildOpenPortalDataBootstrapFallbackScript(error);
+  }
   res.writeHead(200, {
     'Content-Type': 'application/javascript; charset=utf-8',
     'Cache-Control': 'no-store',
@@ -40,7 +87,7 @@ export async function handleHealth(context) {
 export async function handleBootstrapStatus(context) {
   const { req, res } = context;
   void req;
-  const bootstrapStatus = await getBootstrapStatus();
+  const bootstrapStatus = config.authEnabled ? await getBootstrapStatus() : { ownerExists: false };
   sendJson(res, 200, {
     ok: true,
     authEnabled: config.authEnabled,

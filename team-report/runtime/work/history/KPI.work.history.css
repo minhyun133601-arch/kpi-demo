@@ -2225,3 +2225,602 @@
     min-height: 0;
     height: 100%;
 }
+
+/* Work history form design absorption from the reference UI. */
+.work-history-app {
+    --history-surface: #ffffff;
+    --history-page: #f6f8fc;
+    --history-line: #e8edf5;
+    --history-muted: #667085;
+    --history-ink: #1d2433;
+    --history-shadow: 0 18px 44px rgba(33, 51, 84, 0.08);
+    --history-card-shadow: 0 14px 30px rgba(33, 51, 84, 0.07);
+    background: var(--history-page);
+    color: var(--history-ink);
+    letter-spacing: 0;
+}
+
+.work-history-app .container {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 14px 16px 20px;
+    min-height: 100%;
+    height: 100%;
+    background: transparent;
+}
+
+.work-history-app .week-search-bar {
+    justify-content: flex-end;
+    margin-bottom: 16px;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+}
+
+.work-history-app .keyword-search-group {
+    min-height: 42px;
+    padding: 0;
+    border: 1px solid var(--history-line);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 10px 22px rgba(33, 51, 84, 0.05);
+    overflow: hidden;
+}
+
+.work-history-app .search-label {
+    padding-left: 16px;
+    color: #3a475c;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.work-history-app #keywordSearch {
+    height: 40px;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.work-history-app .history-page-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.work-history-app .history-title-area {
+    min-width: 0;
+}
+
+.work-history-app .history-title-area h1 {
+    margin: 0;
+    color: var(--history-ink);
+    font-size: 36px;
+    font-weight: 900;
+    line-height: 1.08;
+    letter-spacing: 0;
+}
+
+.work-history-app .history-title-area p {
+    margin: 9px 0 0;
+    color: var(--history-muted);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.work-history-app .history-page-tools {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+    max-width: 100%;
+}
+
+.work-history-app .history-page-tools {
+    display: none;
+}
+
+.work-history-app .history-tool-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 38px;
+    max-width: 100%;
+    padding: 0 13px;
+    border: 1px solid var(--history-line);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.96);
+    color: #344054;
+    box-shadow: 0 9px 18px rgba(33, 51, 84, 0.05);
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.work-history-app button.history-tool-pill {
+    cursor: pointer;
+}
+
+.work-history-app .history-tool-pill svg {
+    width: 15px;
+    height: 15px;
+    flex: 0 0 auto;
+}
+
+.work-history-app .history-tool-select {
+    color: #1d4ed8;
+    border-color: rgba(59, 130, 246, 0.22);
+    background: #eff6ff;
+}
+
+.work-history-app .history-tool-mode {
+    color: #176347;
+    border-color: rgba(23, 99, 71, 0.18);
+    background: #ecfdf3;
+}
+
+.work-history-app .history-filter-lock {
+    color: #0b477b;
+    border-color: rgba(11, 71, 123, 0.18);
+    background: #eef6ff;
+}
+
+.work-history-app .tab-navigation {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 10px;
+    margin: 0 0 22px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.work-history-app .tab-btn {
+    min-height: 148px;
+    gap: 5px;
+    padding: 12px 12px;
+    border: 1px solid var(--history-line);
+    border-radius: 14px;
+    background: var(--history-surface);
+    box-shadow: var(--history-card-shadow);
+    color: var(--history-ink);
+    overflow: hidden;
+}
+
+.work-history-app .tab-btn::before {
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: 14px 14px 0 0;
+}
+
+.work-history-app .tab-btn::after {
+    display: none;
+}
+
+.work-history-app .tab-btn:hover,
+.work-history-app .tab-btn.active {
+    transform: translateY(-2px);
+    border-color: var(--tab-accent);
+    box-shadow: 0 12px 28px var(--tab-shadow);
+}
+
+.work-history-app .tab-topline {
+    align-items: center;
+    margin-bottom: 17px;
+}
+
+.work-history-app .tab-kicker {
+    padding: 3px 8px;
+    color: var(--tab-accent-strong);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0;
+    border-color: var(--tab-border);
+    background: rgba(255, 255, 255, 0.92);
+}
+
+.work-history-app .tab-icon-wrap {
+    width: 26px;
+    height: 26px;
+    border-radius: 10px;
+    margin-top: 0;
+    box-shadow: none;
+}
+
+.work-history-app .tab-icon-wrap svg {
+    width: 14px;
+    height: 14px;
+}
+
+.work-history-app .tab-title {
+    color: var(--history-ink);
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1.22;
+    letter-spacing: 0;
+}
+
+.work-history-app .tab-desc {
+    display: -webkit-box;
+    min-height: 0;
+    max-height: 30px;
+    margin-top: 2px;
+    color: var(--history-muted);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.36;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.work-history-app .tab-parts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    min-height: 0;
+    margin-top: 4px;
+}
+
+.work-history-app .tab-part {
+    max-width: 100%;
+    border: 1px solid var(--tab-border);
+    border-radius: 999px;
+    background: var(--tab-soft-bg);
+    color: var(--tab-accent-strong);
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 7px;
+}
+
+.work-history-app .tab-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5px;
+    margin-top: auto;
+    width: 100%;
+    padding: 6px;
+}
+
+.work-history-app .tab-metrics-count,
+.work-history-app .tab-metrics-kpi,
+.work-history-app .tab-metrics-report,
+.work-history-app .tab-metrics-cost {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1px;
+    font-size: 10px;
+    line-height: 1.15;
+}
+
+.work-history-app .tab-metrics-report,
+.work-history-app .tab-metrics-cost {
+    align-items: center;
+    text-align: left;
+}
+
+.work-history-app .tab-metrics-cost {
+    grid-column: auto;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+    white-space: normal;
+}
+
+.work-history-app .tab-metrics-count::before,
+.work-history-app .tab-metrics-kpi::before,
+.work-history-app .tab-metrics-report::before,
+.work-history-app .tab-metrics-cost::before {
+    font-size: 9px;
+    line-height: 1.1;
+}
+
+.work-history-app .tab-metric {
+    min-width: 0;
+    padding: 5px 7px;
+    border: 1px solid #edf2f7;
+    border-radius: 8px;
+    background: #fbfcff;
+}
+
+.work-history-app .tab-metric-label {
+    color: #667085;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0;
+}
+
+.work-history-app .tab-metric-value {
+    margin-top: 2px;
+    color: #1d2433;
+    font-size: 12px;
+    font-weight: 900;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+}
+
+.work-history-app .main-content {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    overflow-y: auto;
+}
+
+.work-history-app .team-section.active {
+    padding: 24px 20px 17px;
+    border: 1px solid var(--history-line);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: var(--history-shadow);
+}
+
+.work-history-app .section-header {
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.work-history-app .section-header h2 {
+    color: var(--history-ink);
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: 0;
+}
+
+.work-history-app .section-description {
+    color: var(--history-muted);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.work-history-app .section-actions {
+    gap: 8px;
+}
+
+.work-history-app .history-search-panel {
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    padding: 12px;
+    border: 1px solid #eef2f7;
+    border-radius: 13px;
+    background: #fbfcff;
+    box-shadow: none;
+}
+
+.work-history-app .history-search-input,
+.work-history-app .history-search-panel select,
+.work-history-app .date-range-selector input {
+    height: 38px;
+    border-color: #e4e9f2;
+    border-radius: 999px;
+    background: #ffffff;
+    box-shadow: none;
+    color: #344054;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.work-history-app .date-range-selector {
+    align-items: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.work-history-app .date-range-separator {
+    color: #98a2b3;
+    font-weight: 900;
+}
+
+.work-history-app .btn,
+.work-history-app .history-date-chip {
+    min-height: 38px;
+    border-radius: 999px;
+    font-weight: 900;
+    letter-spacing: 0;
+}
+
+.work-history-app .overview-container,
+.work-history-app .reports-container {
+    display: grid;
+    gap: 10px;
+}
+
+.work-history-app .report-card {
+    border: 1px solid #e9eef6;
+    border-radius: 11px;
+    background: #ffffff;
+    box-shadow: 0 10px 24px rgba(33, 51, 84, 0.055);
+    overflow: hidden;
+}
+
+.work-history-app .report-card + .report-card {
+    margin-top: 0;
+}
+
+.work-history-app .report-card[open] {
+    border-color: rgba(59, 130, 246, 0.24);
+    box-shadow: 0 16px 34px rgba(33, 51, 84, 0.09);
+}
+
+.work-history-app .report-card-summary {
+    min-height: 66px;
+    padding: 0 15px 0 14px;
+}
+
+.work-history-app .record-summary-fields {
+    display: grid;
+    grid-template-columns: minmax(140px, 0.8fr) minmax(240px, 1.2fr) minmax(120px, 0.7fr) minmax(100px, 0.6fr);
+    gap: 12px;
+    align-items: center;
+    min-width: 0;
+}
+
+.work-history-app .record-summary-field {
+    min-width: 0;
+}
+
+.work-history-app .record-summary-label {
+    color: #98a2b3;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0;
+}
+
+.work-history-app .record-summary-value {
+    color: #1f2937;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.35;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.work-history-app .team-badge {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    min-height: 30px;
+    padding: 0 10px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    background: #f2f6ff;
+    color: #1d4ed8;
+    font-weight: 900;
+}
+
+.work-history-app .team-badge.overview {
+    background: rgba(8, 145, 178, 0.12);
+    border-color: rgba(8, 145, 178, 0.2);
+    color: #0e7490;
+}
+
+.work-history-app .team-badge.team1part1 {
+    background: rgba(37, 99, 235, 0.12);
+    border-color: rgba(37, 99, 235, 0.2);
+    color: var(--team1part1-strong);
+}
+
+.work-history-app .team-badge.team1part2 {
+    background: rgba(245, 158, 11, 0.14);
+    border-color: rgba(245, 158, 11, 0.22);
+    color: var(--team1part2-strong);
+}
+
+.work-history-app .team-badge.team2 {
+    background: rgba(5, 150, 105, 0.12);
+    border-color: rgba(5, 150, 105, 0.2);
+    color: #047857;
+}
+
+.work-history-app .team-badge.team3 {
+    background: rgba(124, 58, 237, 0.12);
+    border-color: rgba(124, 58, 237, 0.2);
+    color: #5b21b6;
+}
+
+.work-history-app .team-badge.team4 {
+    background: rgba(220, 38, 38, 0.12);
+    border-color: rgba(220, 38, 38, 0.2);
+    color: #b91c1c;
+}
+
+.work-history-app .record-team-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    box-shadow: none;
+}
+
+.work-history-app .record-chevron {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #f7f9fc;
+    color: #667085;
+}
+
+.work-history-app .report-card-body-shell {
+    margin: 0 14px 14px;
+    border: 1px solid #eef2f7;
+    border-radius: 12px;
+    background: #fbfcff;
+}
+
+.work-history-app .record-detail-grid,
+.work-history-app .record-attachments,
+.work-history-app .record-action-row {
+    border-color: #eef2f7;
+}
+
+@media (max-width: 1280px) {
+    .work-history-app .tab-navigation {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 960px) {
+    .work-history-app .history-page-head {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .work-history-app .history-page-tools {
+        justify-content: flex-start;
+    }
+
+    .work-history-app .record-summary-fields {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 760px) {
+    .work-history-app .container {
+        padding: 12px 10px 18px;
+    }
+
+    .work-history-app .history-title-area h1 {
+        font-size: 28px;
+    }
+
+    .work-history-app .tab-navigation,
+    .work-history-app .record-summary-fields {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .work-history-app .tab-btn {
+        min-height: 0;
+    }
+
+    .work-history-app .team-section.active {
+        padding: 18px 12px 14px;
+    }
+
+    .work-history-app .report-card-summary {
+        min-height: 0;
+        padding: 13px;
+    }
+
+    .work-history-app .record-summary-value {
+        white-space: normal;
+    }
+}

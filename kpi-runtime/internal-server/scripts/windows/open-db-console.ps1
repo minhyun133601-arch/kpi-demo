@@ -67,8 +67,13 @@ function Read-EnvMap {
 }
 
 function Resolve-PsqlExecutablePath {
-  $binDir = Resolve-KpiPostgresBinDir -ServerDir $serverDir -RequiredExecutable 'psql.exe' -InstallIfMissing
-  return (Join-Path $binDir 'psql.exe')
+  $command = Get-Command psql -ErrorAction SilentlyContinue
+  if ($command -and $command.Source -and (Test-Path $command.Source)) {
+    return $command.Source
+  }
+
+  $postgresBinDir = Resolve-KpiPostgresBinDir -ServerDir $serverDir -RequiredExecutable 'psql.exe'
+  return (Join-Path $postgresBinDir 'psql.exe')
 }
 
 function Parse-DatabaseUrl {

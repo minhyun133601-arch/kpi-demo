@@ -8,8 +8,15 @@ function readArg(name) {
   return entry ? entry.slice(prefix.length).trim() : '';
 }
 
+function readBooleanArg(name) {
+  const raw = readArg(name);
+  if (!raw) return false;
+  return raw.toLowerCase() === 'true';
+}
+
 async function main() {
   const username = readArg('username');
+  const allowOwner = readBooleanArg('allowOwner');
 
   if (!username) {
     throw new Error('username_required');
@@ -21,7 +28,7 @@ async function main() {
   }
 
   const roles = await getUserRoles(user.id);
-  if (roles.includes('owner')) {
+  if (roles.includes('owner') && allowOwner !== true) {
     throw new Error('owner_delete_forbidden');
   }
 
@@ -46,7 +53,8 @@ async function main() {
     userId: deleted.id,
     username: deleted.username,
     displayName: deleted.display_name,
-    roles
+    roles,
+    allowOwner
   }, null, 2));
 }
 

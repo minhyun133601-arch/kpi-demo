@@ -68,6 +68,7 @@ const NOOP_HANDLER_NAMES = [
   'handleEquipmentFieldGridClick',
   'handleEquipmentFieldGridDoubleClick',
   'handleEquipmentFieldInput',
+  'handleEquipmentFieldFocusOut',
   'handleEquipmentFieldValueChange',
   'handleEquipmentFieldKeydown',
   'handleEquipmentFieldCardDragStart',

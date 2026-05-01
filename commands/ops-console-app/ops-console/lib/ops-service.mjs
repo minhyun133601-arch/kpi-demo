@@ -413,7 +413,7 @@ async function runStartLifecycleJob(actionKey, actionId) {
   appendScriptResultToServerActionLog(actionKey, stopResult);
 
   appendServerActionLog(`[${actionKey}] initializing runtime`);
-  const initResult = await runPowerShellScript(internalServerScripts.initializeRuntime, ['-BootstrapOwner'], {
+  const initResult = await runPowerShellScript(internalServerScripts.initializeRuntime, [], {
     timeoutMs: 180000
   });
   appendScriptResultToServerActionLog(actionKey, initResult);
@@ -445,7 +445,7 @@ async function runRecoverLifecycleJob(actionKey, actionId) {
   const clusterVersionFile = path.join(postgresDataDir, 'PG_VERSION');
   if (!fs.existsSync(clusterVersionFile) || !fs.existsSync(envFilePath)) {
     appendServerActionLog(`[${actionKey}] runtime bootstrap fallback`);
-    const initResult = await runPowerShellScript(internalServerScripts.initializeRuntime, ['-BootstrapOwner'], {
+    const initResult = await runPowerShellScript(internalServerScripts.initializeRuntime, [], {
       timeoutMs: 180000
     });
     appendScriptResultToServerActionLog(actionKey, initResult);
@@ -617,29 +617,9 @@ async function getPostgresReadyState() {
 }
 
 function resolvePostgresBinary(fileName) {
-  const localToolsDir = path.join(internalServerDir, 'var', 'tools');
-  const localToolCandidates = [
-    path.join(localToolsDir, 'postgresql-17.9', 'pgsql', 'bin', fileName),
-    path.join(localToolsDir, 'postgresql-17', 'pgsql', 'bin', fileName),
-    path.join(localToolsDir, 'postgresql', 'pgsql', 'bin', fileName),
-    path.join(localToolsDir, 'postgresql', 'bin', fileName)
-  ];
-  if (fs.existsSync(localToolsDir)) {
-    for (const entry of fs.readdirSync(localToolsDir, { withFileTypes: true })) {
-      if (!entry.isDirectory() || !entry.name.startsWith('postgresql-')) {
-        continue;
-      }
-      localToolCandidates.push(path.join(localToolsDir, entry.name, 'pgsql', 'bin', fileName));
-      localToolCandidates.push(path.join(localToolsDir, entry.name, 'bin', fileName));
-    }
-  }
-
   const candidates = [
-    ...(process.env.KPI_POSTGRES_BIN_DIR ? [path.join(process.env.KPI_POSTGRES_BIN_DIR, fileName)] : []),
-    ...localToolCandidates,
     path.join('C:\\Program Files\\PostgreSQL\\17\\bin', fileName),
-    path.join('C:\\Program Files\\PostgreSQL\\16\\bin', fileName),
-    path.join('C:\\Program Files\\PostgreSQL\\15\\bin', fileName)
+    path.join('C:\\Program Files\\PostgreSQL\\16\\bin', fileName)
   ];
   return candidates.find((candidate) => fs.existsSync(candidate)) || '';
 }
@@ -804,7 +784,7 @@ export async function getOverview() {
   return {
     ok: true,
     app: {
-      title: 'KPI Demo Command Console',
+      title: 'KPI 서버 관리 앱',
       localUrl: `http://127.0.0.1:${process.env.KPI_OPS_CONSOLE_PORT || '3215'}`,
       commandsRoot
     },

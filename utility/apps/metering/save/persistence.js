@@ -43,6 +43,105 @@ function saveEquipmentEntryDraftToLocalStore() {
   return true;
 }
 
+function collectMeteringDraftInputs(selector) {
+  const uniqueNodes = new Set();
+  const collectedNodes = [];
+  const containers = [
+    elements.teamTotalsGrid,
+    elements.teamBoards,
+    elements.teamSettlementFields,
+  ];
+
+  containers.forEach((container) => {
+    if (!container || typeof container.querySelectorAll !== "function") {
+      return;
+    }
+
+    container.querySelectorAll(selector).forEach((node) => {
+      if (!node || uniqueNodes.has(node)) {
+        return;
+      }
+
+      uniqueNodes.add(node);
+      collectedNodes.push(node);
+    });
+  });
+
+  return collectedNodes;
+}
+
+function syncPendingTeamDraftInputs() {
+  if (getCurrentMode() !== MODES.TEAM) {
+    return false;
+  }
+
+  const previousSnapshot = createFormSnapshot();
+  const previousStatusText = state.cleanStatusText;
+  let changedDirectTeamInputs = false;
+
+  collectMeteringDraftInputs("[data-team-direct-usage-input]").forEach((input) => {
+    const teamKey = normalizeText(input.dataset.teamDirectUsageInput);
+    if (!supportsDirectTeamMonthlyUsage(teamKey)) {
+      return;
+    }
+
+    const sanitizedValue = sanitizeTeamDirectUsageInputValue(input.value);
+    input.value = sanitizedValue ? formatWholeNumber(sanitizedValue) : "";
+    setDirectTeamMonthlyUsage(teamKey, sanitizedValue === "" ? null : sanitizedValue);
+    changedDirectTeamInputs = true;
+  });
+
+  collectMeteringDraftInputs("[data-team-direct-amount-input]").forEach((input) => {
+    const teamKey = normalizeText(input.dataset.teamDirectAmountInput);
+    if (!supportsDirectTeamMonthlyAmount(teamKey)) {
+      return;
+    }
+
+    const sanitizedValue = sanitizeTeamDirectAmountInputValue(input.value);
+    input.value = sanitizedValue ? formatSettlementAmount(sanitizedValue) : "";
+    setDirectTeamMonthlyAmount(teamKey, sanitizedValue === "" ? null : sanitizedValue);
+    changedDirectTeamInputs = true;
+  });
+
+  collectMeteringDraftInputs("input[data-billing-settlement-field]:not([readonly])").forEach(
+    (input) => {
+      handleTeamSettlementFieldInput({ target: input });
+    }
+  );
+
+  const didChange = previousSnapshot !== createFormSnapshot();
+  if (!didChange) {
+    state.cleanStatusText = previousStatusText;
+    return false;
+  }
+
+  if (changedDirectTeamInputs) {
+    state.cleanStatusText = "팀 입력값을 반영했습니다. 저장해 주세요.";
+  }
+
+  renderTeamMode();
+  renderCalendar();
+  renderSummary();
+  syncSelectedDatePresentation();
+  updateDirtyState();
+  updateActionState();
+  return true;
+}
+
+function syncPendingMeteringDraftInputs(options = {}) {
+  const { includeEquipmentDraft = false } = options;
+
+  if (getCurrentMode() === MODES.EQUIPMENT) {
+    if (!includeEquipmentDraft) {
+      return false;
+    }
+
+    return saveEquipmentEntryDraftToLocalStore();
+  }
+
+  return syncPendingTeamDraftInputs();
+}
+
 function scheduleEquipmentLocalAutosave() {
   if (getCurrentMode() !== MODES.EQUIPMENT || !state.selectedDate) {
     return;
@@ -65,13 +164,16 @@ function saveCurrentEquipmentEntry(options = {}) {
   }
 
   clearEquipmentLocalAutosaveTimer();
+  clearEquipmentFieldValidationSuppression?.();
+  clearQuickEntryFieldValidationSuppression?.();
 
   finalizeEquipmentInputDisplays();
   autofillInactiveEquipmentInputsOnComplete();
 
-  const validationIssues = getCurrentEquipmentReadingValidationIssues();
+  const validationIssues = resolveEquipmentValidationIssues();
   if (validationIssues.length && !allowValidationIssues) {
     syncEquipmentReadingValidationStates();
+    syncQuickEntryPopupValidationStates?.();
     updateDirtyState();
     updateActionState();
     return false;
@@ -144,9 +246,37 @@ function readEquipmentFormData() {
   );
 }
 
+function resolveEquipmentValidationIssues() {
+  if (
+    isQuickEntryPopupEnabledForCurrentResource() &&
+    typeof getQuickEntryPopupValidationIssues === "function"
+  ) {
+    const popupIssues = getQuickEntryPopupValidationIssues();
+    if (Array.isArray(popupIssues)) {
+      return popupIssues;
+    }
+  }
+
+  return getCurrentEquipmentReadingValidationIssues();
+}
+
+function isQuickEntryPopupEnabledForCurrentResource() {
+  const currentResourceType = normalizeText(getCurrentResourceType?.() || "").toLowerCase();
+  const isSupportedResource = currentResourceType === "electric" || currentResourceType === "gas";
+  if (!isSupportedResource) {
+    return false;
+  }
+
+  if (typeof isMeteringQuickEntryPopupEnabled === "function") {
+    return Boolean(isMeteringQuickEntryPopupEnabled());
+  }
+
+  return true;
+}
+
 
 function updateDirtyState() {
-  const validationIssues = getCurrentEquipmentReadingValidationIssues();
+  const validationIssues = resolveEquipmentValidationIssues();
   if (validationIssues.length) {
     const firstIssue = validationIssues[0];
     elements.saveStatus.textContent =
@@ -167,7 +297,8 @@ function updateDirtyState() {
 
 function updateActionState() {
   const canEditEquipmentEntry = getCurrentMode() === MODES.EQUIPMENT && Boolean(state.selectedDate);
-  const hasValidationIssues = Boolean(getCurrentEquipmentReadingValidationIssues().length);
+  const hasValidationIssues = Boolean(resolveEquipmentValidationIssues().length);
+  const canUseQuickEntryPopup = canEditEquipmentEntry && isQuickEntryPopupEnabledForCurrentResource();
   if (elements.saveEntryBtn) {
     elements.saveEntryBtn.disabled = hasValidationIssues || !isDirty();
     elements.saveEntryBtn.title = hasValidationIssues
@@ -179,8 +310,8 @@ function updateActionState() {
     elements.teamSaveBtn.title = "저장";
   }
   if (elements.quickEntryToggleBtn) {
-    elements.quickEntryToggleBtn.disabled = !canEditEquipmentEntry;
-    elements.quickEntryToggleBtn.setAttribute("aria-disabled", String(!canEditEquipmentEntry));
+    elements.quickEntryToggleBtn.disabled = !canUseQuickEntryPopup;
+    elements.quickEntryToggleBtn.setAttribute("aria-disabled", String(!canUseQuickEntryPopup));
   }
   if (elements.entryCompleteCheckbox) {
     elements.entryCompleteCheckbox.disabled = !canEditEquipmentEntry;
@@ -194,7 +325,7 @@ function updateActionState() {
 
   applyEquipmentEntryLockState();
   renderEquipmentItemCount();
-  syncQuickEntryMenu();
+  syncQuickEntryMenu({ skipStateRefresh: true });
 
   if (getCurrentMode() !== MODES.EQUIPMENT) {
     return;
@@ -238,6 +369,10 @@ function isCurrentEquipmentEntryLocked() {
 
 function confirmSafeMove(message) {
   void message;
+  if (getCurrentMode() === MODES.TEAM) {
+    syncPendingMeteringDraftInputs();
+  }
+
   if (!isDirty()) {
     return true;
   }
@@ -280,6 +415,34 @@ function createFormSnapshot() {
           }
         : null,
       billingSettlementEntry,
+    });
+  }
+
+  const popupSnapshotEntries =
+    typeof getQuickEntryPopupSnapshotEntries === "function"
+      ? getQuickEntryPopupSnapshotEntries(state.selectedDate)
+      : null;
+
+  if (
+    state.selectedDate &&
+    isQuickEntryPopupEnabledForCurrentResource() &&
+    Array.isArray(popupSnapshotEntries) &&
+    popupSnapshotEntries.length
+  ) {
+    return JSON.stringify({
+      mode,
+      selectedDate: state.selectedDate,
+      quickEntryPopupEntries: popupSnapshotEntries.map((resourceEntry) => ({
+        resourceType: normalizeText(resourceEntry?.resourceType),
+        entry: {
+          values: { ...(resourceEntry?.entry?.values || {}) },
+          statuses: { ...(resourceEntry?.entry?.statuses || {}) },
+          fieldDayStatuses: { ...(resourceEntry?.entry?.fieldDayStatuses || {}) },
+          dayStatus:
+            normalizeText(resourceEntry?.entry?.dayStatus) ||
+            (resourceEntry?.entry?.completed ? "completed" : ""),
+        },
+      })),
     });
   }
 

@@ -19,9 +19,9 @@ function cloneStorageFolder(folder) {
 
 const ATTACHMENT_ROOT_FOLDER = '첨부파일';
 const WORK_HISTORY_FALLBACK_STORAGE_FOLDER = Object.freeze([ATTACHMENT_ROOT_FOLDER, '작업내역', '기타']);
+const EQUIPMENT_ASSET_ROOT_FOLDER = 'equipment-assets';
 const STORAGE_FOLDER_BY_OWNER_DOMAIN = Object.freeze({
   'audit.lux.evidence': Object.freeze([ATTACHMENT_ROOT_FOLDER, 'Audit', '조도 스캔본']),
-  'util.production.archive': Object.freeze([ATTACHMENT_ROOT_FOLDER, '유틸리티', '원본 저장']),
   'work.team_calendar': Object.freeze([ATTACHMENT_ROOT_FOLDER, '작업내역', '캘린더 첨부'])
 });
 const WORK_HISTORY_STORAGE_FOLDER_BY_CATEGORY = Object.freeze({
@@ -49,6 +49,21 @@ function resolveWorkHistoryStorageFolder({ fileCategory }) {
   );
 }
 
+function resolveEquipmentAssetStorageFolder({ ownerDomain, ownerKey, fileCategory, metadata }) {
+  const domainFolder = ownerDomain === 'audit.legal_facility' ? 'legal-facility' : 'equipment-history';
+  const equipmentName = normalizeText(metadata?.equipmentName)
+    || normalizeText(metadata?.facilityName)
+    || normalizeText(metadata?.facility)
+    || normalizeText(metadata?.name)
+    || normalizeText(ownerKey).split(':')[0]
+    || 'unassigned';
+  const normalizedFileCategory = normalizeText(fileCategory).toLowerCase();
+  const categoryFolder = /^(photo|image|images?)$/.test(normalizedFileCategory)
+    ? 'images'
+    : 'attachments';
+  return [EQUIPMENT_ASSET_ROOT_FOLDER, domainFolder, equipmentName, categoryFolder];
+}
+
 export function resolveManagedDocumentStorageFolder(input = {}) {
   const normalizedOwnerDomain = normalizeText(input.ownerDomain);
   if (!normalizedOwnerDomain) {
@@ -61,6 +76,15 @@ export function resolveManagedDocumentStorageFolder(input = {}) {
 
   if (normalizedOwnerDomain === 'work.history') {
     return resolveWorkHistoryStorageFolder(input);
+  }
+
+  if (normalizedOwnerDomain === 'data.equipment_history' || normalizedOwnerDomain === 'audit.legal_facility') {
+    return resolveEquipmentAssetStorageFolder({
+      ownerDomain: normalizedOwnerDomain,
+      ownerKey: input.ownerKey,
+      fileCategory: input.fileCategory,
+      metadata: input.metadata
+    });
   }
 
   return cloneStorageFolder(STORAGE_FOLDER_BY_OWNER_DOMAIN[normalizedOwnerDomain]);

@@ -298,11 +298,26 @@ function closeCalendarPopupWindow() {
   }, 0);
 }
 
+function restoreEquipmentEntryAfterFullscreenRender() {
+  if (getCurrentMode() !== MODES.EQUIPMENT) {
+    return;
+  }
+
+  const currentEntry = getCurrentEntry();
+  restoreEquipmentFormData(currentEntry || { values: {} }, getEntryDayStatus(currentEntry));
+  syncEquipmentRestIndicators();
+  syncEquipmentReadingValidationStates();
+  updateDirtyState();
+  updateActionState();
+}
+
 async function enterFormFullscreenMode() {
   const currentMode = getCurrentMode();
   if (!isSupportedFullscreenMode(currentMode)) {
     return;
   }
+
+  syncPendingMeteringDraftInputs({ includeEquipmentDraft: true });
 
   let popupWindow = null;
   if (shouldUseCalendarPopup()) {
@@ -324,6 +339,7 @@ async function enterFormFullscreenMode() {
   syncEquipmentOrderMenu();
   syncEquipmentFullscreenUI();
   renderEquipmentFieldInputs();
+  restoreEquipmentEntryAfterFullscreenRender();
   renderCalendar();
   renderTeamMode();
   renderSummary();
@@ -355,6 +371,8 @@ async function exitFormFullscreenMode(options = {}) {
     return;
   }
 
+  syncPendingMeteringDraftInputs({ includeEquipmentDraft: true });
+
   state.isEquipmentFullscreen = false;
   state.openEquipmentOrderMenu = false;
   clearEquipmentOrderDragState();
@@ -377,6 +395,7 @@ async function exitFormFullscreenMode(options = {}) {
   }
 
   renderEquipmentFieldInputs();
+  restoreEquipmentEntryAfterFullscreenRender();
   renderCalendar();
   renderTeamMode();
   renderSummary();

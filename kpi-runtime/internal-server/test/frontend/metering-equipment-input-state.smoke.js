@@ -93,9 +93,9 @@ function shiftMonthValue(monthValue, offsetMonths) {
 
 function createEquipmentInputStateContext() {
   const equipmentById = new Map([
-    ['field_01', { id: 'field_01', label: 'Demo Boiler', kind: 'normal' }],
+    ['field_01', { id: 'field_01', label: '보일러', kind: 'normal' }],
     ['field_02', { id: 'field_02', label: '기타', kind: 'other' }],
-    ['field_03', { id: 'field_03', label: 'Supply Fan', kind: 'normal' }],
+    ['field_03', { id: 'field_03', label: 'Supply Fan기', kind: 'normal' }],
   ]);
 
   const inputs = new Map([
@@ -430,7 +430,7 @@ test('equipment input state builds validation issues and syncs invalid field UI'
   assert.match(issues[1].message, /보다 클 수 없습니다/);
   assert.equal(
     harness.context.getEquipmentReadingValidationSummaryText(issues),
-    '오류 Demo Boiler 외 1건'
+    '오류 보일러 외 1건'
   );
   assert.equal(
     harness.context.getStoredEquipmentReadingValidationIssues('2026-04-18').length,
@@ -494,6 +494,22 @@ test('equipment input state toggles inactive fields and preserves manual values'
   assert.equal(field02Input.readOnly, true);
   assert.equal(field02Input.placeholder, '자동 계산');
   assert.equal(harness.toggles.get('field_02').getAttribute('aria-pressed'), 'false');
+});
+
+test('equipment input state can suppress transient validation for actively edited fields', () => {
+  const harness = createEquipmentInputStateContext();
+
+  harness.context.suppressEquipmentFieldValidation('field_01');
+  const suppressedIssues = harness.context.getCurrentEquipmentReadingValidationIssues();
+  assert.equal(suppressedIssues.length, 1);
+  assert.equal(suppressedIssues[0].fieldKey, 'field_03');
+
+  harness.context.clearEquipmentFieldValidationSuppression('field_01');
+  assert.equal(harness.context.getCurrentEquipmentReadingValidationIssues().length, 2);
+
+  harness.context.suppressEquipmentFieldValidation('field_01');
+  harness.context.clearEquipmentFieldValidationSuppression();
+  assert.equal(harness.context.getCurrentEquipmentReadingValidationIssues().length, 2);
 });
 
 test('equipment input state keeps status inheritance and stored entry status consistent', () => {

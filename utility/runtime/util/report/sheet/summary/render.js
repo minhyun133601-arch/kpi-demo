@@ -525,7 +525,7 @@
             buildUtilGasMeterInsightLine(gasMeterComparisonModel, 'gas_field_02', 'Process Alpha(LPG)'),
             buildUtilGasMeterInsightLine(gasMeterComparisonModel, 'gas_field_03', 'Demo Boiler A'),
             buildUtilGasMeterInsightLine(gasMeterComparisonModel, 'gas_field_04', 'Demo Boiler B'),
-            buildUtilGasMeterInsightLine(gasMeterComparisonModel, 'gas_field_06', 'Process Gamma Boiler')
+            buildUtilGasMeterInsightLine(gasMeterComparisonModel, 'gas_field_06', 'Process Gamma보일러')
         ].join(' · ');
         return [
             `${datasetResult.latestMonthLabel} 가스비 비용 전월대비 증감율은 ${formatSignedPercent(costPercent)}입니다.`,

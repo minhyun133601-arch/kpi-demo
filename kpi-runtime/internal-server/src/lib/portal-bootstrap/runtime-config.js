@@ -52,6 +52,70 @@ async function buildWorkRecordConfigs(auth, permissionProbe) {
   return workRecordConfigs;
 }
 
+async function buildAuditRuntimeConfig(auth, permissionProbe) {
+  return {
+    enabled: true,
+    apiBase: '/api',
+    moduleKey: PORTAL_DATA_MODULE_KEY,
+    records: {
+      audit_lux: {
+        recordKey: 'audit_lux',
+        permissionKey: PERMISSION_KEYS.AUDIT_LUX,
+        readEnabled: await permissionProbe(auth?.user, PERMISSION_KEYS.AUDIT_LUX, 'read'),
+        writeEnabled: await permissionProbe(auth?.user, PERMISSION_KEYS.AUDIT_LUX, 'write'),
+      },
+      audit_legal_facility: {
+        recordKey: 'audit_legal_facility',
+        permissionKey: PERMISSION_KEYS.AUDIT_LEGAL_FACILITY,
+        readEnabled: await permissionProbe(auth?.user, PERMISSION_KEYS.AUDIT_LEGAL_FACILITY, 'read'),
+        writeEnabled: await permissionProbe(auth?.user, PERMISSION_KEYS.AUDIT_LEGAL_FACILITY, 'write'),
+      },
+      audit_regulation: {
+        recordKey: 'audit_regulation',
+        permissionKey: PERMISSION_KEYS.AUDIT_REGULATION,
+        readEnabled: await permissionProbe(auth?.user, PERMISSION_KEYS.AUDIT_REGULATION, 'read'),
+        writeEnabled: await permissionProbe(auth?.user, PERMISSION_KEYS.AUDIT_REGULATION, 'write'),
+      },
+    },
+    assets: {
+      legalFacility: {
+        permissionKey: PERMISSION_KEYS.AUDIT_LEGAL_FACILITY,
+        readEnabled: await permissionProbe(auth?.user, PERMISSION_KEYS.AUDIT_LEGAL_FACILITY, 'read'),
+        writeEnabled: await permissionProbe(auth?.user, PERMISSION_KEYS.AUDIT_LEGAL_FACILITY, 'write'),
+        ownerDomain: 'audit.legal_facility',
+        imageFileCategory: 'photo',
+        attachmentFileCategory: 'attachment',
+      },
+    },
+  };
+}
+
+async function buildDataRuntimeConfig(auth, permissionProbe) {
+  return {
+    enabled: true,
+    apiBase: '/api',
+    moduleKey: PORTAL_DATA_MODULE_KEY,
+    records: {
+      data_equipment_history_card: {
+        recordKey: 'data_equipment_history_card',
+        permissionKey: PERMISSION_KEYS.DATA_EQUIPMENT_HISTORY,
+        readEnabled: await permissionProbe(auth?.user, PERMISSION_KEYS.DATA_EQUIPMENT_HISTORY, 'read'),
+        writeEnabled: await permissionProbe(auth?.user, PERMISSION_KEYS.DATA_EQUIPMENT_HISTORY, 'write'),
+      },
+    },
+    assets: {
+      equipmentHistory: {
+        permissionKey: PERMISSION_KEYS.DATA_EQUIPMENT_HISTORY,
+        readEnabled: await permissionProbe(auth?.user, PERMISSION_KEYS.DATA_EQUIPMENT_HISTORY, 'read'),
+        writeEnabled: await permissionProbe(auth?.user, PERMISSION_KEYS.DATA_EQUIPMENT_HISTORY, 'write'),
+        ownerDomain: 'data.equipment_history',
+        imageFileCategory: 'photo',
+        attachmentFileCategory: 'attachment',
+      },
+    },
+  };
+}
+
 export async function buildPortalRuntimeConfig(auth, permissionProbe) {
   const workRecordConfigs = await buildWorkRecordConfigs(auth, permissionProbe);
 
@@ -77,41 +141,10 @@ export async function buildPortalRuntimeConfig(auth, permissionProbe) {
       permissionKey: PERMISSION_KEYS.UTIL_PRODUCTION_DAILY,
       readEnabled: await permissionProbe(auth?.user, PERMISSION_KEYS.UTIL_PRODUCTION_DAILY, 'read'),
       writeEnabled: await permissionProbe(auth?.user, PERMISSION_KEYS.UTIL_PRODUCTION_DAILY, 'write'),
-      archive: {
-        enabled: true,
-        apiBase: '/api',
-        permissionKey: PERMISSION_KEYS.UTIL_PRODUCTION_ARCHIVE,
-        readEnabled: await permissionProbe(auth?.user, PERMISSION_KEYS.UTIL_PRODUCTION_ARCHIVE, 'read'),
-        writeEnabled: await permissionProbe(auth?.user, PERMISSION_KEYS.UTIL_PRODUCTION_ARCHIVE, 'write'),
-        ownerDomain: 'util.production.archive',
-        fileCategory: 'source_archive',
-      },
+      archive: { enabled: false },
     },
-    audit: {
-      enabled: true,
-      apiBase: '/api',
-      moduleKey: PORTAL_DATA_MODULE_KEY,
-      records: {
-        audit_lux: {
-          recordKey: 'audit_lux',
-          permissionKey: PERMISSION_KEYS.AUDIT_LUX,
-          readEnabled: await permissionProbe(auth?.user, PERMISSION_KEYS.AUDIT_LUX, 'read'),
-          writeEnabled: await permissionProbe(auth?.user, PERMISSION_KEYS.AUDIT_LUX, 'write'),
-        },
-        audit_legal_facility: {
-          recordKey: 'audit_regulation',
-          permissionKey: PERMISSION_KEYS.AUDIT_REGULATION,
-          readEnabled: await permissionProbe(auth?.user, PERMISSION_KEYS.AUDIT_REGULATION, 'read'),
-          writeEnabled: await permissionProbe(auth?.user, PERMISSION_KEYS.AUDIT_REGULATION, 'write'),
-        },
-        audit_regulation: {
-          recordKey: 'audit_regulation',
-          permissionKey: PERMISSION_KEYS.AUDIT_REGULATION,
-          readEnabled: await permissionProbe(auth?.user, PERMISSION_KEYS.AUDIT_REGULATION, 'read'),
-          writeEnabled: await permissionProbe(auth?.user, PERMISSION_KEYS.AUDIT_REGULATION, 'write'),
-        },
-      },
-    },
+    audit: await buildAuditRuntimeConfig(auth, permissionProbe),
+    data: await buildDataRuntimeConfig(auth, permissionProbe),
     work: {
       enabled: true,
       apiBase: '/api',

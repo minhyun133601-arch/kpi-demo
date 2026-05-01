@@ -131,7 +131,7 @@ function setBinding(context, bindingName, value) {
   vm.runInContext(`${bindingName} = globalThis.__override_${bindingName};`, context);
 }
 
-function createSaveValidationContext() {
+function createSaveValidationContext(options = {}) {
   const eventLog = [];
   const { windowStub, FakeCustomEvent } = createWindowStub(eventLog);
 
@@ -215,11 +215,13 @@ function createSaveValidationContext() {
     applyResourceType() {},
     handleMonthStep() {},
     getCurrentMode() {
-      return 'equipment';
+      return options.currentMode || 'equipment';
     },
     getCurrentEquipmentReadingValidationIssues() {
       return [];
     },
+    clearEquipmentFieldValidationSuppression() {},
+    clearQuickEntryFieldValidationSuppression() {},
     syncSelectedDateHeaderStatus() {},
     renderEquipmentItemCount() {},
     syncQuickEntryMenu() {},
@@ -351,6 +353,20 @@ test('updateActionState disables save button while validation issues exist', () 
   assert.equal(context.elements.deleteEntryBtn.disabled, false);
 });
 
+test('updateActionState syncs the quick-entry menu without recursive state refresh', () => {
+  const context = createSaveValidationContext();
+  const syncCalls = [];
+
+  setBinding(context, 'isDirty', () => true);
+  setBinding(context, 'syncQuickEntryMenu', (options = {}) => {
+    syncCalls.push({ ...options });
+  });
+
+  context.updateActionState();
+
+  assert.deepEqual(syncCalls, [{ skipStateRefresh: true }]);
+});
+
 test('saveCurrentEquipmentEntry persists entry, snapshot, and update event', () => {
   const context = createSaveValidationContext();
   let syncCalls = 0;
@@ -393,6 +409,55 @@ test('saveCurrentEquipmentEntry persists entry, snapshot, and update event', () 
   assert.equal(context.__eventLog.length, 1);
   assert.equal(context.__eventLog[0].type, 'kpi:metering-store-updated');
   assert.equal(context.elements.saveStatus.textContent, '마지막 저장 표시시간');
+});
+
+test('createFormSnapshot tracks popup drafts across electric and gas together', () => {
+  const context = createSaveValidationContext();
+
+  setBinding(context, 'getQuickEntryPopupSnapshotEntries', () => [
+    {
+      resourceType: 'electric',
+      entry: {
+        values: { field_1: '12.5' },
+        statuses: {},
+        fieldDayStatuses: {},
+        dayStatus: 'completed',
+      },
+    },
+    {
+      resourceType: 'gas',
+      entry: {
+        values: { gas_a: '77' },
+        statuses: {},
+        fieldDayStatuses: {},
+        dayStatus: '',
+      },
+    },
+  ]);
+
+  const snapshot = JSON.parse(context.createFormSnapshot());
+
+  assert.equal(snapshot.selectedDate, '2026-04-18');
+  assert.deepEqual(snapshot.quickEntryPopupEntries, [
+    {
+      resourceType: 'electric',
+      entry: {
+        values: { field_1: '12.5' },
+        statuses: {},
+        fieldDayStatuses: {},
+        dayStatus: 'completed',
+      },
+    },
+    {
+      resourceType: 'gas',
+      entry: {
+        values: { gas_a: '77' },
+        statuses: {},
+        fieldDayStatuses: {},
+        dayStatus: '',
+      },
+    },
+  ]);
 });
 
 test('performManualSave reports unsupported shared persistence as an error', async () => {
@@ -454,6 +519,38 @@ test('performManualSave appends manual save history on successful save', async (
   assert.equal(context.state.store.manualSaveHistory[0].contextLabel, '전기 2026-04-18 설비별');
   assert.equal(dirtyCalls, 1);
   assert.equal(actionCalls, 1);
+});
+
+test('performManualSave syncs pending team drafts before persisting team mode', async () => {
+  const context = createSaveValidationContext({
+    currentMode: 'team',
+  });
+  const helperCalls = [];
+  const persistCalls = [];
+
+  setBinding(context, 'syncPendingMeteringDraftInputs', (options = {}) => {
+    helperCalls.push({ ...options });
+    return true;
+  });
+  setBinding(context, 'supportsSharedServerPersistence', () => true);
+  setBinding(context, 'waitForQueuedPersistence', async () => {});
+  setBinding(context, 'persistStore', (options = {}) => {
+    persistCalls.push({ ...options });
+  });
+  setBinding(context, 'createFormSnapshot', () => 'snapshot-after-team-save');
+  setBinding(context, 'getManualSaveContextLabel', () => 'team 2026-04 context');
+  setBinding(context, 'getCurrentResourceType', () => 'gas');
+  setBinding(context, 'updateDirtyState', () => {});
+  setBinding(context, 'updateActionState', () => {});
+
+  const didSave = await context.performManualSave({ trigger: 'button' });
+
+  assert.equal(didSave, true);
+  assert.deepEqual(helperCalls, [{}]);
+  assert.equal(persistCalls.length, 2);
+  assert.equal(context.state.loadedSnapshot, 'snapshot-after-team-save');
+  assert.equal(context.state.store.manualSaveHistory[0].mode, 'team');
+  assert.equal(context.state.store.manualSaveHistory[0].contextLabel, 'team 2026-04 context');
 });
 
 test('writeStorePayloadToSharedServer sends shared-store version metadata and remembers the response meta', async () => {

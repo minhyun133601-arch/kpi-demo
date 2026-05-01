@@ -3,6 +3,7 @@
         // ----------------------------------------------------------------
         const WorkCache = {};
         const WorkState = { activeWeek: {}, activeMonth: {}, activeDate: {}, monthFilters: {}, monthReportCache: {}, teamCalendarMonth: {}, teamCalendarSharedMonth: '', teamCalendarDate: {}, teamCalendarSharedDate: '', teamCalendarSelectedDates: {}, teamCalendarEditor: {}, teamCalendarDatePicked: {}, teamCalendarModal: '', teamCalendarHubDataKey: '', teamCalendarInline: false, teamCalendarMemberAnchor: {}, teamCalendarGasMode: {}, teamCalendarUtilityPopup: {}, teamCalendarMode: 'detail', workEntryRootConnected: false };
+        const WorkSaveStatusState = {};
         const WORK_DAY_KEYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
         const WORK_DAY_LABELS = ['월', '화', '수', '목', '금', '토', '일'];
         const WORK_DAY_COLORS = ['#2563eb', '#22c55e', '#f59e0b', '#f97316', '#ef4444', '#8b5cf6', '#0ea5e9'];

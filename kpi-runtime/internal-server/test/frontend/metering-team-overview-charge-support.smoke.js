@@ -193,7 +193,7 @@ test('charge-support dedupes shared sources and calculates shared totals with de
   );
   assert.match(
     context.getTeamSharedCompressorSettlementDetailText('team_04'),
-    /Compressor 380V \+ Compressor 합계 40 x 배분 25.0% = 10/
+    /Compressor\(380v\) \+ Compressor 합계 40 x 배분 25.0% = 10/
   );
   assert.match(
     context.getTeamSharedCompressorSettlementDetailText('team_04'),
@@ -253,7 +253,7 @@ test('charge-support adds apportioned shared charges to team equipment sums', ()
   context.__setBillingCompleted(false);
   assert.match(
     context.getTeamSharedCompressorSettlementDetailText('team_04'),
-    /Compressor 380V \+ Compressor 합계 40 x 배분 25.0% = 10/
+    /Compressor\(380v\) \+ Compressor 합계 40 x 배분 25.0% = 10/
   );
   assert.doesNotMatch(
     context.getTeamSharedCompressorSettlementDetailText('team_04'),

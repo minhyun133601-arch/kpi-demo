@@ -15,6 +15,7 @@
         normalizeRecordCategory,
         normalizeRecordCategoryGroup,
         isKpiRecord,
+        isProductionReportWorkspace,
         ATTACHMENT_SLOT_KEYS,
         getElement,
         getPayload,
@@ -24,6 +25,10 @@
         deleteAttachmentsFromServer,
         savePayload
     } = history;
+
+    function isProductionWorkspace() {
+        return typeof isProductionReportWorkspace === 'function' && isProductionReportWorkspace();
+    }
 
     function openRecordModal(team, index = null) {
         const form = getElement('recordForm');
@@ -70,12 +75,12 @@
                     category: editCategory,
                     kpi: isKpiRecord(record)
                 });
-                getElement('modalTitle').textContent = '작업내역 수정';
+                getElement('modalTitle').textContent = view.getRecordModalTitle?.(true) || '작업내역 수정';
                 getElement('recordStartDate').value = record.startDate || '';
                 getElement('recordEndDate').value = record.endDate || '';
                 getElement('recordTeam').value = record.team || defaultTeam;
                 getElement('recordAssignee').value = (record.assignees || normalizeAssignees(record.assignee || '')).join('\n');
-                view.syncRecordCategoryInputs?.(editCategoryGroup, editCategory);
+                view.syncRecordCategoryInputs?.(isProductionWorkspace() ? 'report' : editCategoryGroup, isProductionWorkspace() ? '' : editCategory);
                 getElement('recordWorkContent').value = record.workContent || '';
                 getElement('recordRemarks').value = record.remarks || '';
                 getElement('recordCost').value = view.formatCostInputValue(record.cost);
@@ -85,10 +90,10 @@
                 };
             }
         } else {
-            getElement('modalTitle').textContent = '작업내역 추가';
+            getElement('modalTitle').textContent = view.getRecordModalTitle?.(false) || '작업내역 추가';
             getElement('recordStartDate').value = view.todayInputValue();
             getElement('recordEndDate').value = view.todayInputValue();
-            view.syncRecordCategoryInputs?.('', '');
+            view.syncRecordCategoryInputs?.(isProductionWorkspace() ? 'report' : '', '');
             getElement('recordCost').value = '';
         }
 
@@ -141,8 +146,12 @@
         const startDate = String(getElement('recordStartDate')?.value || '').trim();
         const endDate = String(getElement('recordEndDate')?.value || '').trim();
         const assignees = normalizeAssignees(getElement('recordAssignee')?.value || '');
-        const categoryGroup = String(getElement('recordCategoryGroup')?.value || '').trim();
-        const category = String(getElement('recordCategory')?.value || '').trim();
+        const categoryGroup = isProductionWorkspace()
+            ? 'report'
+            : String(getElement('recordCategoryGroup')?.value || '').trim();
+        const category = isProductionWorkspace()
+            ? ''
+            : String(getElement('recordCategory')?.value || '').trim();
         const kpi = false;
         const workContent = String(getElement('recordWorkContent')?.value || '').trim();
         const remarks = String(getElement('recordRemarks')?.value || '').trim();
@@ -154,7 +163,7 @@
             category: normalizedCategory,
             kpi
         });
-        const requiresCategory = normalizedCategoryGroup !== 'report';
+        const requiresCategory = normalizedCategoryGroup !== 'report' && !isProductionWorkspace();
         const categoryOptionValues = Array.from(getElement('recordCategory')?.options || [])
             .map(option => String(option.value || '').trim())
             .filter(Boolean);
@@ -275,13 +284,19 @@
         }
 
         if (saved && typeof setLastModified === 'function') {
-            setLastModified(state.activeCategory?.title || '팀별내역서');
+            setLastModified(state.activeCategory?.title || (isProductionWorkspace() ? '생산 본부 실적보고' : '팀별내역서'));
         }
 
         if (saved) {
-            view.showToast?.(indexValue !== '' ? '작업내역이 수정되었습니다.' : '작업내역이 저장되었습니다.');
+            view.showToast?.(
+                indexValue !== ''
+                    ? (isProductionWorkspace() ? '실적 보고서가 수정되었습니다.' : '작업내역이 수정되었습니다.')
+                    : (isProductionWorkspace() ? '실적 보고서가 저장되었습니다.' : '작업내역이 저장되었습니다.')
+            );
         } else if (!options.invokedByShortcut) {
-            view.showToast?.('브라우저에는 반영됐지만 서버 저장은 실패했습니다.');
+            view.showToast?.(isProductionWorkspace()
+                ? '브라우저에는 반영됐지만 실적 보고서 서버 저장은 실패했습니다.'
+                : '브라우저에는 반영됐지만 서버 저장은 실패했습니다.');
         }
         return saved;
     }
@@ -306,9 +321,13 @@
         closeDeleteModal();
         view.renderCurrentView?.();
         if (saved && typeof setLastModified === 'function') {
-            setLastModified(state.activeCategory?.title || '팀별내역서');
+            setLastModified(state.activeCategory?.title || (isProductionWorkspace() ? '생산 본부 실적보고' : '팀별내역서'));
         }
-        view.showToast?.(saved ? '작업내역이 삭제되었습니다.' : '브라우저에서만 삭제됐지만 서버 저장은 실패했습니다.');
+        view.showToast?.(
+            saved
+                ? (isProductionWorkspace() ? '실적 보고서가 삭제되었습니다.' : '작업내역이 삭제되었습니다.')
+                : (isProductionWorkspace() ? '브라우저에서만 보고가 삭제됐지만 서버 저장은 실패했습니다.' : '브라우저에서만 삭제됐지만 서버 저장은 실패했습니다.')
+        );
         return saved;
     }
 
