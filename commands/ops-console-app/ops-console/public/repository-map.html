@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -698,11 +698,11 @@
         <div class="eyebrow">KPI Demo</div>
         <h1 data-i18n-key="title">Repository Map</h1>
         <div class="subtitle" data-i18n-key="subtitle">
-          A public-safe visual guide to the current KPI Demo folder layout. This console page is the single portfolio-facing place for structure, change history, privacy notes, and verification context.
+          현재 KPI Demo 폴더 구조, 최근 변경, 패치 이력, 개인정보 보호 기준, 검증 맥락을 한 화면에서 확인합니다.
         </div>
         <div class="language-toggle" aria-label="Language">
-          <button class="language-button is-active" type="button" data-lang="en" aria-pressed="true">English</button>
-          <button class="language-button" type="button" data-lang="ko" aria-pressed="false">한국어</button>
+          <button class="language-button is-active" type="button" data-lang="ko" aria-pressed="true">한국어</button>
+          <button class="language-button" type="button" data-lang="en" aria-pressed="false">English</button>
         </div>
       </div>
       <div class="status-grid" aria-label="Local port summary">
@@ -840,14 +840,12 @@
       <article class="panel violet">
         <div class="panel-head">
           <h2 class="panel-title">commands/ <span class="tag">local operations</span></h2>
-          <div class="panel-kicker">Double-click shortcuts for the static demo and owner console, with implementation scripts kept under internal support folders.</div>
+          <div class="panel-kicker">Root shortcuts expose only the static portfolio demo; owner-console scripts stay inside ops-console-app for local maintainer checks.</div>
         </div>
         <div class="body">
           <ul class="tree">
-            <li><span class="name">open-kpi-demo.cmd</span><span class="desc">starts the static demo and local operations console</span></li>
-            <li><span class="name">close-kpi-demo.cmd</span><span class="desc">stops the static demo and local operations console</span></li>
-            <li><span class="name">open-ops-console.cmd</span><span class="desc">starts only the local operations console</span></li>
-            <li><span class="name">close-ops-console.cmd</span><span class="desc">stops only the local operations console</span></li>
+            <li><span class="name">open-kpi-demo.cmd</span><span class="desc">starts only the static demo</span></li>
+            <li><span class="name">close-kpi-demo.cmd</span><span class="desc">stops only the static demo</span></li>
             <li>
               <span class="name">commands/internal/</span><span class="desc">support scripts hidden from the root command-file list</span>
               <ul>
@@ -861,7 +859,7 @@
                 <li><span class="name">commands/ops-console-app/ops-console/server.mjs</span><span class="desc">console API, live repository map, and local tool endpoints</span></li>
                 <li><span class="name">commands/ops-console-app/ops-console/lib/</span><span class="desc">command registry, service bridge, and repository map helper</span></li>
                 <li><span class="name">commands/ops-console-app/ops-console/public/</span><span class="desc">console UI assets, repository-map.html, and data-reference-map.html</span></li>
-                <li><span class="name">commands/ops-console-app/scripts/</span><span class="desc">start and stop wrappers</span></li>
+                <li><span class="name">commands/ops-console-app/scripts/</span><span class="desc">internal owner-console start and stop scripts</span></li>
               </ul>
             </li>
             <li><span class="name">commands/internal/var/</span><span class="desc">ignored static-demo runtime state</span></li>
@@ -951,13 +949,46 @@
       </article>
     </section>
 
-    <section class="history" aria-label="Integrated change history">
+    <section class="history" aria-label="Patch history">
       <article class="panel violet">
         <div class="panel-head">
-          <h2 class="panel-title" data-i18n-key="historyTitle">Integrated Change History <span class="tag">portfolio context</span></h2>
-        <div class="panel-kicker" data-i18n-key="historyKicker">This section replaces the separate technical and plain-language change-log files for portfolio readers.</div>
+          <h2 class="panel-title" data-i18n-key="historyTitle">패치 이력</h2>
+        <div class="panel-kicker" data-i18n-key="historyKicker">구조, 개인정보 영향, 검증 결과를 공개 포트폴리오 기준으로 기록합니다.</div>
         </div>
         <div class="body">
+          <article class="history-entry">
+            <div class="history-meta">
+              <span class="status-badge recent">2026-05-02</span>
+              <span class="status-badge modified">명령 정리</span>
+            </div>
+            <h3 data-i18n-key="historyDemoCommandSplitTitle">루트 명령은 데모만 노출하도록 정리</h3>
+            <p data-i18n-key="historyDemoCommandSplitBody">루트 명령 파일은 정적 포트폴리오 데모를 열고 닫는 경로만 남겼습니다. 오너 콘솔 확인은 포트폴리오용 바로가기 대신 내부 스크립트로 유지합니다.</p>
+            <ul class="history-detail">
+              <li data-i18n-key="historyDemoCommandSplitDetail">이번에 건드린 위치: 루트 command wrapper, 정적 helper 출력, README 실행 안내, Repository Map 명령 설명. 변경 파일: commands/open-kpi-demo.cmd, commands/close-kpi-demo.cmd, commands/open-ops-console.cmd, commands/close-ops-console.cmd, commands/internal/start-kpi-demo-static.ps1, README.md, commands/ops-console-app/ops-console/public/repository-map.html. 개인정보 영향: 고정 데모 계정 문구를 제거했고 데이터나 자격 증명 변경 없음; 오너 콘솔 스크립트는 로컬 내부 도구로 유지. 검증: 명령 문구 스캔, markdown 읽기 확인, 민감 문자열 스캔, 정적 명령 시작/종료 스모크, 내부 오너 콘솔 스크립트 스모크, Repository Map HTTP 확인.</li>
+            </ul>
+          </article>
+          <article class="history-entry">
+            <div class="history-meta">
+              <span class="status-badge recent">2026-05-02</span>
+              <span class="status-badge modified">규칙 정리</span>
+            </div>
+            <h3 data-i18n-key="historyReferenceBoundaryTitle">AGENTS.md를 참조본 directive 규격으로 정리</h3>
+            <p data-i18n-key="historyReferenceBoundaryBody">KPI-Server와 KPI-local처럼 Boundary Header와 Directive A-xx 구조를 쓰도록 AGENTS.md를 다시 정리하되, KPI Demo는 자체 포트, 개인정보 보호 규칙, 검증 기준을 가진 공개-safe 포트폴리오 화면으로 유지했습니다.</p>
+            <ul class="history-detail">
+              <li data-i18n-key="historyReferenceBoundaryDetail">이번에 건드린 위치: AGENTS.md directive 규격 재작성과 Repository Map 이력. 변경 파일: AGENTS.md, commands/ops-console-app/ops-console/public/repository-map.html. 개인정보 영향: 참조 규칙은 그대로 복사하지 않고 데모 기준으로 흡수했으며, 실제 운영처럼 보이는 문구, 비공개 데이터, 스크린샷, 자격 증명, 런타임 산출물, 참조본 전용 포트는 active demo rule로 들여오지 않았습니다. 검증: 참조 AGENTS 읽기 확인, markdown 읽기 확인, 민감 문자열 스캔, 오래된 포트 스캔, directive key 확인, Repository Map 키 확인.</li>
+            </ul>
+          </article>
+          <article class="history-entry">
+            <div class="history-meta">
+              <span class="status-badge recent">2026-05-02</span>
+              <span class="status-badge modified">README 정리</span>
+            </div>
+            <h3 data-i18n-key="historyReadmeAssessmentTitle">README는 포트폴리오에 보일 사실만 남김</h3>
+            <p data-i18n-key="historyReadmeAssessmentBody">README를 데모 범위, 실행 경로, 주요 폴더, 공개 데이터 기준, 검증 기준 중심으로 줄였습니다. 자기평가와 내부 개발 서사는 제거했습니다.</p>
+            <ul class="history-detail">
+              <li data-i18n-key="historyReadmeAssessmentDetail">이번에 건드린 위치: README.md 포트폴리오 문구와 Repository Map 이력. 변경 파일: README.md, commands/ops-console-app/ops-console/public/repository-map.html. 개인정보 영향: 실제 조직, 사람, 현장, 설비, 생산, 검침, 청구, 정비 값, 스크린샷, 자격 증명, 비공개 노트 추가 없음. 검증: markdown 읽기 확인, 민감 문자열 스캔, 명령 참조 스캔, Repository Map 한국어 기본 표시 확인.</li>
+            </ul>
+          </article>
           <article class="history-entry">
             <div class="history-meta">
               <span class="status-badge recent">2026-05-01</span>
@@ -975,7 +1006,7 @@
               <span class="status-badge modified">README Korean</span>
             </div>
             <h3 data-i18n-key="historyKoreanReadmeTitle">README became Korean-first for portfolio readers</h3>
-            <p data-i18n-key="historyKoreanReadmeBody">The repository language rule and README now lead with Korean portfolio explanation before commands, so domestic reviewers can quickly understand what was built, why, and which capabilities it demonstrates.</p>
+            <p data-i18n-key="historyKoreanReadmeBody">The repository language rule and README now lead with Korean portfolio explanation before commands, so domestic reviewers can quickly understand the demo scope and run path.</p>
             <ul class="history-detail">
               <li data-i18n-key="historyKoreanReadmeDetail">Touched area: AGENTS.md documentation language rule, README.md portfolio copy, and Repository Map history. Privacy: no real organization, person, site, equipment, production, metering, billing, or maintenance values were added; wording remains synthetic-data focused. Verification: markdown readback, markdown sensitive-string scan, retired-document active-rule scan, and diff check.</li>
             </ul>
@@ -985,8 +1016,8 @@
               <span class="status-badge recent">2026-05-01</span>
               <span class="status-badge modified">README portfolio</span>
             </div>
-            <h3 data-i18n-key="historyReadmePortfolioTitle">README portfolio positioning was expanded</h3>
-            <p data-i18n-key="historyReadmePortfolioBody">The README now gives GitHub visitors a concise portfolio snapshot, reviewer guide, and project-strength summary before the run instructions.</p>
+            <h3 data-i18n-key="historyReadmePortfolioTitle">README portfolio facts were tightened</h3>
+            <p data-i18n-key="historyReadmePortfolioBody">The README now avoids self-evaluation copy and keeps the public demo scope, folders, data rules, and run commands up front.</p>
             <ul class="history-detail">
               <li data-i18n-key="historyReadmePortfolioDetail">Touched area: README portfolio copy and Repository Map history. Privacy: no real organization, person, site, equipment, production, metering, billing, or maintenance values were added; wording stays public-safe and synthetic-data focused. Verification: markdown readback, markdown sensitive-string scan, retired-document active-rule scan, and Repository Map key check.</li>
             </ul>
@@ -1198,13 +1229,13 @@
     const i18n = {
       en: {
         title: 'Repository Map',
-        subtitle: 'A public-safe visual guide to the current KPI Demo folder layout. This console page is the single portfolio-facing place for structure, change history, privacy notes, and verification context.',
+        subtitle: 'See the live tree, recent changes, patch history, privacy notes, and verification context for the public KPI Demo repository in one place.',
         portStatic: 'Static demo',
         portRuntime: 'Runtime',
         portOps: 'Ops console',
         legendShell: 'Main shell',
         legendRuntime: 'Node runtime',
-        legendOps: 'Operations commands',
+        legendOps: 'Local tools',
         legendUtility: 'Utility tools',
         legendWork: 'Work reporting',
         legendAudit: 'Audit and entry',
@@ -1218,17 +1249,26 @@
         currentTree: 'Current Tree',
         recentTitle: 'Recent / Added / Modified',
         staticNote: 'Static fallback map below mirrors the public-facing structure summary when the owner-console API is not running.',
-        historyTitle: 'Integrated Change History',
-        historyKicker: 'This section replaces the separate technical and plain-language change-log files for portfolio readers.',
+        historyTitle: 'Patch History',
+        historyKicker: 'Portfolio-facing record of structure, privacy impact, and verification results.',
+        historyDemoCommandSplitTitle: 'Root commands now expose only the demo',
+        historyDemoCommandSplitBody: 'The root command files now keep only the static portfolio demo open/close path. Owner-console checks remain available through internal scripts, not separate portfolio-facing shortcuts.',
+        historyDemoCommandSplitDetail: 'Touched area: root command wrappers, static helper output, README run guidance, and Repository Map command descriptions. Changed files: commands/open-kpi-demo.cmd, commands/close-kpi-demo.cmd, commands/open-ops-console.cmd, commands/close-ops-console.cmd, commands/internal/start-kpi-demo-static.ps1, README.md, commands/ops-console-app/ops-console/public/repository-map.html. Privacy: fixed demo credential wording was removed; no data or credentials changed; owner-console scripts remain local internal tooling. Verification: command text scan, markdown readback, sensitive-string scan, static command start/stop smoke, internal owner-console script smoke, and Repository Map HTTP check.',
+        historyReferenceBoundaryTitle: 'AGENTS.md now follows the reference directive format',
+        historyReferenceBoundaryBody: 'The demo authority document now uses the same Boundary Header and Directive A-xx structure as KPI-Server and KPI-local, while keeping KPI Demo as the public-safe portfolio surface with its own ports, privacy rules, and verification gates.',
+        historyReferenceBoundaryDetail: 'Touched area: AGENTS.md directive-format rewrite and Repository Map history. Changed files: AGENTS.md and commands/ops-console-app/ops-console/public/repository-map.html. Privacy: reference rules were absorbed, not copied verbatim; live-operation wording, private data, screenshots, credentials, runtime artifacts, and reference-only ports were not introduced as active demo rules. Verification: reference AGENTS readback, markdown readback, sensitive-string scan, stale-port scan, directive-key check, and Repository Map key check.',
+        historyReadmeAssessmentTitle: 'README now keeps only portfolio-facing facts',
+        historyReadmeAssessmentBody: 'The README was reduced to the demo scope, run path, main folders, public data rules, and verification baseline. Self-evaluation and internal development narrative were removed.',
+        historyReadmeAssessmentDetail: 'Touched area: README.md portfolio copy and Repository Map history. Changed files: README.md and commands/ops-console-app/ops-console/public/repository-map.html. Privacy: no real organization, person, site, equipment, production, metering, billing, maintenance values, screenshots, credentials, or private notes were added. Verification: markdown readback, sensitive-string scan, command reference scan, and Repository Map Korean-default check.',
         historyServerSyncTitle: 'Server runtime changes were folded into the public demo',
         historyServerSyncBody: 'The demo now mirrors the latest server-side runtime structure for audit legal records, equipment history, production reports, work-history storage splits, metering report runtime, PostgreSQL tool resolution, owner routes, and the operations-console data reference view.',
         historyServerSyncDetail: 'Touched area: KPI.html, KPI runtime shell, audit/data/work/utility modules, internal-server routes/services/scripts/tests, command wrappers, ops console, README, .gitignore privacy filters, and Repository Map. Privacy: server/local private labels, internal logos, screenshots, source extracts, local assessment notes, and non-demo notes were not imported; names were converted to Plant A/Plant B, Operator A, Line Alpha, Demo Boiler, and other synthetic labels. Verification: format check, lint, 460 Node tests, targeted smoke tests, PostgreSQL tool resolver syntax check, sensitive-string scans, 5500 static responses, 3104 runtime smoke, and 3215 ops-console API checks.',
         historyKoreanReadmeTitle: 'README became Korean-first for portfolio readers',
-        historyKoreanReadmeBody: 'The repository language rule and README now lead with Korean portfolio explanation before commands, so domestic reviewers can quickly understand what was built, why, and which capabilities it demonstrates.',
+        historyKoreanReadmeBody: 'The repository language rule and README now lead with Korean portfolio explanation before commands, so domestic reviewers can quickly understand the demo scope and run path.',
         historyKoreanReadmeDetail: 'Touched area: AGENTS.md documentation language rule, README.md portfolio copy, and Repository Map history. Privacy: no real organization, person, site, equipment, production, metering, billing, or maintenance values were added; wording remains synthetic-data focused. Verification: markdown readback, markdown sensitive-string scan, retired-document active-rule scan, and diff check.',
-        historyReadmePortfolioTitle: 'README portfolio positioning was expanded',
-        historyReadmePortfolioBody: 'The README now gives GitHub visitors a concise portfolio snapshot, reviewer guide, and project-strength summary before the run instructions.',
-        historyReadmePortfolioDetail: 'Touched area: README portfolio copy and Repository Map history. Privacy: no real organization, person, site, equipment, production, metering, billing, or maintenance values were added; wording stays public-safe and synthetic-data focused. Verification: markdown readback, markdown sensitive-string scan, retired-document active-rule scan, and Repository Map key check.',
+        historyReadmePortfolioTitle: 'README portfolio facts were tightened',
+        historyReadmePortfolioBody: 'The README now avoids self-evaluation copy and keeps the public demo scope, folders, data rules, and run commands up front.',
+        historyReadmePortfolioDetail: 'Touched area: README portfolio copy and Repository Map history. Privacy: no real organization, person, site, equipment, production, metering, billing, maintenance values, screenshots, credentials, or private notes were added; wording stays public-safe and synthetic-data focused. Verification: markdown readback, markdown sensitive-string scan, command reference scan, and Repository Map key check.',
         historyUtilityElectricScaleTitle: 'Utility entry electricity demo values were lowered',
         historyUtilityElectricScaleBody: 'The portfolio electricity entry seed now uses smaller synthetic monthly usage, billing, and meter reading values that fit a small demo operation.',
         historyUtilityElectricScaleDetail: 'Touched area: KPI demo seed data, KPI.html cache key, and Repository Map. Privacy: no real metering or billing values were added; all electricity values remain synthetic. Verification: JavaScript syntax check, targeted metering smoke checks, fixture range check, static server response check, and markdown sensitive-string scan.',
@@ -1275,7 +1315,7 @@
         historyOwnerBody: 'The KPI dashboard no longer embeds owner-only console tabs. Selecting Owner Only launches the local operations console as a detached popup that can stay open after the KPI window closes.',
         historyOwnerDetail: 'Touched area: owner section script, KPI app popup launcher, shell CSS, and KPI.html cache keys. Privacy: localhost-only behavior. Verification: popup launch browser smoke and syntax checks.',
         historyCommandsTitle: 'The command folder keeps demo and console wrappers separate',
-        historyCommandsBody: 'The static demo wrappers start or stop both KPI.html and the owner console. The ops-console wrappers handle only the local console when the reviewer wants Repository Map or Data Reference Map.',
+        historyCommandsBody: 'The static demo wrappers start or stop only KPI.html. The ops-console wrappers handle only the local console when the reviewer wants Repository Map or Data Reference Map.',
         historyCommandsDetail: 'Touched area: command wrapper files, commands/internal support scripts, ops-console start/stop scripts, .gitignore, and console command registry. Privacy: generated local runtime state stays ignored. Verification: command scan and start/stop smoke.',
         historyPortsTitle: 'Local ports were standardized',
         historyPortsBody: 'The public static demo stays on 5500, the optional Node runtime uses 3104, PostgreSQL uses 5400, and the operations console starts from 3215.',
@@ -1304,13 +1344,13 @@
       },
       ko: {
         title: '저장소 지도',
-        subtitle: '현재 KPI Demo 폴더 구조를 공개 포트폴리오 기준으로 보여주는 화면입니다. 구조, 변경 이력, 개인정보 보호 기준, 검증 맥락을 이 Repository Map 한 곳에 모았습니다.',
+        subtitle: '현재 KPI Demo 폴더 구조, 최근 변경, 패치 이력, 개인정보 보호 기준, 검증 맥락을 한 화면에서 확인합니다.',
         portStatic: '정적 데모',
         portRuntime: '런타임',
         portOps: '운영 콘솔',
         legendShell: '메인 화면',
         legendRuntime: 'Node 런타임',
-        legendOps: '운영 명령',
+        legendOps: '로컬 도구',
         legendUtility: '유틸리티',
         legendWork: '업무 리포트',
         legendAudit: '점검과 입력',
@@ -1324,17 +1364,26 @@
         currentTree: '현재 트리',
         recentTitle: '최근 / 추가 / 수정',
         staticNote: '오너 콘솔 API가 꺼져 있으면 아래 정적 지도가 공개용 구조 요약을 대신 보여줍니다.',
-        historyTitle: '통합 변경 이력',
-        historyKicker: '이 영역이 포트폴리오 독자를 위한 별도 기술/쉬운 설명 변경 기록 문서를 대신합니다.',
+        historyTitle: '패치 이력',
+        historyKicker: '구조, 개인정보 영향, 검증 결과를 공개 포트폴리오 기준으로 기록합니다.',
+        historyDemoCommandSplitTitle: '루트 명령은 데모만 노출하도록 정리',
+        historyDemoCommandSplitBody: '루트 명령 파일은 정적 포트폴리오 데모를 열고 닫는 경로만 남겼습니다. 오너 콘솔 확인은 포트폴리오용 바로가기 대신 내부 스크립트로 유지합니다.',
+        historyDemoCommandSplitDetail: '이번에 건드린 위치: 루트 command wrapper, 정적 helper 출력, README 실행 안내, Repository Map 명령 설명. 변경 파일: commands/open-kpi-demo.cmd, commands/close-kpi-demo.cmd, commands/open-ops-console.cmd, commands/close-ops-console.cmd, commands/internal/start-kpi-demo-static.ps1, README.md, commands/ops-console-app/ops-console/public/repository-map.html. 개인정보 영향: 고정 데모 계정 문구를 제거했고 데이터나 자격 증명 변경 없음; 오너 콘솔 스크립트는 로컬 내부 도구로 유지. 검증: 명령 문구 스캔, markdown 읽기 확인, 민감 문자열 스캔, 정적 명령 시작/종료 스모크, 내부 오너 콘솔 스크립트 스모크, Repository Map HTTP 확인.',
+        historyReferenceBoundaryTitle: 'AGENTS.md를 참조본 directive 규격으로 정리',
+        historyReferenceBoundaryBody: 'KPI-Server와 KPI-local처럼 Boundary Header와 Directive A-xx 구조를 쓰도록 AGENTS.md를 다시 정리하되, KPI Demo는 자체 포트, 개인정보 보호 규칙, 검증 기준을 가진 공개-safe 포트폴리오 화면으로 유지했습니다.',
+        historyReferenceBoundaryDetail: '이번에 건드린 위치: AGENTS.md directive 규격 재작성과 Repository Map 이력. 변경 파일: AGENTS.md, commands/ops-console-app/ops-console/public/repository-map.html. 개인정보 영향: 참조 규칙은 그대로 복사하지 않고 데모 기준으로 흡수했으며, 실제 운영처럼 보이는 문구, 비공개 데이터, 스크린샷, 자격 증명, 런타임 산출물, 참조본 전용 포트는 active demo rule로 들여오지 않았습니다. 검증: 참조 AGENTS 읽기 확인, markdown 읽기 확인, 민감 문자열 스캔, 오래된 포트 스캔, directive key 확인, Repository Map 키 확인.',
+        historyReadmeAssessmentTitle: 'README는 포트폴리오에 보일 사실만 남김',
+        historyReadmeAssessmentBody: 'README를 데모 범위, 실행 경로, 주요 폴더, 공개 데이터 기준, 검증 기준 중심으로 줄였습니다. 자기평가와 내부 개발 서사는 제거했습니다.',
+        historyReadmeAssessmentDetail: '이번에 건드린 위치: README.md 포트폴리오 문구와 Repository Map 이력. 변경 파일: README.md, commands/ops-console-app/ops-console/public/repository-map.html. 개인정보 영향: 실제 조직, 사람, 현장, 설비, 생산, 검침, 청구, 정비 값, 스크린샷, 자격 증명, 비공개 노트 추가 없음. 검증: markdown 읽기 확인, 민감 문자열 스캔, 명령 참조 스캔, Repository Map 한국어 기본 표시 확인.',
         historyServerSyncTitle: '서버 런타임 변경분을 공개 데모에 반영',
         historyServerSyncBody: '오디트 법정 설비 기록, 설비 이력, 생산 보고, 작업내역 저장 분리, 검침 리포트 런타임, PostgreSQL 도구 탐색, 오너 라우트, 운영 콘솔 데이터 참조 화면을 최신 서버 구조에 맞춰 데모본에 녹였습니다.',
         historyServerSyncDetail: '이번에 건드린 위치: KPI.html, KPI 런타임 셸, audit/data/work/utility 모듈, internal-server 라우트/서비스/스크립트/테스트, command wrapper, 운영 콘솔, README, .gitignore 개인정보 필터, Repository Map. 개인정보 영향: 서버/로컬의 비공개 라벨, 내부 로고, 스크린샷, 원본 추출물, 로컬 평가 노트, 데모 외 노트는 가져오지 않았고 Plant A/Plant B, Operator A, Line Alpha, Demo Boiler 같은 합성 라벨로 바꿨습니다. 검증: format check, lint, Node 테스트 460개, 대상 스모크, PostgreSQL 도구 탐색 스크립트 문법 확인, 민감 문자열 스캔, 5500 정적 응답, 3104 런타임 스모크, 3215 운영 콘솔 API 확인.',
         historyKoreanReadmeTitle: 'README를 한국어 우선 포트폴리오 설명으로 전환',
-        historyKoreanReadmeBody: '국내 검토자가 명령어보다 먼저 무엇을 만들었고, 왜 만들었고, 어떤 역량이 드러나는지 빠르게 이해할 수 있도록 문서 언어 규칙과 README를 한국어 중심으로 바꿨습니다.',
+        historyKoreanReadmeBody: '국내 검토자가 명령어보다 먼저 데모 범위와 실행 경로를 빠르게 이해할 수 있도록 문서 언어 규칙과 README를 한국어 중심으로 바꿨습니다.',
         historyKoreanReadmeDetail: '이번에 건드린 위치: AGENTS.md 문서 언어 규칙, README.md 포트폴리오 문구, Repository Map 이력. 개인정보 영향: 실제 조직, 사람, 현장, 설비, 생산, 검침, 청구, 정비 값 추가 없음; 합성 데이터 중심 문구 유지. 검증: markdown 읽기 확인, markdown 민감 문자열 스캔, 은퇴 문서명 active-rule 스캔, diff 확인.',
-        historyReadmePortfolioTitle: 'README 포트폴리오 설명 보강',
-        historyReadmePortfolioBody: 'GitHub 방문자가 실행 방법을 보기 전에 프로젝트 요약, 검토할 위치, 보여주는 역량을 짧게 이해할 수 있도록 README를 보강했습니다.',
-        historyReadmePortfolioDetail: '이번에 건드린 위치: README 포트폴리오 문구와 Repository Map 이력. 개인정보 영향: 실제 조직, 사람, 현장, 설비, 생산, 검침, 청구, 정비 값 추가 없음; 공개-safe 합성 데이터 중심 문구만 사용. 검증: markdown 읽기 확인, markdown 민감 문자열 스캔, 은퇴 문서명 active-rule 스캔, Repository Map 키 확인.',
+        historyReadmePortfolioTitle: 'README 포트폴리오 사실 중심 정리',
+        historyReadmePortfolioBody: 'README에서 자기평가성 문구를 줄이고 공개 데모 범위, 폴더, 데이터 기준, 실행 명령을 앞에 남겼습니다.',
+        historyReadmePortfolioDetail: '이번에 건드린 위치: README 포트폴리오 문구와 Repository Map 이력. 개인정보 영향: 실제 조직, 사람, 현장, 설비, 생산, 검침, 청구, 정비 값, 스크린샷, 자격 증명, 비공개 노트 추가 없음; 공개-safe 합성 데이터 중심 문구만 사용. 검증: markdown 읽기 확인, markdown 민감 문자열 스캔, 명령 참조 스캔, Repository Map 키 확인.',
         historyUtilityElectricScaleTitle: '유틸리티 기입 전기 더미값 낮춤',
         historyUtilityElectricScaleBody: '포트폴리오용 전기 기입 seed의 월 사용량, 청구 금액, 검침 누적값을 소규모 데모 운영에 맞는 낮은 합성값으로 조정했습니다.',
         historyUtilityElectricScaleDetail: '이번에 건드린 위치: KPI 데모 seed 데이터, KPI.html 캐시 키, Repository Map. 개인정보 영향: 실제 검침값이나 청구값 추가 없음; 전기 값은 모두 합성 데이터 유지. 검증: JavaScript 문법 확인, 검침 관련 대상 스모크 확인, fixture 범위 확인, 정적 서버 응답 확인, markdown 민감 문자열 스캔.',
@@ -1381,7 +1430,7 @@
         historyOwnerBody: 'KPI 대시보드 안에 오너용 콘솔 탭을 더 이상 넣지 않습니다. 오너 전용을 누르면 KPI 창과 분리된 팝업으로 로컬 운영 콘솔이 열리고, KPI 창을 닫아도 그 창은 유지됩니다.',
         historyOwnerDetail: '이번에 건드린 위치: 오너 섹션 스크립트, KPI 앱 팝업 실행부, shell CSS, KPI.html 캐시 키. 개인정보 영향: localhost 동작만 변경. 검증: 팝업 실행 브라우저 스모크와 문법 확인.',
         historyCommandsTitle: 'commands 폴더의 데모/콘솔 실행 파일 분리',
-        historyCommandsBody: '정적 데모 실행 파일은 KPI.html과 오너 콘솔을 함께 켜고 끕니다. 운영 콘솔 실행 파일은 검토자가 Repository Map이나 Data Reference Map만 확인할 때 로컬 콘솔만 다룹니다.',
+        historyCommandsBody: '정적 데모 실행 파일은 KPI.html만 켜고 끕니다. 운영 콘솔 실행 파일은 검토자가 Repository Map이나 Data Reference Map만 확인할 때 로컬 콘솔만 다룹니다.',
         historyCommandsDetail: '이번에 건드린 위치: command wrapper 파일, commands/internal 보조 스크립트, ops-console 시작/종료 스크립트, .gitignore, 콘솔 명령 레지스트리. 개인정보 영향: 생성되는 로컬 실행 상태는 계속 Git에서 제외. 검증: 명령 파일 스캔과 시작/종료 스모크.',
         historyPortsTitle: '로컬 포트 기준을 통일',
         historyPortsBody: '정적 데모는 5500, 선택형 Node 런타임은 3104, PostgreSQL은 5400, 운영 콘솔은 3215부터 사용합니다.',
@@ -1421,7 +1470,7 @@
       'Top-level documentation and repository configuration visible in the public summary.': '공개 요약에 보이는 최상위 문서와 저장소 설정입니다.',
       'Shared front-end shell and optional server-backed runtime surface.': '공통 프런트엔드 셸과 선택형 서버 런타임 영역입니다.',
       'The server version keeps API, repository, service, migration, and test layers separate.': '서버 버전은 API, 저장소, 서비스, 마이그레이션, 테스트 계층을 분리해 둡니다.',
-      'Double-click shortcuts for the static demo and owner console, with implementation scripts kept under internal support folders.': '정적 데모와 오너 콘솔용 더블클릭 명령을 두고, 실제 구현 스크립트는 내부 보조 폴더에 둡니다.',
+      'Root shortcuts expose only the static portfolio demo; owner-console scripts stay inside ops-console-app for local maintainer checks.': '루트 실행 파일은 정적 포트폴리오 데모만 노출하고, 오너 콘솔 스크립트는 로컬 유지관리 확인용으로 ops-console-app 안에 둡니다.',
       'Utility screens, production extraction, reporting, and metering support code.': '유틸리티 화면, 생산 데이터 추출, 리포트, 계량 보조 코드입니다.',
       'Work-log, team calendar, and work-history reporting surfaces.': '작업 로그, 팀 캘린더, 업무 이력 리포트 화면입니다.',
       'Audit screens and manual entry pages use public-safe synthetic labels.': '점검 화면과 수기 입력 화면은 공개 가능한 합성 라벨을 사용합니다.',
@@ -1451,8 +1500,8 @@
       'business rules and state assembly': '업무 규칙과 상태 조립',
       'runtime entry point': '런타임 진입점',
       'frontend, route, service, database, and script tests': '프런트엔드, 라우트, 서비스, DB, 스크립트 테스트',
-      'starts the static demo and local operations console': '정적 데모와 로컬 운영 콘솔을 켭니다',
-      'stops the static demo and local operations console': '정적 데모와 로컬 운영 콘솔을 끕니다',
+      'starts only the static demo': '정적 데모만 켭니다',
+      'stops only the static demo': '정적 데모만 끕니다',
       'starts only the local operations console': '로컬 운영 콘솔만 켭니다',
       'stops only the local operations console': '로컬 운영 콘솔만 끕니다',
       'support scripts hidden from the root command-file list': '루트 실행 파일 목록에서는 숨긴 보조 스크립트',
@@ -1463,7 +1512,7 @@
       'command registry, service bridge, and repository map helper': '명령 레지스트리, 서비스 브리지, 저장소 지도 보조 기능',
       'console UI assets and repository-map.html': '콘솔 UI 자산과 repository-map.html',
       'console UI assets, repository-map.html, and data-reference-map.html': '콘솔 UI 자산, repository-map.html, data-reference-map.html',
-      'start and stop wrappers': '시작과 종료 wrapper',
+      'internal owner-console start and stop scripts': '내부 오너 콘솔 시작/종료 스크립트',
       'ignored static-demo runtime state': '무시되는 정적 데모 실행 상태',
       'billing, calendar, equipment, save, team monthly, overview, and settlement UI': '청구, 캘린더, 설비, 저장, 팀 월간, 현황, 정산 UI',
       'synthetic production data import and export helper': '합성 생산 데이터 가져오기/내보내기 보조 도구',
@@ -1480,7 +1529,7 @@
       filter: 'all',
       payload: null,
       refreshTimer: 0,
-      language: 'en'
+      language: 'ko'
     };
     const liveElements = {
       sourceChip: document.getElementById('live-source-chip'),
