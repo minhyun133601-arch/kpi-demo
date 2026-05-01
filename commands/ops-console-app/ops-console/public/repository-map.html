@@ -440,6 +440,12 @@
       overflow-wrap: anywhere;
     }
 
+    .recent-desc {
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
+
     .recent-meta {
       display: flex;
       flex-wrap: wrap;
@@ -447,6 +453,53 @@
       color: var(--muted);
       font-size: 0.72rem;
       font-weight: 700;
+    }
+
+    .side-history {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .side-heading {
+      color: var(--text);
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    .side-history-entry {
+      display: grid;
+      gap: 5px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .side-history-entry:last-child {
+      border-bottom: 0;
+    }
+
+    .side-history-title {
+      color: var(--text);
+      font-size: 0.82rem;
+      font-weight: 900;
+    }
+
+    .side-history-body,
+    .side-history-detail {
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
+
+    .side-history-detail {
+      line-height: 1.5;
+    }
+
+    .side-file-group {
+      display: grid;
+      gap: 0;
     }
 
     .live-feedback {
@@ -762,7 +815,7 @@
         </section>
         <aside class="live-panel" aria-label="Recent and changed files">
           <div class="live-panel-head">
-            <h2 class="live-panel-title" data-i18n-key="recentTitle">Recent / Added / Modified</h2>
+            <h2 class="live-panel-title" data-i18n-key="recentTitle">최근 수정 내역</h2>
             <span class="live-source" id="live-recent-count">0 files</span>
           </div>
           <div class="recent-list" id="recent-list"></div>
@@ -941,13 +994,24 @@
       </article>
     </section>
 
-    <section class="history" aria-label="Patch history">
+    <section class="history" id="history-surface" aria-label="Patch history">
       <article class="panel violet">
         <div class="panel-head">
           <h2 class="panel-title" data-i18n-key="historyTitle">패치 이력</h2>
         <div class="panel-kicker" data-i18n-key="historyKicker">구조, 개인정보 영향, 검증 결과를 공개 포트폴리오 기준으로 기록합니다.</div>
         </div>
         <div class="body">
+          <article class="history-entry">
+            <div class="history-meta">
+              <span class="status-badge recent">2026-05-02</span>
+              <span class="status-badge modified">지도 표시</span>
+            </div>
+            <h3 data-i18n-key="historyMapKoreanPanelTitle">Repository Map 최근 수정 내역을 오른쪽 패널로 정리</h3>
+            <p data-i18n-key="historyMapKoreanPanelBody">한국어 보기에서 패치 이력이 하단 별도 목록이 아니라 오른쪽 최근 수정 내역 패널에 먼저 보이도록 바꾸고, 실시간 파일 트리 설명도 한국어로 표시되게 했습니다.</p>
+            <ul class="history-detail">
+              <li data-i18n-key="historyMapKoreanPanelDetail">이번에 건드린 위치: Repository Map 오른쪽 패널 렌더링, 실시간 저장소 지도 API 파일 설명 메타데이터. 변경 파일: commands/ops-console-app/ops-console/public/repository-map.html, kpi-runtime/internal-server/src/services/repository-map.js. 개인정보 영향: 데이터, 자격 증명, 실명, 실제 현장/설비/값 추가 없음. 검증: HTML 인라인 스크립트 문법 확인, Repository Map API 한국어 메타데이터 확인, HTTP 응답 확인, 민감 문자열 스캔.</li>
+            </ul>
+          </article>
           <article class="history-entry">
             <div class="history-meta">
               <span class="status-badge recent">2026-05-02</span>
@@ -1250,10 +1314,16 @@
         filterRecent: 'Recent',
         refresh: 'Refresh',
         currentTree: 'Current Tree',
-        recentTitle: 'Recent / Added / Modified',
+        recentTitle: 'Recent Changes',
         staticNote: 'Static fallback map below mirrors the public-facing structure summary when the owner-console API is not running.',
         historyTitle: 'Patch History',
         historyKicker: 'Portfolio-facing record of structure, privacy impact, and verification results.',
+        historyFeedTitle: 'Recent change history',
+        fileRecentTitle: 'Recent files',
+        historyCount: 'history entries',
+        historyMapKoreanPanelTitle: 'Repository Map recent changes now live in the right panel',
+        historyMapKoreanPanelBody: 'In Korean view, patch history now appears first in the right-side Recent Changes panel instead of only in a separate lower list, and live file-tree descriptions can display Korean metadata.',
+        historyMapKoreanPanelDetail: 'Touched area: Repository Map right-panel rendering and live repository-map API file-description metadata. Changed files: commands/ops-console-app/ops-console/public/repository-map.html and kpi-runtime/internal-server/src/services/repository-map.js. Privacy: no data, credential, real name, real site/equipment label, or real value was added. Verification: inline HTML script syntax check, Repository Map API Korean metadata check, HTTP response check, and sensitive-string scan.',
         historySecurityPrinciplesTitle: 'Home principles now show security rules only',
         historySecurityPrinciplesBody: 'The home-screen top policy, value, and attitude copy was removed, leaving only one-line security rules for privacy, synthetic data, and access management.',
         historySecurityPrinciplesDetail: 'Touched area: KPI home-screen operating principle copy, home layout, and Repository Map history. Changed files: kpi-runtime/app/KPI.app.js, kpi-runtime/app/KPI.app.navigation.js, kpi-runtime/app/styles/shell/shell-chrome.css, and commands/ops-console-app/ops-console/public/repository-map.html. Privacy: no real organization, person, site, equipment, value, or credential was added; only security boundaries remain. Verification: wording scan, JavaScript syntax check, static response check, and Repository Map history-key check.',
@@ -1368,10 +1438,16 @@
         filterRecent: '최근',
         refresh: '새로고침',
         currentTree: '현재 트리',
-        recentTitle: '최근 / 추가 / 수정',
+        recentTitle: '최근 수정 내역',
         staticNote: '오너 콘솔 API가 꺼져 있으면 아래 정적 지도가 공개용 구조 요약을 대신 보여줍니다.',
         historyTitle: '패치 이력',
         historyKicker: '구조, 개인정보 영향, 검증 결과를 공개 포트폴리오 기준으로 기록합니다.',
+        historyFeedTitle: '최근 수정 내역',
+        fileRecentTitle: '최근 파일 변경',
+        historyCount: '개 이력',
+        historyMapKoreanPanelTitle: 'Repository Map 최근 수정 내역을 오른쪽 패널로 정리',
+        historyMapKoreanPanelBody: '한국어 보기에서 패치 이력이 하단 별도 목록이 아니라 오른쪽 최근 수정 내역 패널에 먼저 보이도록 바꾸고, 실시간 파일 트리 설명도 한국어로 표시되게 했습니다.',
+        historyMapKoreanPanelDetail: '이번에 건드린 위치: Repository Map 오른쪽 패널 렌더링, 실시간 저장소 지도 API 파일 설명 메타데이터. 변경 파일: commands/ops-console-app/ops-console/public/repository-map.html, kpi-runtime/internal-server/src/services/repository-map.js. 개인정보 영향: 데이터, 자격 증명, 실명, 실제 현장/설비/값 추가 없음. 검증: HTML 인라인 스크립트 문법 확인, Repository Map API 한국어 메타데이터 확인, HTTP 응답 확인, 민감 문자열 스캔.',
         historySecurityPrinciplesTitle: '홈 운영 원칙을 보안 기준으로 정리',
         historySecurityPrinciplesBody: '홈 화면의 상단 정책 문구와 가치/태도형 문구를 제거하고 개인정보 보호, 합성 데이터, 접근 관리 보안 원칙만 한 줄씩 남겼습니다.',
         historySecurityPrinciplesDetail: '이번에 건드린 위치: KPI 홈 화면 운영 원칙 문구, 홈 레이아웃, Repository Map 이력. 변경 파일: kpi-runtime/app/KPI.app.js, kpi-runtime/app/KPI.app.navigation.js, kpi-runtime/app/styles/shell/shell-chrome.css, commands/ops-console-app/ops-console/public/repository-map.html. 개인정보 영향: 실제 조직, 사람, 현장, 설비, 값, 자격 증명 추가 없음; 보안 기준만 남김. 검증: 문구 스캔, JavaScript 문법 확인, 정적 응답 확인, Repository Map 이력 키 확인.',
@@ -1528,6 +1604,33 @@
       'generic KPI Demo logo': '일반 KPI Demo 로고',
       'private screenshots and internal evidence files stay out of the repo': '비공개 스크린샷과 내부 증빙 파일은 저장소에 넣지 않습니다'
     };
+    const sideHistoryEntries = [
+      { date: '2026-05-02', tagEn: 'map panel', tagKo: '지도 표시', titleKey: 'historyMapKoreanPanelTitle', bodyKey: 'historyMapKoreanPanelBody', detailKey: 'historyMapKoreanPanelDetail' },
+      { date: '2026-05-02', tagEn: 'security copy', tagKo: '보안 문구', titleKey: 'historySecurityPrinciplesTitle', bodyKey: 'historySecurityPrinciplesBody', detailKey: 'historySecurityPrinciplesDetail' },
+      { date: '2026-05-02', tagEn: 'server tools', tagKo: '서버 툴 정리', titleKey: 'historyDemoCommandSplitTitle', bodyKey: 'historyDemoCommandSplitBody', detailKey: 'historyDemoCommandSplitDetail' },
+      { date: '2026-05-02', tagEn: 'rules', tagKo: '규칙 정리', titleKey: 'historyReferenceBoundaryTitle', bodyKey: 'historyReferenceBoundaryBody', detailKey: 'historyReferenceBoundaryDetail' },
+      { date: '2026-05-02', tagEn: 'README', tagKo: 'README 정리', titleKey: 'historyReadmeAssessmentTitle', bodyKey: 'historyReadmeAssessmentBody', detailKey: 'historyReadmeAssessmentDetail' },
+      { date: '2026-05-01', tagEn: 'server sync', tagKo: 'server sync', titleKey: 'historyServerSyncTitle', bodyKey: 'historyServerSyncBody', detailKey: 'historyServerSyncDetail' },
+      { date: '2026-05-01', tagEn: 'README Korean', tagKo: 'README Korean', titleKey: 'historyKoreanReadmeTitle', bodyKey: 'historyKoreanReadmeBody', detailKey: 'historyKoreanReadmeDetail' },
+      { date: '2026-05-01', tagEn: 'README portfolio', tagKo: 'README portfolio', titleKey: 'historyReadmePortfolioTitle', bodyKey: 'historyReadmePortfolioBody', detailKey: 'historyReadmePortfolioDetail' },
+      { date: '2026-05-01', tagEn: 'utility seed', tagKo: 'utility seed', titleKey: 'historyUtilityElectricScaleTitle', bodyKey: 'historyUtilityElectricScaleBody', detailKey: 'historyUtilityElectricScaleDetail' },
+      { date: '2026-04-27', tagEn: 'privacy gate', tagKo: 'privacy gate', titleKey: 'historyPrivacyGateTitle', bodyKey: 'historyPrivacyGateBody', detailKey: 'historyPrivacyGateDetail' },
+      { date: '2026-04-27', tagEn: 'server handoff', tagKo: 'server handoff', titleKey: 'historyResumePromptTitle', bodyKey: 'historyResumePromptBody', detailKey: 'historyResumePromptDetail' },
+      { date: '2026-04-26', tagEn: 'privacy scan', tagKo: 'privacy scan', titleKey: 'historyCompanyNameCleanupTitle', bodyKey: 'historyCompanyNameCleanupBody', detailKey: 'historyCompanyNameCleanupDetail' },
+      { date: '2026-04-26', tagEn: 'utility seed', tagKo: 'utility seed', titleKey: 'historyUtilityElectricSeedTitle', bodyKey: 'historyUtilityElectricSeedBody', detailKey: 'historyUtilityElectricSeedDetail' },
+      { date: '2026-04-26', tagEn: 'agent rules', tagKo: 'agent rules', titleKey: 'historyAgentDemoRulesTitle', bodyKey: 'historyAgentDemoRulesBody', detailKey: 'historyAgentDemoRulesDetail' },
+      { date: '2026-04-26', tagEn: 'work history seed', tagKo: 'work history seed', titleKey: 'historyWorkLogSeedTitle', bodyKey: 'historyWorkLogSeedBody', detailKey: 'historyWorkLogSeedDetail' },
+      { date: '2026-04-26', tagEn: 'screenshot set', tagKo: 'screenshot set', titleKey: 'historyScreenshotSetTitle', bodyKey: 'historyScreenshotSetBody', detailKey: 'historyScreenshotSetDetail' },
+      { date: '2026-04-26', tagEn: 'cover cleanup', tagKo: 'cover cleanup', titleKey: 'historyCoverSimpleTitle', bodyKey: 'historyCoverSimpleBody', detailKey: 'historyCoverSimpleDetail' },
+      { date: '2026-04-26', tagEn: 'portfolio capture', tagKo: 'portfolio capture', titleKey: 'historyPortfolioPopupTitle', bodyKey: 'historyPortfolioPopupBody', detailKey: 'historyPortfolioPopupDetail' },
+      { date: '2026-04-26', tagEn: 'repository map', tagKo: 'repository map', titleKey: 'historyMapTitle', bodyKey: 'historyMapBody', detailKey: 'historyMapDetail' },
+      { date: '2026-04-26', tagEn: 'data entry', tagKo: 'data entry', titleKey: 'historyEquipmentCardTitle', bodyKey: 'historyEquipmentCardBody', detailKey: 'historyEquipmentCardDetail' },
+      { date: '2026-04-26', tagEn: 'audit structure', tagKo: 'audit structure', titleKey: 'historyAuditLegalStructureTitle', bodyKey: 'historyAuditLegalStructureBody', detailKey: 'historyAuditLegalStructureDetail' },
+      { date: '2026-04-26', tagEn: 'audit', tagKo: 'audit', titleKey: 'historyAuditLegalTitle', bodyKey: 'historyAuditLegalBody', detailKey: 'historyAuditLegalDetail' },
+      { date: '2026-04-26', tagEn: 'owner launch', tagKo: 'owner launch', titleKey: 'historyOwnerTitle', bodyKey: 'historyOwnerBody', detailKey: 'historyOwnerDetail' },
+      { date: '2026-04-26', tagEn: 'commands', tagKo: 'commands', titleKey: 'historyCommandsTitle', bodyKey: 'historyCommandsBody', detailKey: 'historyCommandsDetail' },
+      { date: '2026-04-25', tagEn: 'ports', tagKo: 'ports', titleKey: 'historyPortsTitle', bodyKey: 'historyPortsBody', detailKey: 'historyPortsDetail' }
+    ];
     const liveState = {
       filter: 'all',
       payload: null,
@@ -1544,7 +1647,8 @@
       recentCount: document.getElementById('live-recent-count'),
       generatedAt: document.getElementById('live-generated-at'),
       staticMap: document.getElementById('static-map'),
-      staticNote: document.getElementById('static-map-note')
+      staticNote: document.getElementById('static-map-note'),
+      historySurface: document.getElementById('history-surface')
     };
 
     function escapeHtml(value) {
@@ -1708,23 +1812,52 @@
       `).join('');
     }
 
+    function historyTag(entry) {
+      return liveState.language === 'ko' ? (entry.tagKo || entry.tagEn || '') : (entry.tagEn || entry.tagKo || '');
+    }
+
+    function renderSideHistory() {
+      return `
+        <section class="side-history" aria-label="${escapeHtml(t('historyFeedTitle'))}">
+          <div class="side-heading">${escapeHtml(t('historyFeedTitle'))}</div>
+          ${sideHistoryEntries.map((entry) => `
+            <article class="side-history-entry">
+              <div class="recent-meta">
+                ${badgeHtml(entry.date, 'recent')}
+                ${badgeHtml(historyTag(entry), 'modified')}
+              </div>
+              <div class="side-history-title">${escapeHtml(t(entry.titleKey))}</div>
+              <div class="side-history-body">${escapeHtml(t(entry.bodyKey))}</div>
+              <div class="side-history-detail">${escapeHtml(t(entry.detailKey))}</div>
+            </article>
+          `).join('')}
+        </section>
+      `;
+    }
+
     function renderRecent(payload) {
       const recent = Array.isArray(payload.recent) ? payload.recent : [];
-      liveElements.recentCount.textContent = `${recent.length} ${t('fileCount')}`;
-      if (!recent.length) {
-        liveElements.recent.innerHTML = `<div class="live-feedback">${escapeHtml(t('noRecent'))}</div>`;
-        return;
-      }
-      liveElements.recent.innerHTML = recent.map((node) => `
-        <article class="recent-item">
-          <div class="recent-path">${escapeHtml(node.path || node.name)}</div>
-          <div class="recent-meta">
-            ${badgeHtml(labelFor(node, 'statusLabel'), node.status)}
-            ${badgeHtml(labelFor(node, 'recentLabel'), 'recent')}
-            <span>${escapeHtml(formatDateTime(node.updatedAt))}</span>
-          </div>
-        </article>
-      `).join('');
+      const fileHistory = recent.length
+        ? `<section class="side-file-group" aria-label="${escapeHtml(t('fileRecentTitle'))}">
+            <div class="side-heading">${escapeHtml(t('fileRecentTitle'))}</div>
+            ${recent.map((node) => {
+              const descText = labelFor(node, 'desc');
+              return `
+                <article class="recent-item">
+                  <div class="recent-path">${escapeHtml(node.path || node.name)}</div>
+                  ${descText ? `<div class="recent-desc">${escapeHtml(descText)}</div>` : ''}
+                  <div class="recent-meta">
+                    ${badgeHtml(labelFor(node, 'statusLabel'), node.status)}
+                    ${badgeHtml(labelFor(node, 'recentLabel'), 'recent')}
+                    <span>${escapeHtml(formatDateTime(node.updatedAt))}</span>
+                  </div>
+                </article>
+              `;
+            }).join('')}
+          </section>`
+        : `<div class="live-feedback">${escapeHtml(t('noRecent'))}</div>`;
+      liveElements.recentCount.textContent = `${sideHistoryEntries.length} ${t('historyCount')} / ${recent.length} ${t('fileCount')}`;
+      liveElements.recent.innerHTML = `${renderSideHistory()}${fileHistory}`;
     }
 
     function renderLiveMap(payload, endpoint) {
@@ -1738,6 +1871,7 @@
       liveElements.feedback.classList.add('is-hidden');
       liveElements.staticMap.classList.add('is-hidden');
       liveElements.staticNote.classList.add('is-hidden');
+      liveElements.historySurface.classList.add('is-hidden');
       renderSummary(payload);
       renderRecent(payload);
       liveElements.tree.innerHTML = `<ul class="live-node-list">${renderTreeNode(payload.tree)}</ul>`;
@@ -1757,6 +1891,7 @@
         liveElements.feedback.textContent = `${t('liveUnavailablePrefix')}: ${error.message}`;
         liveElements.staticMap.classList.remove('is-hidden');
         liveElements.staticNote.classList.remove('is-hidden');
+        liveElements.historySurface.classList.remove('is-hidden');
       }
     }
 
