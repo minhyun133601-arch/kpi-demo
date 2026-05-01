@@ -1004,6 +1004,17 @@
           <article class="history-entry">
             <div class="history-meta">
               <span class="status-badge recent">2026-05-02</span>
+              <span class="status-badge modified">월간 실적보고</span>
+            </div>
+            <h3 data-i18n-key="historyMonthlyTeam5Title">공무환경팀을 월간 실적보고 Team 5 규칙으로 정리</h3>
+            <p data-i18n-key="historyMonthlyTeam5Body">월간 실적보고 팝업에서 공무환경팀만 Utility/team4로 보이던 예외를 제거하고, 앞 팀들과 같은 Team 5/team5 탭과 생산량·수율·노무비 기준으로 맞췄습니다.</p>
+            <ul class="history-detail">
+              <li data-i18n-key="historyMonthlyTeam5Detail">이번에 건드린 위치: 월간 실적보고 팝업 팀 탭/패널, 생산보고 섹션 스모크 테스트, Repository Map 이력. 변경 파일: kpi-runtime/sections/monthly-performance-report-popup.html, kpi-runtime/internal-server/test/frontend/production-report-section.smoke.js, commands/ops-console-app/ops-console/public/repository-map.html. 개인정보 영향: 실제 팀원, 현장, 생산량, 비용, 자격 증명 추가 없음; 공무환경팀 공개 라벨과 공통 더미 지표 구조만 정리했습니다. 검증: 월간 실적보고 HTML 문구 스캔, production-report-section 스모크 테스트, HTML 인라인 스크립트 문법 확인, 민감 문자열 스캔.</li>
+            </ul>
+          </article>
+          <article class="history-entry">
+            <div class="history-meta">
+              <span class="status-badge recent">2026-05-02</span>
               <span class="status-badge modified">지도 표시</span>
             </div>
             <h3 data-i18n-key="historyMapKoreanPanelTitle">Repository Map 최근 수정 내역을 오른쪽 패널로 정리</h3>
@@ -1321,6 +1332,9 @@
         historyFeedTitle: 'Recent change history',
         fileRecentTitle: 'Recent files',
         historyCount: 'history entries',
+        historyMonthlyTeam5Title: 'Facility environment team now follows the Monthly Report Team 5 rule',
+        historyMonthlyTeam5Body: 'The Monthly Performance Report popup no longer treats the facility environment team as a Utility/team4 exception. It now uses the same Team 5/team5 tab and production, yield, and labor-cost report pattern as the preceding teams.',
+        historyMonthlyTeam5Detail: 'Touched area: Monthly Performance Report popup team tab/panel, production-report section smoke test, and Repository Map history. Changed files: kpi-runtime/sections/monthly-performance-report-popup.html, kpi-runtime/internal-server/test/frontend/production-report-section.smoke.js, and commands/ops-console-app/ops-console/public/repository-map.html. Privacy: no real team member, site, production amount, cost, or credential was added; only the public facility environment team label and common dummy metric structure were aligned. Verification: Monthly Performance Report HTML wording scan, production-report-section smoke test, inline HTML script syntax check, and sensitive-string scan.',
         historyMapKoreanPanelTitle: 'Repository Map recent changes now live in the right panel',
         historyMapKoreanPanelBody: 'In Korean view, patch history now appears first in the right-side Recent Changes panel instead of only in a separate lower list, and live file-tree descriptions can display Korean metadata.',
         historyMapKoreanPanelDetail: 'Touched area: Repository Map right-panel rendering and live repository-map API file-description metadata. Changed files: commands/ops-console-app/ops-console/public/repository-map.html and kpi-runtime/internal-server/src/services/repository-map.js. Privacy: no data, credential, real name, real site/equipment label, or real value was added. Verification: inline HTML script syntax check, Repository Map API Korean metadata check, HTTP response check, and sensitive-string scan.',
@@ -1445,6 +1459,9 @@
         historyFeedTitle: '최근 수정 내역',
         fileRecentTitle: '최근 파일 변경',
         historyCount: '개 이력',
+        historyMonthlyTeam5Title: '공무환경팀을 월간 실적보고 Team 5 규칙으로 정리',
+        historyMonthlyTeam5Body: '월간 실적보고 팝업에서 공무환경팀만 Utility/team4로 보이던 예외를 제거하고, 앞 팀들과 같은 Team 5/team5 탭과 생산량·수율·노무비 기준으로 맞췄습니다.',
+        historyMonthlyTeam5Detail: '이번에 건드린 위치: 월간 실적보고 팝업 팀 탭/패널, 생산보고 섹션 스모크 테스트, Repository Map 이력. 변경 파일: kpi-runtime/sections/monthly-performance-report-popup.html, kpi-runtime/internal-server/test/frontend/production-report-section.smoke.js, commands/ops-console-app/ops-console/public/repository-map.html. 개인정보 영향: 실제 팀원, 현장, 생산량, 비용, 자격 증명 추가 없음; 공무환경팀 공개 라벨과 공통 더미 지표 구조만 정리했습니다. 검증: 월간 실적보고 HTML 문구 스캔, production-report-section 스모크 테스트, HTML 인라인 스크립트 문법 확인, 민감 문자열 스캔.',
         historyMapKoreanPanelTitle: 'Repository Map 최근 수정 내역을 오른쪽 패널로 정리',
         historyMapKoreanPanelBody: '한국어 보기에서 패치 이력이 하단 별도 목록이 아니라 오른쪽 최근 수정 내역 패널에 먼저 보이도록 바꾸고, 실시간 파일 트리 설명도 한국어로 표시되게 했습니다.',
         historyMapKoreanPanelDetail: '이번에 건드린 위치: Repository Map 오른쪽 패널 렌더링, 실시간 저장소 지도 API 파일 설명 메타데이터. 변경 파일: commands/ops-console-app/ops-console/public/repository-map.html, kpi-runtime/internal-server/src/services/repository-map.js. 개인정보 영향: 데이터, 자격 증명, 실명, 실제 현장/설비/값 추가 없음. 검증: HTML 인라인 스크립트 문법 확인, Repository Map API 한국어 메타데이터 확인, HTTP 응답 확인, 민감 문자열 스캔.',
@@ -1605,6 +1622,7 @@
       'private screenshots and internal evidence files stay out of the repo': '비공개 스크린샷과 내부 증빙 파일은 저장소에 넣지 않습니다'
     };
     const sideHistoryEntries = [
+      { date: '2026-05-02', tagEn: 'monthly report', tagKo: '월간 실적보고', titleKey: 'historyMonthlyTeam5Title', bodyKey: 'historyMonthlyTeam5Body', detailKey: 'historyMonthlyTeam5Detail' },
       { date: '2026-05-02', tagEn: 'map panel', tagKo: '지도 표시', titleKey: 'historyMapKoreanPanelTitle', bodyKey: 'historyMapKoreanPanelBody', detailKey: 'historyMapKoreanPanelDetail' },
       { date: '2026-05-02', tagEn: 'security copy', tagKo: '보안 문구', titleKey: 'historySecurityPrinciplesTitle', bodyKey: 'historySecurityPrinciplesBody', detailKey: 'historySecurityPrinciplesDetail' },
       { date: '2026-05-02', tagEn: 'server tools', tagKo: '서버 툴 정리', titleKey: 'historyDemoCommandSplitTitle', bodyKey: 'historyDemoCommandSplitBody', detailKey: 'historyDemoCommandSplitDetail' },

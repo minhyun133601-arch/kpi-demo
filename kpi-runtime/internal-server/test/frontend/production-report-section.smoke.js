@@ -51,7 +51,11 @@ test('monthly performance popup contains team selectors and metric placeholders'
   assert.match(popupSource, /data-team-tab="team1part2"/);
   assert.match(popupSource, /data-team-tab="team2"/);
   assert.match(popupSource, /data-team-tab="team3"/);
-  assert.match(popupSource, /data-team-tab="team4"/);
+  assert.match(popupSource, /data-team-tab="team5"/);
+  assert.match(popupSource, /<small>Team 5<\/small><strong>공무환경팀<\/strong>/);
+  assert.match(popupSource, /data-team-panel="team5"/);
+  assert.doesNotMatch(popupSource, /data-team-tab="team4"/);
+  assert.doesNotMatch(popupSource, /<small>Utility<\/small><strong>공무환경팀<\/strong>/);
   assert.match(popupSource, /생산량/);
   assert.match(popupSource, /수율/);
   assert.match(popupSource, /노무비/);
