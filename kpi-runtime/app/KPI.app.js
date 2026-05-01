@@ -424,51 +424,30 @@
                             </div>
                         </div>
                     </div>
-                    <section class="viewer-home-guideline-section" aria-label="행동 강령">
+                    <section class="viewer-home-guideline-section" aria-label="KPI Demo 보안 운영 원칙">
                         <div class="viewer-home-guideline-header">
-                            <h2 class="viewer-home-guideline-title">KPI Demo 운영 원칙</h2>
+                            <h2 class="viewer-home-guideline-title">KPI-DEMO 운영 원칙</h2>
                         </div>
                         <div class="viewer-home-guideline-grid">
                             <article class="viewer-home-guideline-card viewer-home-guideline-card-trust">
-                                <div class="viewer-home-guideline-icon"><i class="fas fa-handshake"></i></div>
+                                <div class="viewer-home-guideline-icon"><i class="fas fa-shield-halved"></i></div>
                                 <div class="viewer-home-guideline-copy">
-                                    <div class="viewer-home-guideline-name">정확성</div>
-                                    <div class="viewer-home-guideline-quote">“기록하고, 확인하고, 공유한다”</div>
-                                    <div class="viewer-home-guideline-tag">“Record, Check, Share”</div>
-                                    <ul class="viewer-home-guideline-list">
-                                        <li>기록 기준을 먼저 확인하고 예외를 남기는 자세</li>
-                                        <li>같은 데이터를 함께 보고 판단하는 협업 태도</li>
-                                        <li>입력, 검증, 저장 결과를 책임 있게 확인하는 자세</li>
-                                        <li>개선 의견을 다음 화면과 절차에 반영하는 자세</li>
-                                    </ul>
+                                    <div class="viewer-home-guideline-name">개인정보 보호</div>
+                                    <div class="viewer-home-guideline-quote">실제 조직, 사람, 현장, 설비 정보는 데모에 저장하지 않는다.</div>
                                 </div>
                             </article>
                             <article class="viewer-home-guideline-card viewer-home-guideline-card-communication">
-                                <div class="viewer-home-guideline-icon"><i class="fas fa-comments"></i></div>
+                                <div class="viewer-home-guideline-icon"><i class="fas fa-database"></i></div>
                                 <div class="viewer-home-guideline-copy">
-                                    <div class="viewer-home-guideline-name">소통(疏通)</div>
-                                    <div class="viewer-home-guideline-quote">“찾아가고, 다가가고, 듣고, 말하라”</div>
-                                    <div class="viewer-home-guideline-tag">“방다청설”</div>
-                                    <ul class="viewer-home-guideline-list">
-                                        <li>적극적인 문제해결과 도전하려는 자세</li>
-                                        <li>자발적이며 친절하게 협업하고 협력하는 모습</li>
-                                        <li>경청하고 수용하는 태도</li>
-                                        <li>진정성과 공감대 형성을 위한 적극적인 자세</li>
-                                    </ul>
+                                    <div class="viewer-home-guideline-name">데이터 기준</div>
+                                    <div class="viewer-home-guideline-quote">공개 화면과 fixture에는 합성 데이터만 사용한다.</div>
                                 </div>
                             </article>
                             <article class="viewer-home-guideline-card viewer-home-guideline-card-value">
-                                <div class="viewer-home-guideline-icon"><i class="fas fa-lightbulb"></i></div>
+                                <div class="viewer-home-guideline-icon"><i class="fas fa-lock"></i></div>
                                 <div class="viewer-home-guideline-copy">
-                                    <div class="viewer-home-guideline-name">가치창조(價値創造)</div>
-                                    <div class="viewer-home-guideline-quote">“경험하고, 나누고, 배우고, 쓸모있게 하라”</div>
-                                    <div class="viewer-home-guideline-tag">“경나학쓸”</div>
-                                    <ul class="viewer-home-guideline-list">
-                                        <li>도전을 통해 노하우를 쌓고 다양한 기능과 지식을 획득하는 자세</li>
-                                        <li>생각과 정보를 나누고 공유하는 자세</li>
-                                        <li>새로운 기술과 환경에서 아이디어를 찾고 학습하려는 자세</li>
-                                        <li>창의적인 마인드와 가치지향적인 태도</li>
-                                    </ul>
+                                    <div class="viewer-home-guideline-name">접근 관리</div>
+                                    <div class="viewer-home-guideline-quote">서버, DB, 파일 저장소 접근은 로컬 권한과 로그로 확인한다.</div>
                                 </div>
                             </article>
                         </div>

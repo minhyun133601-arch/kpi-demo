@@ -951,6 +951,17 @@
           <article class="history-entry">
             <div class="history-meta">
               <span class="status-badge recent">2026-05-02</span>
+              <span class="status-badge modified">보안 문구</span>
+            </div>
+            <h3 data-i18n-key="historySecurityPrinciplesTitle">홈 운영 원칙을 보안 기준으로 정리</h3>
+            <p data-i18n-key="historySecurityPrinciplesBody">홈 화면의 가치/태도형 문구를 제거하고 개인정보 보호, 합성 데이터, 접근 관리 보안 원칙만 한 줄씩 남겼습니다.</p>
+            <ul class="history-detail">
+              <li data-i18n-key="historySecurityPrinciplesDetail">이번에 건드린 위치: KPI 홈 화면 운영 원칙 문구와 Repository Map 이력. 변경 파일: kpi-runtime/app/KPI.app.js, commands/ops-console-app/ops-console/public/repository-map.html. 개인정보 영향: 실제 조직, 사람, 현장, 설비, 값, 자격 증명 추가 없음; 보안 기준을 더 명확히 표시. 검증: 문구 스캔, JavaScript 문법 확인, Repository Map 이력 키 확인.</li>
+            </ul>
+          </article>
+          <article class="history-entry">
+            <div class="history-meta">
+              <span class="status-badge recent">2026-05-02</span>
               <span class="status-badge modified">서버 툴 정리</span>
             </div>
             <h3 data-i18n-key="historyDemoCommandSplitTitle">루트 명령을 서버 관리 콘솔로 복원</h3>
@@ -1243,6 +1254,9 @@
         staticNote: 'Static fallback map below mirrors the public-facing structure summary when the owner-console API is not running.',
         historyTitle: 'Patch History',
         historyKicker: 'Portfolio-facing record of structure, privacy impact, and verification results.',
+        historySecurityPrinciplesTitle: 'Home principles now show security rules only',
+        historySecurityPrinciplesBody: 'The home-screen value and attitude copy was removed, leaving only one-line security rules for privacy, synthetic data, and access management.',
+        historySecurityPrinciplesDetail: 'Touched area: KPI home-screen operating principle copy and Repository Map history. Changed files: kpi-runtime/app/KPI.app.js and commands/ops-console-app/ops-console/public/repository-map.html. Privacy: no real organization, person, site, equipment, value, or credential was added; security boundaries are clearer. Verification: wording scan, JavaScript syntax check, and Repository Map history-key check.',
         historyDemoCommandSplitTitle: 'Root commands now open the server console',
         historyDemoCommandSplitBody: 'The root command files now match KPI-Server: only the server management console open/close wrappers remain. The old demo-only shortcuts were removed from the root command surface.',
         historyDemoCommandSplitDetail: 'Touched area: root command wrappers, README run guidance, and Repository Map command descriptions. Changed files: two server-management console wrappers, removed old demo-only command/helper files, README.md, and commands/ops-console-app/ops-console/public/repository-map.html. Privacy: no data or credentials changed; server startup is documented through the console Server Open button only. Verification: command text scan, markdown readback, sensitive-string scan, server management console start/stop smoke, and Repository Map HTTP check.',
@@ -1358,6 +1372,9 @@
         staticNote: '오너 콘솔 API가 꺼져 있으면 아래 정적 지도가 공개용 구조 요약을 대신 보여줍니다.',
         historyTitle: '패치 이력',
         historyKicker: '구조, 개인정보 영향, 검증 결과를 공개 포트폴리오 기준으로 기록합니다.',
+        historySecurityPrinciplesTitle: '홈 운영 원칙을 보안 기준으로 정리',
+        historySecurityPrinciplesBody: '홈 화면의 가치/태도형 문구를 제거하고 개인정보 보호, 합성 데이터, 접근 관리 보안 원칙만 한 줄씩 남겼습니다.',
+        historySecurityPrinciplesDetail: '이번에 건드린 위치: KPI 홈 화면 운영 원칙 문구와 Repository Map 이력. 변경 파일: kpi-runtime/app/KPI.app.js, commands/ops-console-app/ops-console/public/repository-map.html. 개인정보 영향: 실제 조직, 사람, 현장, 설비, 값, 자격 증명 추가 없음; 보안 기준을 더 명확히 표시. 검증: 문구 스캔, JavaScript 문법 확인, Repository Map 이력 키 확인.',
         historyDemoCommandSplitTitle: '루트 명령을 서버 관리 콘솔로 복원',
         historyDemoCommandSplitBody: '루트 command 파일은 KPI-Server처럼 서버 관리 콘솔을 여닫는 두 파일만 남겼습니다. 이전 데모 전용 바로가기는 루트 명령 표면에서 제거했습니다.',
         historyDemoCommandSplitDetail: '이번에 건드린 위치: 루트 command wrapper, README 실행 안내, Repository Map 명령 설명. 변경 파일: 서버 관리 콘솔 wrapper 2개, 이전 데모 전용 command/helper 제거, README.md, commands/ops-console-app/ops-console/public/repository-map.html. 개인정보 영향: 데이터나 자격 증명 변경 없음; 서버 실행은 콘솔의 서버 열기 버튼을 통해서만 안내합니다. 검증: 명령 문구 스캔, markdown 읽기 확인, 민감 문자열 스캔, 서버 관리 콘솔 시작/종료 스모크, Repository Map HTTP 확인.',
