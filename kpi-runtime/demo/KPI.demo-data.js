@@ -1,18 +1,18 @@
 (function bootstrapKpiDemoData() {
     const UPDATED_AT = '2026-04-26T06:00:00.000Z';
     const MONTHS = [
-        { key: '2026-01', electric: 48200, gas: 1620, lpg: 12.4, lng: 38.2, wasteB: 1380, wasteA: 920, production: 46600, electricCost: 19233000, gasCost: 1408000, wasteBCost: 3180000, wasteACost: 2110000 },
-        { key: '2026-02', electric: 46350, gas: 1555, lpg: 11.7, lng: 36.8, wasteB: 1460, wasteA: 980, production: 45100, electricCost: 18715000, gasCost: 1362000, wasteBCost: 3330000, wasteACost: 2240000 },
-        { key: '2026-03', electric: 49780, gas: 1710, lpg: 13.2, lng: 41.4, wasteB: 1510, wasteA: 1030, production: 48250, electricCost: 20273000, gasCost: 1510000, wasteBCost: 3460000, wasteACost: 2360000 },
-        { key: '2026-04', electric: 51260, gas: 1840, lpg: 14.5, lng: 43.1, wasteB: 1580, wasteA: 1090, production: 49200, electricCost: 21108000, gasCost: 1606000, wasteBCost: 3620000, wasteACost: 2490000 },
-        { key: '2026-05', electric: 52680, gas: 1788, lpg: 13.9, lng: 42.6, wasteB: 1625, wasteA: 1115, production: 50640, electricCost: 21824000, gasCost: 1574000, wasteBCost: 3710000, wasteACost: 2550000 },
-        { key: '2026-06', electric: 54120, gas: 1816, lpg: 14.2, lng: 43.9, wasteB: 1690, wasteA: 1160, production: 51980, electricCost: 22590000, gasCost: 1598000, wasteBCost: 3860000, wasteACost: 2660000 },
-        { key: '2026-07', electric: 55860, gas: 1905, lpg: 15.0, lng: 45.7, wasteB: 1740, wasteA: 1195, production: 53120, electricCost: 23650000, gasCost: 1684000, wasteBCost: 3980000, wasteACost: 2740000 },
-        { key: '2026-08', electric: 56520, gas: 1932, lpg: 15.4, lng: 46.1, wasteB: 1715, wasteA: 1180, production: 52680, electricCost: 24022000, gasCost: 1710000, wasteBCost: 3920000, wasteACost: 2710000 },
-        { key: '2026-09', electric: 53740, gas: 1765, lpg: 13.6, lng: 42.0, wasteB: 1645, wasteA: 1135, production: 51220, electricCost: 22570000, gasCost: 1559000, wasteBCost: 3770000, wasteACost: 2610000 },
-        { key: '2026-10', electric: 51980, gas: 1684, lpg: 12.8, lng: 39.7, wasteB: 1595, wasteA: 1095, production: 49740, electricCost: 21540000, gasCost: 1492000, wasteBCost: 3650000, wasteACost: 2510000 },
-        { key: '2026-11', electric: 50320, gas: 1718, lpg: 13.1, lng: 40.4, wasteB: 1530, wasteA: 1050, production: 48680, electricCost: 20890000, gasCost: 1518000, wasteBCost: 3500000, wasteACost: 2410000 },
-        { key: '2026-12', electric: 48960, gas: 1660, lpg: 12.6, lng: 38.9, wasteB: 1485, wasteA: 1015, production: 47240, electricCost: 20140000, gasCost: 1469000, wasteBCost: 3400000, wasteACost: 2330000 }
+        { key: '2026-01', electric: 9460, gas: 1620, lpg: 12.4, lng: 38.2, wasteB: 1380, wasteA: 920, production: 46600, electricCost: 2530000, gasCost: 1408000, wasteBCost: 3180000, wasteACost: 2110000 },
+        { key: '2026-02', electric: 9120, gas: 1555, lpg: 11.7, lng: 36.8, wasteB: 1460, wasteA: 980, production: 45100, electricCost: 2445000, gasCost: 1362000, wasteBCost: 3330000, wasteACost: 2240000 },
+        { key: '2026-03', electric: 9840, gas: 1710, lpg: 13.2, lng: 41.4, wasteB: 1510, wasteA: 1030, production: 48250, electricCost: 2655000, gasCost: 1510000, wasteBCost: 3460000, wasteACost: 2360000 },
+        { key: '2026-04', electric: 10180, gas: 1840, lpg: 14.5, lng: 43.1, wasteB: 1580, wasteA: 1090, production: 49200, electricCost: 2760000, gasCost: 1606000, wasteBCost: 3620000, wasteACost: 2490000 },
+        { key: '2026-05', electric: 10440, gas: 1788, lpg: 13.9, lng: 42.6, wasteB: 1625, wasteA: 1115, production: 50640, electricCost: 2835000, gasCost: 1574000, wasteBCost: 3710000, wasteACost: 2550000 },
+        { key: '2026-06', electric: 10710, gas: 1816, lpg: 14.2, lng: 43.9, wasteB: 1690, wasteA: 1160, production: 51980, electricCost: 2910000, gasCost: 1598000, wasteBCost: 3860000, wasteACost: 2660000 },
+        { key: '2026-07', electric: 11020, gas: 1905, lpg: 15.0, lng: 45.7, wasteB: 1740, wasteA: 1195, production: 53120, electricCost: 3030000, gasCost: 1684000, wasteBCost: 3980000, wasteACost: 2740000 },
+        { key: '2026-08', electric: 11140, gas: 1932, lpg: 15.4, lng: 46.1, wasteB: 1715, wasteA: 1180, production: 52680, electricCost: 3065000, gasCost: 1710000, wasteBCost: 3920000, wasteACost: 2710000 },
+        { key: '2026-09', electric: 10680, gas: 1765, lpg: 13.6, lng: 42.0, wasteB: 1645, wasteA: 1135, production: 51220, electricCost: 2930000, gasCost: 1559000, wasteBCost: 3770000, wasteACost: 2610000 },
+        { key: '2026-10', electric: 10260, gas: 1684, lpg: 12.8, lng: 39.7, wasteB: 1595, wasteA: 1095, production: 49740, electricCost: 2805000, gasCost: 1492000, wasteBCost: 3650000, wasteACost: 2510000 },
+        { key: '2026-11', electric: 9940, gas: 1718, lpg: 13.1, lng: 40.4, wasteB: 1530, wasteA: 1050, production: 48680, electricCost: 2710000, gasCost: 1518000, wasteBCost: 3500000, wasteACost: 2410000 },
+        { key: '2026-12', electric: 9660, gas: 1660, lpg: 12.6, lng: 38.9, wasteB: 1485, wasteA: 1015, production: 47240, electricCost: 2620000, gasCost: 1469000, wasteBCost: 3400000, wasteACost: 2330000 }
     ];
     const WORK_TEAMS = [
         { dataKey: 'work_team_calendar_team1_part1', historyKey: 'team1part1', title: 'Line Alpha', teamName: 'Line Alpha', site: 'Plant B', room: '건조 1라인', process: 'dry', members: ['작업자 A', '작업자 C'], date: '2026-04-20', day: 'mon', product: '제품 A 분말', amount: 12800, baseAmount: 11600, task: '시작 전 점검 및 계량기 확인' },
@@ -91,32 +91,33 @@
             reportName: 'legal-equipment-follow-up-note.pdf'
         }
     ];
+    const ELECTRIC_READING_PROFILE = { precision: 1, offsetStep: 0.02 };
     const ELECTRIC_FIELD_DEFS = [
-        { id: 'field_01', start: 10240, step: 96 },
-        { id: 'field_02', start: 8840, step: 83 },
-        { id: 'field_03', start: 6120, step: 58 },
-        { id: 'field_04', start: 4380, step: 41 },
-        { id: 'field_05', start: 6130, step: 66 },
-        { id: 'field_06', start: 2920, step: 29 },
-        { id: 'field_07', start: 2650, step: 26 },
-        { id: 'field_08', start: 5310, step: 52 },
-        { id: 'field_09', start: 4200, step: 47 },
-        { id: 'field_10', start: 3360, step: 34 },
-        { id: 'field_11', start: 3710, step: 38 },
-        { id: 'field_12', start: 2890, step: 32 },
-        { id: 'field_13', start: 350, step: 11 },
-        { id: 'field_14', start: 1910, step: 24 },
-        { id: 'field_15', start: 2740, step: 31 },
-        { id: 'field_16', start: 1560, step: 18 },
-        { id: 'field_17', start: 2240, step: 27 },
-        { id: 'field_18', start: 1840, step: 21 },
-        { id: 'field_19', start: 960, step: 10 },
-        { id: 'field_21', start: 1420, step: 19 },
-        { id: 'field_22', start: 1680, step: 22 },
-        { id: 'field_23', start: 1385, step: 17 },
-        { id: 'field_25', start: 740, step: 8 },
-        { id: 'field_26', start: 620, step: 7 },
-        { id: 'field_28', start: 430, step: 5 }
+        { id: 'field_01', start: 124.0, step: 0.18, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_02', start: 118.5, step: 0.15, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_03', start: 96.0, step: 0.12, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_04', start: 82.5, step: 0.10, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_05', start: 74.0, step: 0.35, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_06', start: 61.5, step: 0.24, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_07', start: 58.0, step: 0.20, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_08', start: 67.0, step: 0.28, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_09', start: 69.5, step: 0.32, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_10', start: 52.5, step: 0.30, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_11', start: 49.5, step: 0.34, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_12', start: 44.0, step: 0.22, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_13', start: 22.0, step: 0.18, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_14', start: 38.5, step: 0.30, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_15', start: 42.0, step: 0.22, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_16', start: 31.0, step: 0.20, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_17', start: 36.5, step: 0.16, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_18', start: 33.0, step: 0.14, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_19', start: 18.5, step: 0.10, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_21', start: 12.0, step: 0.06, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_22', start: 13.5, step: 0.05, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_23', start: 11.8, step: 0.055, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_25', start: 8.4, step: 0.04, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_26', start: 7.6, step: 0.035, ...ELECTRIC_READING_PROFILE },
+        { id: 'field_28', start: 10.0, step: 0.05, ...ELECTRIC_READING_PROFILE }
     ];
     const GAS_FIELD_DEFS = [
         { id: 'gas_field_01', start: 1040, step: 15 },
@@ -379,29 +380,29 @@
         return {
             scopes: {
                 plantA: makeSettlement({
-                    base_charge: 1540000,
-                    power_charge: Math.round(month.electricCost * 0.54),
-                    climate_environment_charge: 318000,
-                    fuel_adjustment_charge: 266000,
+                    base_charge: Math.round(month.electricCost * 0.06),
+                    power_charge: Math.round(month.electricCost * 0.548),
+                    climate_environment_charge: Math.round(month.electricCost * 0.018),
+                    fuel_adjustment_charge: Math.round(month.electricCost * 0.015),
                     lagging_power_factor_charge: 0,
                     operation_fee: 0,
                     internet_discount: 0,
-                    vat: Math.round(month.electricCost * 0.065),
-                    electric_power_fund: 412000,
+                    vat: Math.round(month.electricCost * 0.064),
+                    electric_power_fund: Math.round(month.electricCost * 0.014),
                     tv_reception_fee: 2500,
                     rounding_adjustment: 0,
                     billing_amount: Math.round(month.electricCost * 0.72)
                 }),
                 plantB: makeSettlement({
-                    base_charge: 720000,
-                    power_charge: Math.round(month.electricCost * 0.21),
-                    climate_environment_charge: 174000,
-                    fuel_adjustment_charge: 144000,
+                    base_charge: Math.round(month.electricCost * 0.03),
+                    power_charge: Math.round(month.electricCost * 0.2),
+                    climate_environment_charge: Math.round(month.electricCost * 0.009),
+                    fuel_adjustment_charge: Math.round(month.electricCost * 0.006),
                     lagging_power_factor_charge: 0,
                     operation_fee: 0,
                     internet_discount: 0,
                     vat: Math.round(month.electricCost * 0.023),
-                    electric_power_fund: 224000,
+                    electric_power_fund: Math.round(month.electricCost * 0.01),
                     tv_reception_fee: 2500,
                     rounding_adjustment: 0,
                     billing_amount: Math.round(month.electricCost * 0.28)
@@ -412,8 +413,11 @@
 
     function makeEquipmentValues(fieldDefs, dayIndex) {
         return Object.fromEntries(fieldDefs.map((field, index) => {
-            const offset = Math.floor(dayIndex / 5) * (index + 2);
-            return [field.id, Math.round(field.start + field.step * dayIndex + offset)];
+            const offsetStep = Number.isFinite(field.offsetStep) ? field.offsetStep : index + 2;
+            const precision = Number.isInteger(field.precision) ? Math.max(0, field.precision) : 0;
+            const offset = Math.floor(dayIndex / 5) * offsetStep;
+            const rawValue = field.start + field.step * dayIndex + offset;
+            return [field.id, Number(rawValue.toFixed(precision))];
         }));
     }
 

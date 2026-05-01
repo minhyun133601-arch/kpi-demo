@@ -25,8 +25,9 @@ Public naming should use `KPI Demo` for the project and `KPI Demo Runtime` for t
 
 ## Documentation Language
 
-- Repository-owned documentation must be written in English by default.
-- User-facing explanations in chat may be Korean, but committed markdown should be English unless the user explicitly asks otherwise.
+- Repository-owned portfolio documentation should be Korean-first by default, because the primary portfolio reader is expected to be Korean. Keep technical identifiers, commands, paths, API names, and stack names in English where precision matters.
+- Add short English keywords or summaries when they help GitHub visitors understand the stack, but do not make English the default language for README-style portfolio explanation.
+- User-facing explanations in chat should be Korean unless the user asks for another language.
 - The Repository Map must support English and Korean viewing modes for portfolio-facing structure, change history, plain-language notes, privacy notes, and verification context.
 - Do not create additional long-lived rules, checklist, prompt, or handoff markdown files unless the user explicitly asks.
 
